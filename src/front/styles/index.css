@@ -1,3 +1,126 @@
-/* 
-    General Styles used on every website (Don't Repeat Yourself)
-*/
+
+
+/* Estilos generales */
+  .body {
+    padding-top: 20px; 
+    padding-bottom: 20px; 
+    font-family: 'Oxygen', sans-serif;
+    background-color: #ffd5cd;
+  }
+
+  .h1, .h2, .h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }
+  
+  .section {
+    font-family: 'Oxygen', sans-serif;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+/* Estilos de las boxes */
+  .form-rounded {
+    border-radius: 10px; /* Bordes redondeados */
+  }
+
+  .form-shadow {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  }
+
+  .bg-light {
+    background-color: #f8f9fa; /* Color de fondo */
+  }
+
+
+/*Estilos de todos los botones*/
+  .btn {
+    background-color: #ff7e67; 
+    color: white; 
+    border: none; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+  .btn:disabled {
+    background-color: #ff7e67;
+  }
+
+  .btn:hover {
+    background-color: #ff5334; 
+    color: white; 
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+/* Estilos de las card de los products */
+  .card {
+    border: 2px solid #ffd5cd; 
+    box-shadow: 0 0 10px #ffd5cd; /* Añade una sombra rosada al borde */
+  }
+  
+  .custom-card-footer {
+    background-color: transparent;
+    border-top: none;
+  }
+  
+/* Estilos de hipervínculos */
+  a {
+    color: #ff7e67;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #ff5334;
+    text-decoration:underline
+  }
+  
+/* Estilos del footer */
+  .footer {
+    background-color: #ff7e67;
+    color: white;
+  }
+  
+  .footer-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 48px; 
+  }
+  
+  .social-icon {
+    font-size: 38px;
+    margin: 0 10px;
+    color: white;
+  }
+  
+  .social-icon.hovered {
+    color: #ff5334; 
+    transform: scale(1.4);
+  }
+  
+  .phrase-icon{
+    margin: 0 5px;
+  }
+  
+  .icon-copyright{
+    display: inline-flex;
+    align-items: center;
+    vertical-align: text-top;
+    font-size: 20px;
+    margin: 0 2px 0 2px;
+    color: white;
+  }
+
+  .social-icon-g {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: text-top;
+    font-size: 20px;
+    margin: 0 5px 0 5px;
+    color: white;
+  }
+  
+  .social-icon-g.hovered {
+    color: #ff5334;
+    transform: scale(1.4); 
+  }
+  
+  .footer-text{
+    font-family: 'Oxygen', sans-serif; 
+  }
