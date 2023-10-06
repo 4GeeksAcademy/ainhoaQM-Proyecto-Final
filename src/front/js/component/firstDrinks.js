@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
+
 export const FirstDrinks = () => {
     const { store, actions } = useContext(Context);
     const [firstProductsDrinks, setFirstProductsDrinks] = useState([]);
@@ -38,28 +39,6 @@ export const FirstDrinks = () => {
             .catch((error) => console.error("Error:", error));
     }, []);
 
-    useEffect(() => {
-        // Después de cargar los productos, inicializamos el carrusel
-        if (firstProductsDrinks.length > 0) {
-            $('.owl-carousel').owlCarousel({
-                loop:true,
-                margin:10,
-                nav:true,
-                responsive:{
-                    0:{
-                        items:1
-                    },
-                    600:{
-                        items:3
-                    },
-                    1000:{
-                        items:5
-                    }
-                }
-            });
-        }
-    }, [firstProductsDrinks]);
-
     return (
         <div className="container">
             {showLoginMessage && (
@@ -67,7 +46,7 @@ export const FirstDrinks = () => {
                     Por favor, <a href="/login">inicia sesión</a> o <a href="/signup">regístrate</a>  para poder añadir cosas al carrito.
                 </div>
             )}
-            <div className="owl-carousel">
+            <div className="row">
                 {firstProductsDrinks.map(product => (
                     <div key={product.id} className="col-md-4 mb-4">
                         <div className="card">
