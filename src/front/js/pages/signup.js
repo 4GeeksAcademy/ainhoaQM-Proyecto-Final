@@ -43,13 +43,14 @@ export const Signup = () => {
         }
 
         try {
-            const response = await fetch('https://3001-4geeksacade-ainhoaqmpro-uo0f993hh47.ws-eu105.gitpod.io/api/signup', {
+            const response = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
             });
+            
 
             if (response.ok) {
                 navigate('/login');

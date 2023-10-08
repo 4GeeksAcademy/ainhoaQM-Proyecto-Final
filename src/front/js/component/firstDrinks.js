@@ -30,7 +30,7 @@ export const FirstDrinks = () => {
     }
 
     useEffect(() => {
-        fetch('https://3001-4geeksacade-ainhoaqmpro-uo0f993hh47.ws-eu105.gitpod.io/api/category-3/first_products')
+        fetch(process.env.BACKEND_URL + '/api/category-3/first_products')
             .then(response => response.json())
             .then(data => {
                 setFirstProductsDrinks(data.products);
@@ -48,18 +48,18 @@ export const FirstDrinks = () => {
             )}
             <div className="row">
                 {firstProductsDrinks.map(product => (
-                    <div key={product.id} className="col-md-4 mb-4">
+                    <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
                         <div className="card">
                             <img src={product.image_url} className="card-img-top" alt={product.name} />
                             <div className="card-body">
-                                <h5 className="card-title">{product.name}</h5>
-                                <p className="card-text">{product.price.toFixed(2)}</p>
-                                <div className="quantity-selector">
+                                <h3 className="card-title text-center">{product.name}</h3>
+                                <h4 className="card-text text-end p-1">{product.price.toFixed(2)}{" "}€</h4>
+                                <div className="card-footer quantity-selector d-flex align-items-center justify-content-center">
                                     <button onClick={decrementQuantity} className="btn btn-outline-secondary">-</button>
-                                    <span>{quantity}</span>
-                                    <button onClick={incrementQuantity} className="btn btn-outline-secondary">+</button>
+                                    <span className="px-2">{quantity}</span>
+                                    <button onClick={incrementQuantity} className="btn btn-outline-secondary me-3">+</button>
+                                    <button onClick={() => addToCart(product, quantity)} className="btn btn-success">Añadir</button>
                                 </div>
-                                <button onClick={() => addToCart(product, quantity)} className="btn btn-success">Agregar al carrito</button>
                             </div>
                         </div>
                     </div>

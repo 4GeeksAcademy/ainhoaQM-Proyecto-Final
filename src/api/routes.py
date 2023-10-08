@@ -1,13 +1,17 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
+import os
+from flask import Flask, request, jsonify, redirect, url_for, Blueprint
 from api.models import db, User, Product, Category, Order, OrderDetail
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import unset_jwt_cookies
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from authlib.integrations.flask_client import OAuth
+
 
 api = Blueprint('api', __name__)
 
@@ -58,13 +62,70 @@ def login():
 
     return jsonify(response_body), 200
 
-#Ruta para verificar el token
-@api.route('/verify-token', methods=['POST'])
-@jwt_required()
-def verify_token():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in=True, user=current_user), 200
+# Rutas para la autenticación con Google
+oauth = OAuth()
+google = oauth.register(
+    name='google',
+    client_id=os.getenv('GOOGLE_CLIENT_ID'),
+    client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    refresh_token_url=None,
+    redirect_url=None,
+    client_kwargs={'scope': 'openid profile email'},
+)
 
+@api.route('/login/google')
+def login_with_google():
+    redirect_uri = url_for('api.authorize_google', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@api.route('/login/google/authorize')
+def authorize_google():
+    token = google.authorize_access_token()
+    user_info = google.parse_id_token(token)
+    # Crea un nuevo usuario en la base de datos
+    new_user = User(email=user_info['email'], user_name=user_info['name'])
+    db.session.add(new_user)
+    db.session.commit()
+    # Genera un token de acceso
+    access_token = create_access_token(identity=new_user.serialize())
+    return jsonify(access_token=access_token, user_info=user_info), 200
+
+""" 
+// Acuerdate de que tienes que guardar el token en locale storage
+fetch('/login/google/authorize')
+    .then(response => response.json())
+    .then(data => {
+        const { access_token } = data;
+        if (access_token) {
+            localStorage.setItem('access_token', access_token);
+            console.log('Token guardado en localStorage:', access_token);
+        } else {
+            console.error('Error al obtener el token de acceso');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+
+"""
+# Ruta para cerrar sesion con Google
+@api.route('/logout/google', methods=['POST'])
+@jwt_required()
+def logout_google():
+    # Obtener el token de acceso de Google del usuario
+    token = google.authorize_access_token()
+
+    # Revocar el token de acceso de Google
+    google_token_revocation_url = 'https://accounts.google.com/o/oauth2/revoke?token=' + token['access_token']
+    response = requests.get(google_token_revocation_url)
+
+    if response.status_code == 200:
+        return jsonify({"msg": "Sesión de Google cerrada exitosamente"}), 200
+    else:
+        # Ocurrió un error al revocar el token
+        return jsonify({"msg": "Error al cerrar la sesión de Google"}), response.status_code
 
 # Ruta para crear un producto
 @api.route('/create-product', methods=['POST'])
@@ -229,14 +290,14 @@ def get_products_by_category(category_id):
     
     return jsonify(response_body), 200
 
-# Ruta para ver los primeros 5 productos
+# Ruta para ver los primeros 5 productos de una categoria
 @api.route('/category-<int:category_id>/first_products', methods=['GET'])
 def get_first_products_by_category(category_id):
     category = Category.query.get(category_id)
     if not category:
         return jsonify({"msg": "Categoría no encontrada"}), 404
 
-    first_products = Product.query.filter_by(category_id=category_id).limit(5).all()
+    first_products = Product.query.filter_by(category_id=category_id).limit(6).all()
     serialized_first_products = [product.serialize() for product in first_products]
 
     response_body = {
@@ -246,7 +307,7 @@ def get_first_products_by_category(category_id):
 
     return jsonify(response_body), 200
 
-# Ruta para ver tu carrito
+# Ruta para ver el carrito
 @api.route("/cart", methods=["GET"])
 @jwt_required()
 def nav_cart():

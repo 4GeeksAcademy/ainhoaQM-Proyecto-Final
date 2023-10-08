@@ -1,11 +1,8 @@
-
-
 /* Estilos generales */
   .body {
     padding-top: 20px; 
     padding-bottom: 20px; 
     font-family: 'Oxygen', sans-serif;
-    background-color: #ffd5cd;
   }
 
   .h1, .h2, .h3 {
@@ -20,6 +17,27 @@
     margin-bottom: 10px;
   }
 
+  .jumbotron-category{
+    background-color: #ff7e67;
+    color: #ffffff ;
+    font-weight: bold;
+  }
+
+  .subtitle{
+    color: #ff7e67;
+    margin-bottom: 0px;
+  }
+
+  .my-1{
+    color: #ff5334;
+  }
+
+  .icon-warning{
+    margin: 10px;
+    font-size:xx-large;
+    padding-bottom: 5px;
+  }
+
 /* Estilos de las boxes */
   .form-rounded {
     border-radius: 10px; /* Bordes redondeados */
@@ -30,14 +48,14 @@
   }
 
   .bg-light {
-    background-color: #f8f9fa; /* Color de fondo */
+    background-color: #ffffff; /* Color de fondo */
   }
 
 
 /*Estilos de todos los botones*/
   .btn {
     background-color: #ff7e67; 
-    color: white; 
+    color: #ffffff; 
     border: none; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
   }
@@ -47,20 +65,38 @@
 
   .btn:hover {
     background-color: #ff5334; 
-    color: white; 
+    color: #ffffff; 
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+
+/*Botón del carrito*/
+  .initial {
+    position: absolute;
+    top: 72px; 
+    right: 12px; 
+  }
+  .fixed {
+    position: fixed;
+    top: 10px; 
+    right: 12px; 
+    z-index: 1000;
   }
   
 /* Estilos de las card de los products */
   .card {
     border: 2px solid #ffd5cd; 
-    box-shadow: 0 0 10px #ffd5cd; /* Añade una sombra rosada al borde */
+    box-shadow: 0 0 10px #ffd5cd; 
   }
   
-  .custom-card-footer {
+  .card-footer {
     background-color: transparent;
-    border-top: none;
+    border-top-color: #ffd5cd;
   }
+
+  .card-title {
+    white-space: nowrap;
+  }
+
   
 /* Estilos de hipervínculos */
   a {
@@ -75,7 +111,7 @@
 /* Estilos del footer */
   .footer {
     background-color: #ff7e67;
-    color: white;
+    color: #ffffff;
   }
   
   .footer-title {
@@ -86,7 +122,7 @@
   .social-icon {
     font-size: 38px;
     margin: 0 10px;
-    color: white;
+    color: #ffffff;
   }
   
   .social-icon.hovered {
@@ -104,7 +140,7 @@
     vertical-align: text-top;
     font-size: 20px;
     margin: 0 2px 0 2px;
-    color: white;
+    color: #ffffff;
   }
 
   .social-icon-g {
@@ -113,7 +149,7 @@
     vertical-align: text-top;
     font-size: 20px;
     margin: 0 5px 0 5px;
-    color: white;
+    color: #ffffff;
   }
   
   .social-icon-g.hovered {
@@ -124,3 +160,4 @@
   .footer-text{
     font-family: 'Oxygen', sans-serif; 
   }
+  
