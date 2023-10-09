@@ -2,9 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
-//components
-import { CartButton } from "../component/cartButton";
-
 //icons
 import { PiWarningCircleDuotone } from "react-icons/pi";
 
@@ -59,7 +56,6 @@ export const Drinks = () => {
 
     return (
         <>
-        <CartButton onClick={handleCartButtonClick} />
         <div className="container body">
             {showLoginMessage && (
                 <div className="alert alert-warning d-flex align-items-center" role="alert">

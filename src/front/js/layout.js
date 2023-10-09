@@ -20,6 +20,8 @@ import { Single } from "./pages/single";
 //Components
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import { Heading } from "./component/heading";
+import { CartButton } from "./component/cartButton";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -31,7 +33,11 @@ const Layout = () => {
         <div>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    {window.location.pathname !== "/" && <Navbar />}
+                    <Heading />
+                    {window.location.pathname !== "/" &&
+                    window.location.pathname !== "/login" &&
+                    window.location.pathname !== "/signup" &&
+                    window.location.pathname !== "/shop" && <Navbar />}
                     <Routes>
                         <Route element={<LandingPage/>} path="/" />
                         <Route element={<Shop />} path="/shop" />

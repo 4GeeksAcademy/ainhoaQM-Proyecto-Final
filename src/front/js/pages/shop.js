@@ -6,9 +6,8 @@ import "../../styles/index.css";
 
 //components
 import { WelcomeMessage } from "../component/welcomeMessage";
-import { CartButton } from "../component/cartButton";
 import { FirstDrinks } from "../component/firstDrinks";
-
+import { Navbar } from "../component/navbar";
 
 export const Shop = () => {
   const navigate = useNavigate();
@@ -18,11 +17,13 @@ export const Shop = () => {
     navigate("/");
   };
 
+  console.log("Rendering Shop. isAuthenticated:", store.isAuthenticated);
   return (
+    <>
+    {store.isAuthenticated && <Navbar />}
     <div className="container body">
       {store.isAuthenticated && (
         <>
-          <CartButton />
           <WelcomeMessage userName={store.userName} />
           <div className="text-center mt-3">
             <button className="btn btn-primary" onClick={handleLogout}>
@@ -69,5 +70,6 @@ export const Shop = () => {
           </div>
       </section>
     </div>
+    </>
   );
 };

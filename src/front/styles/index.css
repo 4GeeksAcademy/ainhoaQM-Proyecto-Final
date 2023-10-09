@@ -38,19 +38,49 @@
     padding-bottom: 5px;
   }
 
+  .background-abstract {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
 /* Estilos de las boxes */
   .form-rounded {
-    border-radius: 10px; /* Bordes redondeados */
+    border-radius: 10px; 
   }
 
   .form-shadow {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
   }
 
   .bg-light {
-    background-color: #ffffff; /* Color de fondo */
+    background-color: #ffffff; 
   }
 
+  .list-group-item {
+    border: 1px solid #ffd5cd;
+  }
+
+/* Estilos de hipervínculos */
+  a {
+    color: #ff7e67;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #ff5334;
+    text-decoration:underline
+  }
+
+  .white-link {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .nav-link {
+    color: #ffffff;
+    text-decoration: none;
+  }
 
 /*Estilos de todos los botones*/
   .btn {
@@ -97,17 +127,43 @@
     white-space: nowrap;
   }
 
-  
-/* Estilos de hipervínculos */
-  a {
-    color: #ff7e67;
-    text-decoration: none;
+/* Estilos de WIP */
+  .wip-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
-  a:hover {
-    color: #ff5334;
-    text-decoration:underline
+
+  .wip-text {
+      color: #ffffff;
+      text-align: center;
   }
-  
+
+  /* Estilos del Heading */
+  .heading {
+    background-color: #ff7e67;
+  }
+
+  .heading-title {
+    font-size: 45px;
+    color: #ffffff;
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }
+/* Estilos del Navbar */
+    /*Iconos del Navbar*/
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+
+    
+
 /* Estilos del footer */
   .footer {
     background-color: #ff7e67;
@@ -160,4 +216,3 @@
   .footer-text{
     font-family: 'Oxygen', sans-serif; 
   }
-  

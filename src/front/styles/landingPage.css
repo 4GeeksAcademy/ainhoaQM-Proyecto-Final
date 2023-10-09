@@ -1,0 +1,9 @@
+/* Estilos del Navbar */
+.navbar {
+    background-color: #ff7e67;
+  }
+
+  .nav-title {
+    font-size: 35px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }

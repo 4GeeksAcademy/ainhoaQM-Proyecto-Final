@@ -3,6 +3,8 @@ import { Context } from '../store/appContext';
 import { useNavigate, Link  } from 'react-router-dom';
 //iconos
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+//images
+import abstract from '../../img/abstract.jpg';
 
 export const Login = () => {
     const { actions, store } = useContext(Context);
@@ -107,7 +109,7 @@ export const Login = () => {
     };
 
     return (
-        <div className="body">
+        <div className="body background-abstract" style={{backgroundImage: `url(${abstract})`}}>
             <div className="row m-5">
                 <div className="col-md-6 p-4 section rounded shadow bg-light">
                     <form className="m-5" onSubmit={handleLogin}>
@@ -151,15 +153,15 @@ export const Login = () => {
                         </button>
                     </form>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-6 align-self-center">
                     <div className="section text-center">
                         <p>
                             ¿No tienes cuenta?{' '}
-                            <Link to="/signup">Regístrate aquí</Link>
+                            <Link to="/signup" className="white-link">Regístrate aquí</Link>
                         </p>
                         <p>
                             ¿Has olvidado tu contraseña?{' '}
-                            <Link to="/WIP">Recupérala aquí</Link>
+                            <Link to="/WIP" className="white-link">Recupérala aquí</Link>
                         </p>
                     </div>
                 </div>

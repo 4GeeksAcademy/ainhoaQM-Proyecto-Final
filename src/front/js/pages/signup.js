@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import "../../styles/index.css";
+//icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+//img
+import abstract from '../../img/abstract.jpg';
+
 
 export const Signup = () => {
     const navigate = useNavigate();
@@ -70,7 +74,7 @@ export const Signup = () => {
     };
 
     return (
-        <div className="body">
+        <div className="body background-abstract" style={{backgroundImage: `url(${abstract})`}}>
             <div className="row m-5">
                 <div className="col-md-6 p-4 section rounded shadow bg-light">
                     <form className="m-5" onSubmit={handleSignup}>
@@ -141,11 +145,11 @@ export const Signup = () => {
                     <div className="section text-center">
                         <p>
                             ¿Ya tienes cuenta con nosotros?{' '}
-                            <Link to="/login">Inicia Sesión</Link>
+                            <Link to="/login" className="white-link">Inicia Sesión</Link>
                         </p>
                         <p>
                             ¿Has olvidado tu contraseña?{' '}
-                            <Link to="/WIP">Recupérala</Link>
+                            <Link to="/WIP" className="white-link">Recupérala</Link>
                         </p>
                     </div>
                 </div>

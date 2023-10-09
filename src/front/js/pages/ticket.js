@@ -7,7 +7,7 @@ export const Ticket = () => {
     const { store } = useContext(Context);
     const cart = store.cart;
     const [acceptTerms, setAcceptTerms] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useState([]); // Array para almacenar opciones seleccionadas
+    const [selectedOptions, setSelectedOptions] = useState([]);
 
     const handlePayment = (e) => {
         e.preventDefault();
@@ -30,7 +30,16 @@ export const Ticket = () => {
     };    
 
     return (
-        <div className="container">
+        <div className="container body">
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><a href="/">Inicio</a></li>
+                    <li className="breadcrumb-item"><a href="/shop">Tienda</a></li>
+                    <li className="breadcrumb-item"><a href="/cart">Cesta</a></li>
+                    <li className="breadcrumb-item active" aria-current="page">Confirmar Pedido</li>
+
+                </ol>
+            </nav>
             <h1 className="h1">Resumen de la Compra</h1>
             <ul>
                 {cart.map((item) => (
