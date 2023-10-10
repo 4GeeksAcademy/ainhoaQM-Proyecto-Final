@@ -49,7 +49,7 @@ MIGRATE = Migrate(app, db, compare_type = True)
 db.init_app(app)
 
 # Configuración para Google OAuth
-GOOGLE_CLIENT_ID = "669059579290-lei29idke6s7l6r0mhfvjcuaurv1euim.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 GOOGLE_DISCOVERY_URL = "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"
 
