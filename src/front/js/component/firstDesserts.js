@@ -3,9 +3,9 @@ import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
 
-export const FirstDrinks = () => {
+export const FirstDesserts = () => {
     const { store, actions } = useContext(Context);
-    const [firstProductsDrinks, setFirstProductsDrinks] = useState([]);
+    const [firstProductsDesserts, setFirstProductsDesserts] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [showLoginMessage, setShowLoginMessage] = useState(false);
 
@@ -30,11 +30,11 @@ export const FirstDrinks = () => {
     }
 
     useEffect(() => {
-        fetch(process.env.BACKEND_URL + '/api/category-3/products')
+        fetch(process.env.BACKEND_URL + '/api/category-4/products')
             .then(response => response.json())
             .then(data => {
                 const sortedProducts = data.products.sort((a, b) => a.id - b.id);
-                setFirstProductsDrinks(sortedProducts);
+                setFirstProductsDesserts(sortedProducts);
                 console.log(sortedProducts);
             })
             .catch((error) => console.error("Error:", error));
@@ -48,7 +48,7 @@ export const FirstDrinks = () => {
                 </div>
             )}
             <div className="row">
-                {firstProductsDrinks.slice(0, 6).map(product => (
+                {firstProductsDesserts.slice(0, 6).map(product => (
                     <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
                         <div className="card">
                             <img src={product.image_url} className="card-img-top" alt={product.name} />

@@ -7,29 +7,19 @@ import "../../styles/index.css";
 //components
 import { WelcomeMessage } from "../component/welcomeMessage";
 import { FirstDrinks } from "../component/firstDrinks";
-import { Navbar } from "../component/navbar";
+import { FirstDesserts } from "../component/firstDesserts";
 
 export const Shop = () => {
   const navigate = useNavigate();
   const { store, actions } = useContext(Context);
-  const handleLogout = () => {
-    actions.logout();
-    navigate("/");
-  };
 
   console.log("Rendering Shop. isAuthenticated:", store.isAuthenticated);
   return (
     <>
-    {store.isAuthenticated && <Navbar />}
     <div className="container body">
       {store.isAuthenticated && (
         <>
           <WelcomeMessage userName={store.userName} />
-          <div className="text-center mt-3">
-            <button className="btn btn-primary" onClick={handleLogout}>
-              Cerrar Sesión
-            </button>
-          </div>
         </>
       )}
       <nav aria-label="breadcrumb">
@@ -67,6 +57,7 @@ export const Shop = () => {
                   <Link to="/desserts">Ver más</Link>
               </div>
               <hr className="my-1" />
+              <FirstDesserts/>
           </div>
       </section>
     </div>

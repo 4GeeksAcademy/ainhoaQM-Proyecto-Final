@@ -100,17 +100,7 @@
   }
 
 /*Botón del carrito*/
-  .initial {
-    position: absolute;
-    top: 72px; 
-    right: 12px; 
-  }
-  .fixed {
-    position: fixed;
-    top: 10px; 
-    right: 12px; 
-    z-index: 1000;
-  }
+
   
 /* Estilos de las card de los products */
   .card {
@@ -148,7 +138,7 @@
   }
 
   .heading-title {
-    font-size: 45px;
+    font-size: 40px;
     color: #ffffff;
     font-family: 'Bricolage Grotesque', sans-serif;
   }
@@ -161,6 +151,41 @@
       'GRAD' 0,
       'opsz' 24
     }
+
+    .nav-color {
+      background-color: #ff7e67;
+    }
+
+    .dropdown-item{
+      color: #ffffff;
+    }
+
+    .dropdown-item:hover{
+      background-color: #ff7e67;
+    }
+
+    .dropdown-menu {
+      background-color: #ff7e67;
+    }
+    
+    /* Estilos para el offcanvas */
+    .offcanvas-header {
+      background-color: #ffd5cd;
+    }
+
+    .offcanvas-title {
+      color: #ff7e67;
+    }
+
+    .offcanvas-body {
+      background-color: #ffd5cd;
+    }
+
+    /* Estilos para "Tu carrito" y "Total" */
+    .offcanvas-body h5, .offcanvas-body h4 {
+      color: #ff7e67;
+    }
+
 
     
 

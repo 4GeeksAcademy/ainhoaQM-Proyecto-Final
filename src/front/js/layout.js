@@ -11,6 +11,8 @@ import { Shop } from "./pages/shop";
 import { Signup } from "./pages/signup";
 import { Login } from "./pages/login";
 import { Drinks } from "./pages/drinks";
+import { Desserts } from "./pages/desserts";
+
 import { Cart } from "./pages/cart";
 import { Ticket } from "./pages/ticket";
 import { WIP } from "./pages/WIP";
@@ -34,16 +36,14 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Heading />
-                    {window.location.pathname !== "/" &&
-                    window.location.pathname !== "/login" &&
-                    window.location.pathname !== "/signup" &&
-                    window.location.pathname !== "/shop" && <Navbar />}
+                    {window.location.pathname !== "/" && <Navbar />}
                     <Routes>
                         <Route element={<LandingPage/>} path="/" />
                         <Route element={<Shop />} path="/shop" />
                         <Route element={<Signup />} path="/signup" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Drinks />} path="/drinks" />
+                        <Route element={<Desserts />} path="/desserts" />
                         <Route element={<Cart />} path="/cart" />
                         <Route element={<Ticket />} path="/ticket" />
                         <Route element={<Single />} path="/single/:theid" />

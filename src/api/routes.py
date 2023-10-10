@@ -290,23 +290,6 @@ def get_products_by_category(category_id):
     
     return jsonify(response_body), 200
 
-# Ruta para ver los primeros 5 productos de una categoria
-@api.route('/category-<int:category_id>/first_products', methods=['GET'])
-def get_first_products_by_category(category_id):
-    category = Category.query.get(category_id)
-    if not category:
-        return jsonify({"msg": "Categoría no encontrada"}), 404
-
-    first_products = Product.query.filter_by(category_id=category_id).limit(6).all()
-    serialized_first_products = [product.serialize() for product in first_products]
-
-    response_body = {
-        "category": category.name,
-        "products": serialized_first_products
-    }
-
-    return jsonify(response_body), 200
-
 # Ruta para ver el carrito
 @api.route("/cart", methods=["GET"])
 @jwt_required()
