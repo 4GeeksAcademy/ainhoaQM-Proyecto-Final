@@ -20,6 +20,11 @@ export const Login = () => {
         password: '',
     });
 
+    function handleGoogleLogin() {
+        // Redirect to the Flask backend route for Google login
+        window.location.href = '/login/google';
+    }
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -163,6 +168,10 @@ export const Login = () => {
                             ¿Has olvidado tu contraseña?{' '}
                             <Link to="/WIP" className="white-link">Recupérala aquí</Link>
                         </p>
+                        <button className="btn btn-secondary" type="button" onClick={handleGoogleLogin}>
+                            hola google
+                        </button>
+
                     </div>
                 </div>
             </div>

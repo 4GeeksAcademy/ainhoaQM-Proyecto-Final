@@ -15,6 +15,8 @@ from authlib.integrations.flask_client import OAuth
 
 api = Blueprint('api', __name__)
 
+
+
 # Ruta para crear usuario
 @api.route('/signup', methods=['POST'])
 def create_user():
@@ -77,39 +79,63 @@ google = oauth.register(
     client_kwargs={'scope': 'openid profile email'},
 )
 
-@api.route('/login/google')
+@api.route('/login/google', methods=['POST'])
 def login_with_google():
-    redirect_uri = url_for('api.authorize_google', _external=True)
-    return google.authorize_redirect(redirect_uri)
+    google_provider_cfg = get_google_provider_cfg()
+    token_endpoint = google_provider_cfg["token_endpoint"]
 
-@api.route('/login/google/authorize')
-def authorize_google():
-    token = google.authorize_access_token()
-    user_info = google.parse_id_token(token)
-    # Crea un nuevo usuario en la base de datos
-    new_user = User(email=user_info['email'], user_name=user_info['name'])
-    db.session.add(new_user)
-    db.session.commit()
-    # Genera un token de acceso
-    access_token = create_access_token(identity=new_user.serialize())
-    return jsonify(access_token=access_token, user_info=user_info), 200
+    authorization_endpoint = google_provider_cfg["autorizathion_endpoint"]
+    request_uri = client.prepare_request_uri(
+        authorization_endpoint,
+        redirect_uri=request.base_url + "/login/callback",
+        scope=["openid", "email", "profile"],
+    )
+    token_url, headers, body = client.prepare_token_request(
+    token_endpoint,
+    authorization_response=request.url,
+    redirect_url=request.base_url,
+    code=code
+    )
+    token_response = requests.post(
+        token_url,
+        headers=headers,
+        data=body,
+        auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
+    )
 
-""" 
-// Acuerdate de que tienes que guardar el token en locale storage
-fetch('/login/google/authorize')
-    .then(response => response.json())
-    .then(data => {
-        const { access_token } = data;
-        if (access_token) {
-            localStorage.setItem('access_token', access_token);
-            console.log('Token guardado en localStorage:', access_token);
-        } else {
-            console.error('Error al obtener el token de acceso');
-        }
-    })
-    .catch(error => console.error('Error:', error));
+    # Parse the tokens!
+    client.parse_request_body_response(json.dumps(token_response.json()))
 
-"""
+    userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
+    uri, headers, body = client.add_token(userinfo_endpoint)
+    userinfo_response = requests.get(uri, headers=headers, data=body)
+
+    if userinfo_response.json().get("email_verified"):
+        unique_id = userinfo_response.json()["sub"]
+        users_email = userinfo_response.json()["email"]
+        users_name = userinfo_response.json()["given_name"]
+    else:
+        return "User email not available or not verified by Google.", 400
+        user = User(
+        id_=unique_id, name=users_name, email=users_email, profile_pic=picture  
+    )
+
+    # Doesn't exist? Add it to the database.
+    if not User.get(unique_id):
+        User.create(unique_id, users_name, users_email, picture)
+
+    # Begin user session by logging the user in
+    login_user(user)
+
+    # Send user back to homepage
+    return redirect(url_for("index"))
+
+@api.route('login/callback')
+def callback():
+    code = request.args.get("code")
+    if not code:
+        return "Error: no se recibió el código de autorización.", 400
+
 # Ruta para cerrar sesion con Google
 @api.route('/logout/google', methods=['POST'])
 @jwt_required()

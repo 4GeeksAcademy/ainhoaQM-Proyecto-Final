@@ -6,7 +6,7 @@ import psycopg2
 import json
 from flask import Flask, redirect, request, jsonify, url_for, send_from_directory
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-
+from authlib.integrations.flask_client import OAuth
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 from flask_migrate import Migrate
@@ -18,7 +18,6 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
 from db import init_db_command
-from user import User
 from api.utils import APIException, generate_sitemap
 from api.models import db
 from api.routes import api
@@ -30,6 +29,10 @@ ENV = os.getenv("FLASK_ENV")
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+# Inicializa OAuth con tu aplicación Flask
+oauth = OAuth(app)
+oauth.init_app(app)
 
 # Crea una instancia de LoginManager
 login_manager = LoginManager(app)
@@ -46,9 +49,12 @@ MIGRATE = Migrate(app, db, compare_type = True)
 db.init_app(app)
 
 # Configuración para Google OAuth
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_ID = "669059579290-lei29idke6s7l6r0mhfvjcuaurv1euim.apps.googleusercontent.com"
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
-GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+GOOGLE_DISCOVERY_URL = "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"
+
+def get_google_provider_cfg():
+    return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 # Allow CORS requests to this API
 CORS(app)

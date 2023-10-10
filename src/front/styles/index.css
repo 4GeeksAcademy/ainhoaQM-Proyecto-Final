@@ -98,19 +98,22 @@
     color: #ffffff; 
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
   }
-
-/*Botón del carrito*/
-
   
 /* Estilos de las card de los products */
   .card {
     border: 2px solid #ffd5cd; 
-    box-shadow: 0 0 10px #ffd5cd; 
+    box-shadow: 0 0 10px #ffd5cd;
+    position: relative;
+    height: 32rem;  
   }
   
   .card-footer {
     background-color: transparent;
     border-top-color: #ffd5cd;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 
 
