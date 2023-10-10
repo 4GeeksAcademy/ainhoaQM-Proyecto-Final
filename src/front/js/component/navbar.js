@@ -65,9 +65,7 @@ export const Navbar = () => {
           ) : (
             <>
               <li>
-                <Link to="/login" className="dropdown-item">
-                  Inicia Sesión
-                </Link>
+                <Link to="/login" className="dropdown-item"> Inicia Sesión </Link>
               </li>
               <li>
                 <Link to="/registro" className="dropdown-item"> Regístrate </Link>

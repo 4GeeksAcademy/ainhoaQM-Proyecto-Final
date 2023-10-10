@@ -5,7 +5,7 @@ import "../../styles/index.css";
 //icons
 import { PiWarningCircleDuotone } from "react-icons/pi";
 
-export const Drinks = () => {
+export const Dishes = () => {
     const { store, actions } = useContext(Context);
     const [products, setProducts] = useState([]);
     const [quantity, setQuantity] = useState(1);
@@ -38,7 +38,7 @@ export const Drinks = () => {
     }
 
     useEffect(() => {
-        fetch(process.env.BACKEND_URL + '/api/category-3/products')
+        fetch(process.env.BACKEND_URL + '/api/category-2/products')
             .then(response => response.json())
             .then(data => {
                 const sortedProducts = data.products.sort((a, b) => a.id - b.id);
@@ -73,15 +73,15 @@ export const Drinks = () => {
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item"><a href="/">Inicio</a></li>
                     <li className="breadcrumb-item"><a href="/shop">Tienda</a></li>
-                    <li className="breadcrumb-item active" aria-current="page">Bebidas</li>
+                    <li className="breadcrumb-item active" aria-current="page">Platos</li>
                 </ol>
             </nav>
             <div className="jumbotron-category p-2 mb-4 rounded-3">
                 <div className="container-fluid py-5">
-                    <h1 className="h1 display-1 text-center">Bebidas</h1>
+                    <h1 className="h1 display-1 text-center">Platos</h1>
                 </div>
             </div>
-            <h2 className="subtitle display-6"> Refrescos 500 ml </h2>
+            <h2 className="subtitle display-6"> Arroces </h2>
             <hr className="my-1" />
             <div className="row p-3">
                 {products.map(product => (

@@ -5,7 +5,7 @@ import "../../styles/index.css";
 //icons
 import { PiWarningCircleDuotone } from "react-icons/pi";
 
-export const Desserts = () => {
+export const Starters = () => {
   const { store, actions } = useContext(Context);
   const [products, setProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
@@ -38,7 +38,7 @@ export const Desserts = () => {
   };
 
   useEffect(() => {
-    fetch(process.env.BACKEND_URL + "/api/category-4/products")
+    fetch(process.env.BACKEND_URL + "/api/category-1/products")
       .then((response) => response.json())
       .then((data) => {
         const sortedProducts = data.products.sort((a, b) => a.id - b.id);
@@ -71,20 +71,20 @@ export const Desserts = () => {
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item"><a href="/">Inicio</a></li>
                     <li className="breadcrumb-item"><a href="/shop">Tienda</a></li>
-                    <li className="breadcrumb-item active" aria-current="page">Postres</li>
+                    <li className="breadcrumb-item active" aria-current="page">Entrantes</li>
                 </ol>
             </nav>
             <div className="jumbotron-category p-2 mb-4 rounded-3">
                 <div className="container-fluid py-5">
-                    <h1 className="h1 display-3 text-center">Postres</h1>
+                    <h1 className="h1 display-3 text-center">Entrantes</h1>
                 </div>
             </div>
-            <h2 className="subtitle display-6"> Postres Caseros </h2>
+            <h2 className="subtitle display-6"> Ensaladas </h2>
             <hr className="my-1" />
             <div className="row p-3">
-                {products.slice(0, 6).map((product) => (
+                {products.slice(0, 5).map((product) => (
                     <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
-                        <div className="card">
+                        <div className="card" style={{ width:'18', height: '30em' }}>
                             <img src={product.image_url} className="card-img-top" alt={product.name}/>
                             <div className="card-body">
                                 <h3 className="card-title text-center">{product.name}</h3>
@@ -105,7 +105,7 @@ export const Desserts = () => {
             <div className="row p-3">
                 {products.slice(6).map((product) => (
                     <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
-                        <div className="card">
+                        <div className="card" style={{ width:'18rem', height: '30rem' }}>
                             <img src={product.image_url} className="card-img-top" alt={product.name}/>
                             <div className="card-body">
                                 <h3 className="card-title text-center">{product.name}</h3>

@@ -2,12 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
-//icons
-import { PiWarningCircleDuotone } from "react-icons/pi";
 
-export const Drinks = () => {
+export const FirstDishes = () => {
     const { store, actions } = useContext(Context);
-    const [products, setProducts] = useState([]);
+    const [firstProductsDesserts, setFirstProductsDesserts] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [showLoginMessage, setShowLoginMessage] = useState(false);
 
@@ -17,12 +15,6 @@ export const Drinks = () => {
             setQuantity(1);
             console.log(`Se agregó ${quantity} ${product.name} al carrito.`);
         } else {
-            setShowLoginMessage(true);
-        }
-    }
-
-    const handleCartButtonClick = () => {
-        if (!store.isAuthenticated) {
             setShowLoginMessage(true);
         }
     }
@@ -38,53 +30,25 @@ export const Drinks = () => {
     }
 
     useEffect(() => {
-        fetch(process.env.BACKEND_URL + '/api/category-3/products')
+        fetch(process.env.BACKEND_URL + '/api/category-2/products')
             .then(response => response.json())
             .then(data => {
                 const sortedProducts = data.products.sort((a, b) => a.id - b.id);
-                setProducts(sortedProducts);
+                setFirstProductsDesserts(sortedProducts);
                 console.log(sortedProducts);
             })
-            .catch(error => console.error('Error:', error));
+            .catch((error) => console.error("Error:", error));
     }, []);
 
-    useEffect(() => {
-        if (showLoginMessage) {
-            window.scrollTo(0, 0);
-        }
-    }, [showLoginMessage]);
-
     return (
-        <>
-        <div className="container body">
+        <div className="container">
             {showLoginMessage && (
-                <div className="alert alert-warning d-flex align-items-center" role="alert">
-                    <div className="icon-warning"> 
-                        <PiWarningCircleDuotone />
-                    </div>
-                    <div>
-
-                            Por favor, <a href="/login">inicia sesión</a> o <a href="/signup">regístrate</a>  para poder añadir cosas al carrito.
-
-                    </div>
+                <div className="alert alert-warning" role="alert">
+                    Por favor, <a href="/login">inicia sesión</a> o <a href="/signup">regístrate</a>  para poder añadir cosas al carrito.
                 </div>
             )}
-            <nav aria-label="breadcrumb">
-                <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="/">Inicio</a></li>
-                    <li className="breadcrumb-item"><a href="/shop">Tienda</a></li>
-                    <li className="breadcrumb-item active" aria-current="page">Bebidas</li>
-                </ol>
-            </nav>
-            <div className="jumbotron-category p-2 mb-4 rounded-3">
-                <div className="container-fluid py-5">
-                    <h1 className="h1 display-1 text-center">Bebidas</h1>
-                </div>
-            </div>
-            <h2 className="subtitle display-6"> Refrescos 500 ml </h2>
-            <hr className="my-1" />
-            <div className="row p-3">
-                {products.map(product => (
+            <div className="row">
+                {firstProductsDesserts.slice(0, 6).map(product => (
                     <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
                         <div className="card">
                             <img src={product.image_url} className="card-img-top" alt={product.name} />
@@ -103,6 +67,5 @@ export const Drinks = () => {
                 ))}
             </div>
         </div>
-        </>
     );
 };

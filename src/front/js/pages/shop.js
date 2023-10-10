@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import "../../styles/index.css";
 
 //components
+import { FirstStarters } from "../component/firstStarters";
+import { FirstDishes } from "../component/firstDishes";
 import { FirstDrinks } from "../component/firstDrinks";
 import { FirstDesserts } from "../component/firstDesserts";
 
@@ -29,6 +31,7 @@ export const Shop = () => {
                   <Link to="/starters">Ver más</Link>
               </div>
               <hr className="my-1" />
+              <FirstStarters/>
           </div>
           <div className="dishes mt-4">
               <div className="d-flex justify-content-between align-items-center">
@@ -36,6 +39,7 @@ export const Shop = () => {
                   <Link to="/dishes">Ver más</Link>
               </div>
               <hr className="my-1" />
+              <FirstDishes/>
           </div>
           <div className="drinks mt-4">
               <div className="d-flex justify-content-between align-items-center">
