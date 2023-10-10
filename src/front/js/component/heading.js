@@ -13,21 +13,17 @@ export const Heading = () => {
     }
 
     return (
-            <div className="heading" onClick={redirectToHome}>
-                <div className="container-fluid p-2">
-                    <div className="d-flex justify-content-center align-items-center text-decoration-none mx-auto">
-                        <span className="heading-title">Comer</span>
-                        <img
-                            src={icoPlatos}
-                            alt="Logo"
-                            width="100"
-                            height="80"
-                            className="d-inline-block p-2"
-                        />
-                        <span className="heading-title">Comida</span>
-                    </div>
+        <div className="heading" onClick={redirectToHome}>
+            <div className="container-fluid p-2">
+                <div className="d-flex justify-content-center align-items-center mx-auto">
+                    <span className="heading-title">Comer</span>
+                    <img
+                        src={icoPlatos}alt="Logo"width="100"height="80"className="d-inline-block p-2"
+                    />
+                    <span className="heading-title">Comida</span>
                 </div>
             </div>
+        </div>
 
     );
 };

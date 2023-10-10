@@ -90,7 +90,7 @@ export const Login = () => {
                         localStorage.setItem('userName', user_name);
                     }
 
-                    navigate('/shop'); 
+                    navigate('/'); 
                 } else {
                     const responseData = await response.json();
                     console.error('Error de respuesta:', responseData);

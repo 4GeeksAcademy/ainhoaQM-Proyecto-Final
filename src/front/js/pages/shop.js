@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import "../../styles/index.css";
 
 //components
-import { WelcomeMessage } from "../component/welcomeMessage";
 import { FirstDrinks } from "../component/firstDrinks";
 import { FirstDesserts } from "../component/firstDesserts";
 
@@ -17,11 +16,6 @@ export const Shop = () => {
   return (
     <>
     <div className="container body">
-      {store.isAuthenticated && (
-        <>
-          <WelcomeMessage userName={store.userName} />
-        </>
-      )}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item"><a href="/">Inicio</a></li>

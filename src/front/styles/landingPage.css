@@ -1,9 +1,36 @@
-/* Estilos del Navbar */
-.navbar {
-    background-color: #ff7e67;
+/* Estilos Landing Page */
+  .landing-container {
+    justify-content: center;
+    align-items: center;
+    font-family: 'Oxygen', sans-serif;
+    background-color: #ffd5cd;
+
   }
 
-  .nav-title {
-    font-size: 35px;
-    font-family: 'Bricolage Grotesque', sans-serif;
+  .landing-header-image {
+    max-width: 80%;
+    max-height: 80%;
+  }
+
+
+
+/* Estilos Navbar Landing Page */
+  .bg-pink {
+    background-color: #ff7e67;
+    padding: 10px 20px;
+  }
+
+.landing-navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #ffffff;
+  }
+
+  .landing-navbar-message {
+    font-size: 1rem;
+  }
+
+  .btn {
+    margin-left: 10px;
   }
