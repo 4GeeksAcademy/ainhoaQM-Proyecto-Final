@@ -49,7 +49,12 @@ export const Navbar = () => {
           {store.isAuthenticated ? (
             <>
               <li>
-                <Link to="/historial" className="dropdown-item">
+                <Link to="/cart" className="dropdown-item">
+                  Mi Cesta
+                </Link>
+              </li>
+              <li>
+                <Link to="/wip" className="dropdown-item">
                   Mis Pedidos
                 </Link>
               </li>

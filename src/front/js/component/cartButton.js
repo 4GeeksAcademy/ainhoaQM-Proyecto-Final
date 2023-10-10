@@ -70,14 +70,14 @@ export const CartButton = () => {
                         <h4>Total: {store.cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)} €</h4>
                     </div>
                     <div className="mt-3 d-flex justify-content-center"> 
-                        <button className="btn btn-success mb-2 mb-md-0 col-12 col-md-8"> 
-                            <Link to="/ticket" style={{ color: "white", textDecoration: "none" }}>Confirmar Pedido</Link>
-                        </button>
-                    </div>
-                    <div className="mt-3 d-flex justify-content-center"> 
                         <Link to="/cart" className="btn btn-warning col-12 col-md-8"> 
                             Ver artículos en tu cesta
                         </Link>
+                    </div>
+                    <div className="mt-3 d-flex justify-content-center"> 
+                        <button className="btn btn-success mb-2 mb-md-0 col-12 col-md-8"> 
+                            <Link to="/ticket" style={{ color: "white", textDecoration: "none" }}>Confirmar Pedido</Link>
+                        </button>
                     </div>
                 </div>
             </div>
