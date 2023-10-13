@@ -32,7 +32,7 @@ export const Cart = () => {
             <Link to="/">Inicio</Link>
           </li>
           <li className="breadcrumb-item">
-            <Link to="/shop">Tienda</Link>
+            <Link to="/menu">Carta</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             Cesta

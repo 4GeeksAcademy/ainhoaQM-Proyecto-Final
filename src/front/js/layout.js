@@ -9,7 +9,7 @@ import injectContext from "./store/appContext";
 import { LandingPage } from "./pages/landingPage";
 import { Signup } from "./pages/signup";
 import { Login } from "./pages/login";
-import { Shop } from "./pages/shop";
+import { Menu } from "./pages/menu";
 import { Starters } from "./pages/starters";
 import { Dishes } from "./pages/dishes";
 import { Drinks } from "./pages/drinks";
@@ -42,7 +42,7 @@ const Layout = () => {
                             <Routes>
                                 <Route element={<Signup />} path="/signup" />
                                 <Route element={<Login />} path="/login" />
-                                <Route element={<Shop />} path="/shop" />
+                                <Route element={<Menu />} path="/menu" />
                                 <Route element={<Starters />} path="/starters" />
                                 <Route element={<Dishes />} path="/dishes" />
                                 <Route element={<Drinks />} path="/drinks" />

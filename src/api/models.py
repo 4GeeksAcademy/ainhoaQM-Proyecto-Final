@@ -12,8 +12,6 @@ class User(db.Model):
     user_name = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(30), nullable=False)
     orders = db.relationship('Order', backref='user', lazy=True)
-    address = db.Column(db.String(255), nullable=True)
-    phone_number = db.Column(db.String(15), nullable=True)
 
     
 

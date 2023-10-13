@@ -355,17 +355,13 @@ def create_discount():
 @api.route('/validate-discount', methods=['POST'])
 def validate_discount():
     code = request.json.get('code') 
+    print(f'Código de descuento recibido: {code}')
     discount = DiscountCode.query.filter_by(code=code).first()
     
     if discount:
         return jsonify({'The discount is': True, 'percentage_discount': discount.percentage})
     else:
         return jsonify({'The discount is': False, 'percentage_discount': 0})
-
-
-
-
-
 
 # Ruta para que el cliente pueda cancelar el pedido y vaciar el carrito de la compra
 @api.route('/cart/cancel-order/', methods=['POST'])

@@ -33,7 +33,7 @@ export const LandingPage = () => {
               Cada plato que servimos es una expresión de nuestro amor por la gastronomía y un tributo a las tradiciones que nos han moldeado.</p>
           </div>
           <div className="col-sm-12 col-md-6 shop p-5">
-            <h1 className="title-section display-4">Descubre Nuestra Tienda</h1>
+            <h1 className="title-section display-4">Descubre Nuestra Carta</h1>
             <p className="pb-3">
               Explora nuestro menú y deleita tu paladar con una selección
               exquisita de platos preparados con ingredientes frescos y de la

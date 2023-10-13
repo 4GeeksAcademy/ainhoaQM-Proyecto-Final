@@ -11,6 +11,7 @@ const getState = ({ getStore, setStore }) => {
                     quantity: 1
                 }
             ],
+            discountPercentage: 0,
         },
         actions: {
 			getMessage: async () => {
@@ -60,6 +61,27 @@ const getState = ({ getStore, setStore }) => {
                     item.id === productId ? { ...item, quantity: Math.max(item.quantity - 1, 0) } : item
                 );
                 setStore({ cart: updatedCart });
+            },
+            
+            setDiscountPercentage: percentage => {
+                setStore({ discountPercentage: percentage });
+            },  
+            
+            validateDiscount: async (discountCode) => {
+                try { 
+                    const response = await fetch(process.env.BACKEND_URL + "/api/validate-discount", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ code: discountCode })
+                    });
+                    const data = await response.json();
+                    return data.percentage_discount;
+                } catch (error) {
+                    console.error('Error al validar el código de descuento:', error);
+                    return 0;
+                }
             },
 
             removeFromCart: (productId) => {

@@ -78,7 +78,7 @@ export const Starters = () => {
               <a href="/">Inicio</a>
             </li>
             <li className="breadcrumb-item">
-              <a href="/shop">Tienda</a>
+              <a href="/menu">Carta</a>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               Entrantes
