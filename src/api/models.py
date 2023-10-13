@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Numeric
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -11,6 +12,10 @@ class User(db.Model):
     user_name = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(30), nullable=False)
     orders = db.relationship('Order', backref='user', lazy=True)
+    address = db.Column(db.String(255), nullable=True)
+    phone_number = db.Column(db.String(15), nullable=True)
+
+    
 
     def set_password(self, password):
         if len(password) < 8:
@@ -71,15 +76,33 @@ class Order(db.Model):
     products = db.relationship('OrderDetail', backref='order', lazy=True)
     total_price = db.Column(db.Float, nullable=False, default=0.00)
     order_comments = db.Column(db.String(255),nullable=True)
+    payment_method = db.Column(db.String(50), nullable=False)
+    order_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    discount_code_id = db.Column(db.Integer, db.ForeignKey('discount_code.id'), nullable=True)
+    discount_code = db.relationship('DiscountCode')
+
 
     def __init__(self, user_id,order_comments=None):
         self.user_id = user_id
         self.products = []
         self.calculate_total_price()
         self.order_comments = order_comments
+        self.order_date = datetime.now()
+
+    def apply_discount(self, discount_code):
+        if discount_code:
+            used_code = UsedDiscountCode.query.filter_by(user_id=self.user_id, discount_code_id=discount_code.id).first()
+            if not used_code:
+                self.discount_code = discount_code
+                self.total_price *= (1 - discount_code.percentage / 100)
+                used_discount = UsedDiscountCode(user_id=self.user_id, discount_code_id=discount_code.id)
+                db.session.add(used_discount)
+                db.session.commit()
 
     def calculate_total_price(self):
         self.total_price = sum(detail.price for detail in self.products)
+        if self.discount_code:
+            self.total_price *= (1 - self.discount_code.percentage / 100)
 
 class OrderDetail(db.Model):
     __tablename__  = 'order_detail'
@@ -89,3 +112,37 @@ class OrderDetail(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float,nullable=False)
 
+class DiscountCode(db.Model):
+    __tablename__ = 'discount_code'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(20), unique=True, nullable=False)
+    percentage = db.Column(db.Float, nullable=False)
+    
+class UsedDiscountCode(db.Model):
+    __tablename__ = 'used_discount_code'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    discount_code_id = db.Column(db.Integer, db.ForeignKey('discount_code.id'), nullable=False)
+
+
+
+"""  Mostrar la Fecha y Hora de una Orden
+
+from datetime import datetime
+
+# Supongamos que order es una instancia de la clase Order
+order_date = order.order_date
+
+# Obtener el año, mes y día
+year = order_date.year
+month = order_date.month
+day = order_date.day
+
+# Obtener la hora, minutos y segundos
+hour = order_date.hour
+minute = order_date.minute
+second = order_date.second
+
+# Formatear la fecha y hora en una cadena específica
+formatted_date = order_date.strftime("%Y-%m-%d %H:%M:%S")
+ """

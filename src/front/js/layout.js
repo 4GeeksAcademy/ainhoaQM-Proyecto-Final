@@ -35,38 +35,26 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Routes>
-                        <Route
-                            path="/"
-                            element={
-                                <>
-                                    <LandingPage />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="/*"
-                            element={
-                                <>
-                                    <Heading />
-                                    <Navbar />
-                                    <Routes>
-                                        <Route element={<Signup />} path="/signup" />
-                                        <Route element={<Login />} path="/login" />
-                                        <Route element={<Shop />} path="/shop" />
-                                        <Route element={<Starters />} path="/starters" />
-                                        <Route element={<Dishes />} path="/dishes" />
-                                        <Route element={<Drinks />} path="/drinks" />
-                                        <Route element={<Desserts />} path="/desserts" />
-                                        <Route element={<Cart />} path="/cart" />
-                                        <Route element={<Ticket />} path="/ticket" />
-                                        <Route element={<Single />} path="/single/:theid" />
-                                        <Route element={<WIP />} path="/wip" />
-                                        <Route element={<h1>Not found!</h1>} />
-                                    </Routes>
-                                    <Footer />
-                                </>
-                            }
-                        />
+                        <Route path="/" element={<> <LandingPage /> </>}/>
+                        <Route path="/*" element={ <>
+                            <Heading />
+                            <Navbar />
+                            <Routes>
+                                <Route element={<Signup />} path="/signup" />
+                                <Route element={<Login />} path="/login" />
+                                <Route element={<Shop />} path="/shop" />
+                                <Route element={<Starters />} path="/starters" />
+                                <Route element={<Dishes />} path="/dishes" />
+                                <Route element={<Drinks />} path="/drinks" />
+                                <Route element={<Desserts />} path="/desserts" />
+                                <Route element={<Cart />} path="/cart" />
+                                <Route element={<Ticket />} path="/ticket" />
+                                <Route element={<Single />} path="/single/:theid" />
+                                <Route element={<WIP />} path="/wip" />
+                                <Route element={<h1>Not found!</h1>} />
+                            </Routes>
+                            <Footer />
+                        </>}/>
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

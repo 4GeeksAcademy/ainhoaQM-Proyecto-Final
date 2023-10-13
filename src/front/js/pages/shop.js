@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
+
 import { Link } from "react-router-dom";
 import "../../styles/index.css";
 
@@ -11,10 +11,6 @@ import { FirstDrinks } from "../component/firstDrinks";
 import { FirstDesserts } from "../component/firstDesserts";
 
 export const Shop = () => {
-  const navigate = useNavigate();
-  const { store, actions } = useContext(Context);
-
-  console.log("Rendering Shop. isAuthenticated:", store.isAuthenticated);
   return (
     <>
     <div className="container body">

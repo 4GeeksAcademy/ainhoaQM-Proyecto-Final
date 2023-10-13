@@ -153,7 +153,7 @@ export const Login = () => {
                             </div>
                             {formErrors.password && <div className="error-message">{formErrors.password}</div>}
                         </div>
-                        <button type="submit" className="btn btn-primary float-end">
+                        <button type="submit" className="btn btn-secondary float-end">
                             Iniciar Sesión
                         </button>
                     </form>

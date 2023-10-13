@@ -1,18 +1,86 @@
-/* Estilos Landing Page */
+/* Estilos Landing Page Generales*/
   .landing-container {
-    justify-content: center;
-    align-items: center;
     font-family: 'Oxygen', sans-serif;
-    background-color: #ffd5cd;
-
+  }
+  .title-header {
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }
+  .title-section {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    color:#ff5334;
   }
 
-  .landing-header-image {
-    max-width: 80%;
-    max-height: 80%;
+  .subtitle {
+    color:#ff7e67;
   }
 
+  p {
+    margin: 0;
+  }
+  
 
+  /*Estilos Parallax*/
+  .parallax-bg {
+    background-image: url('https://images.unsplash.com/photo-1587899897387-091ebd01a6b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWVzYSUyMGRlJTIwcmVzdGF1cmFudGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+  }
+  
+  .parallax-content {
+    height: 500px; 
+  }
+
+  .parallax-footer {
+    height: 150px; 
+  }
+
+  .custom-input {
+    display: block;
+    width: auto;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  }
+  
+/*Estilo del input*/
+  .custom-input::-ms-expand {
+    background-color: transparent;
+    border: 0;
+  }
+  
+  .custom-input:focus {
+    color: #212529;
+    background-color: #ffffff;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+  }
+
+  /*Estilos de todos los botones*/
+  .btn {
+    background-color: #ff7e67; 
+    color: #ffffff; 
+    border: none; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+  .btn:disabled {
+    background-color: #ff7e67;
+  }
+
+  .btn:hover {
+    background-color: #ff5334; 
+    color: #ffffff; 
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+  
 
 /* Estilos Navbar Landing Page */
   .bg-pink {

@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, redirect, url_for, Blueprint
-from api.models import db, User, Product, Category, Order, OrderDetail
+from api.models import db, User, Product, Category, Order, OrderDetail, DiscountCode
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import unset_jwt_cookies
@@ -130,7 +130,7 @@ def login_with_google():
     # Send user back to homepage
     return redirect(url_for("index"))
 
-@api.route('login/callback')
+@api.route('login/callback', methods=['GET'])
 def callback():
     code = request.args.get("code")
     if not code:
@@ -335,27 +335,37 @@ def nav_cart():
     }
     return jsonify(response_body), 200
 
-# Ruta para que el cliente pueda eliminar un producto del carrito
-@api.route('/cart/delete-product-<int:product_id>', methods=['DELETE'])
-@jwt_required()  
-def remove_product_from_cart(product_id):
-    # Accede a la identidad del usuario actual con get_jwt_identity.
-    current_user = get_jwt_identity()
+# Ruta para crear un nuevo código de descuento
+@api.route('/create-discount', methods=['POST'])
+def create_discount():
+    data = request.get_json()  
+    
+    code = data.get('code')
+    percentage = data.get('percentage')
+    try:
+        new_discount = DiscountCode(code=code, percentage=percentage)
+        db.session.add(new_discount)
+        db.session.commit()
+        return jsonify({'message': 'Código de descuento creado con éxito.'})
+    except IntegrityError as e:
+        db.session.rollback()
+        return jsonify({'error': 'El código de descuento ya existe.'}), 400
 
-    # Busca el carrito de compra del usuario
-    cart = Order.query.filter_by(user_id=current_user['id']).first()
-    if not cart:
-        return jsonify({"msg": "No se encontró un carrito de compra para este usuario"}), 404
+# Ruta para validar el código de descuento
+@api.route('/validate-discount', methods=['POST'])
+def validate_discount():
+    code = request.json.get('code') 
+    discount = DiscountCode.query.filter_by(code=code).first()
     
-    # Busca el producto a eliminar en el carrito
-    product_detail = OrderDetail.query.filter_by(order_id=cart.id, product_id=product_id).first()
-    if not product_detail:
-        return jsonify({"msg": "El producto no está en el carrito de compra"}), 404
-    
-    # Eliminar el producto del carrito
-    db.session.delete(product_detail)
-    db.session.commit()
-    return jsonify({"msg": "El producto ha sido eliminado del carrito de compra"}), 200
+    if discount:
+        return jsonify({'The discount is': True, 'percentage_discount': discount.percentage})
+    else:
+        return jsonify({'The discount is': False, 'percentage_discount': 0})
+
+
+
+
+
 
 # Ruta para que el cliente pueda cancelar el pedido y vaciar el carrito de la compra
 @api.route('/cart/cancel-order/', methods=['POST'])
