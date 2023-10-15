@@ -35,6 +35,8 @@ const getState = ({ getStore, setStore }) => {
             logout: () => {
                 const store = getStore();
                 localStorage.removeItem('token');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
                 setStore({
                     isAuthenticated: false,
                     userName: '',

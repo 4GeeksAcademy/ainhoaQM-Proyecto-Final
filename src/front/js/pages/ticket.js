@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 import "../../styles/index.css";
@@ -6,6 +7,7 @@ import "../../styles/index.css";
 export const Ticket = () => {
   const { store, actions } = useContext(Context);
   const cart = store.cart;
+  const navigate = useNavigate();
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
 
@@ -57,8 +59,10 @@ export const Ticket = () => {
   };
 
   const handleCancelOrder = () => {
-    alert("Pedido cancelado exitosamente.");
+    actions.clearCart();
+    navigate('/menu');
   };
+  
 
   const handleAcceptTerms = () => {
     setAcceptTerms(!acceptTerms);
@@ -83,7 +87,7 @@ export const Ticket = () => {
         </ol>
       </nav>
       <div className="purchase-overview">
-        <h1 className="h1">Resumen de la Compra</h1>
+        <h1>Resumen de la Compra</h1>
         <ul>
           {cart.map((item) => (
             <li key={item.id}>
@@ -93,7 +97,7 @@ export const Ticket = () => {
           ))}
         </ul>
         <div>
-          <h1 className="h1">Total a Pagar:</h1>
+          <h1>Total a Pagar:</h1>
           <p>{calculateTotalPrice().totalPrice} €</p>
           {calculateTotalPrice().discountInfo && (
             <div>
@@ -105,7 +109,7 @@ export const Ticket = () => {
       </div>
       <form onSubmit={handlePayment}>
         <div>
-          <h1 className="h1">¿Dónde quieres disfrutar de tu comida?</h1>
+          <h1>¿Dónde quieres disfrutar de tu comida?</h1>
           <div className="form-check">
             <input
               type="radio"
@@ -133,7 +137,7 @@ export const Ticket = () => {
         </div>
         <div>
           <label htmlFor="inputDiscountCode" className="form-label">
-            <h1 className="h1">¿Tienes un cupón de descuento?</h1>
+            <h1>¿Tienes un cupón de descuento?</h1>
           </label>
           <p>Si tienes un cupón de descuento, ingrésalo a continuación:</p>
           <div className="col-4">
@@ -159,7 +163,7 @@ export const Ticket = () => {
           </div>
         </div>
         <div>
-          <h1 className="h1">¿Cómo quieres pagar?</h1>
+          <h1>¿Cómo quieres pagar?</h1>
           <div className="form-check">
             <input
               type="radio"
@@ -198,7 +202,7 @@ export const Ticket = () => {
           </div>
         </div>
         <div>
-          <h1 className="h1">Comentarios del Pedido</h1>
+          <h1>Comentarios del Pedido</h1>
           <p>Observaciones:</p>
           <textarea
             className="form-control"
@@ -210,7 +214,7 @@ export const Ticket = () => {
           />
         </div>
         <div>
-          <h1 className="h1">Política de privacidad</h1>
+          <h1>Política de privacidad</h1>
           <p>
             Debes aceptar el aviso legal y las condiciones de uso antes de
             continuar

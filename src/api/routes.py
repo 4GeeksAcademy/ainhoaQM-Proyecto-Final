@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, redirect, url_for, Blueprint
-from api.models import db, User, Product, Category, Order, OrderDetail, DiscountCode
+from api.models import db, User, Product, Category, Order, OrderDetail, DiscountCode, ContactMessage, Reservation
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import unset_jwt_cookies
@@ -54,14 +54,13 @@ def login():
         return jsonify({"msg": "El usario y/o la contraseña no son correctos"}), 401
 
     access_token = create_access_token(identity=user.serialize(), additional_claims={"user_name": user.user_name})
-
     response_body = {
         "msg": "Token creada correctamente",
         "token": access_token,
         "email": email,
         "user_name": user.user_name, 
     }
-
+    
     return jsonify(response_body), 200
 
 # Rutas para la autenticación con Google
@@ -363,20 +362,90 @@ def validate_discount():
     else:
         return jsonify({'The discount is': False, 'percentage_discount': 0})
 
-# Ruta para que el cliente pueda cancelar el pedido y vaciar el carrito de la compra
-@api.route('/cart/cancel-order/', methods=['POST'])
-@jwt_required()  
-def cancel_order():
-    # Accede a la identidad del usuario actual con get_jwt_identity.
-    current_user = get_jwt_identity()
+# Ruta para guardar "Contacta con Nosotros"
+@api.route('/contact', methods=['POST'])
+def contact():
+    data = request.get_json()
 
-    # Busca el carrito de compra del usuario
-    cart = Order.query.filter_by(user_id=current_user['id']).first()
-    if not cart:
-        return jsonify({"msg": "No se encontró un carrito de compra para este usuario"}), 404
-    
-    # Vacia el carrito de compra
-    cart.products = []
+    name = data.get('name')
+    email = data.get('email')
+    message = data.get('message')
+
+    new_message = ContactMessage(name=name, email=email, message=message)
+    db.session.add(new_message)
     db.session.commit()
+
+    return jsonify({'message': 'Mensaje recibido correctamente'})
+
+# Ruta para ver los mensajes de "Contacta con nosotros"
+@api.route('/messages', methods=['GET'])
+def get_messages():
+    messages = ContactMessage.query.all()
+    message_list = []
+
+    for message in messages:
+        message_data = {
+            'id': message.id,
+            'name': message.name,
+            'email': message.email,
+            'message': message.message
+        }
+        message_list.append(message_data)
+
+    return jsonify({'messages': message_list})
+
+# Ruta para eliminar un mensaje por su ID
+@api.route('/messages/<int:message_id>', methods=['DELETE'])
+def delete_message(message_id):
+    message = ContactMessage.query.get(message_id)
+    if message:
+        db.session.delete(message)
+        db.session.commit()
+        return jsonify({'message': 'Mensaje eliminado correctamente'})
+    else:
+        return jsonify({'message': 'Mensaje no encontrado'}), 404
+
+# Ruta para crear una nueva reserva
+@api.route('/create-reservation', methods=['POST'])
+def create_reservation():
+    data = request.get_json()
+
+    name = data.get('name')
+    email = data.get('email')
+    location = data.get('location')
+    date = data.get('date')
+    time = data.get('time')
+    number_of_people = data.get('numberOfPeople')
+
+    new_reservation = Reservation(name=name, email=email, location=location, date=date, time=time, number_of_people=number_of_people)
+    db.session.add(new_reservation)
+    db.session.commit()
+
+    return jsonify({'message': 'Solicitud de reserva creada correctamente'})
+
+# Ruta para ver todas las reservas enviadas
+@api.route('/view-reservations', methods=['GET'])
+def view_reservations():
+    reservations = Reservation.query.all()
     
-    return jsonify({"msg": "El pedido ha sido cancelado correctamente"}), 200
+    serialized_reservations = [reservation.serialize() for reservation in reservations]
+    
+    response_body = {
+        "msg": "Lista de reservas enviadas",
+        "reservations": serialized_reservations
+    }
+    
+    return jsonify(response_body), 200
+
+# Ruta para eliminar una reserva por su ID
+@api.route('/delete-reservation/<int:reservation_id>', methods=['DELETE'])
+def delete_reservation(reservation_id):
+    reservation = Reservation.query.get(reservation_id)
+    if reservation:
+        db.session.delete(reservation)
+        db.session.commit()
+        return jsonify({'message': 'Reserva eliminada correctamente'}), 200
+    else:
+        return jsonify({'message': 'Reserva no encontrada'}), 404
+
+

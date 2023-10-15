@@ -48,6 +48,27 @@ export const LandingNavbar = () => {
                     </Link>
                   </li>
                   <li className="dropdown-divider"></li>
+                  <li className="nav-item pe-3">
+                    <Link to="/" className="dropdown-item">
+                      Inicio
+                    </Link>
+                  </li>
+                  <li className="nav-item pe-3">
+                    <Link to="/contact" className="dropdown-item">
+                      Contacto
+                    </Link>
+                  </li>
+                  <li className="nav-item pe-3">
+                    <Link to="/schedule" className="dropdown-item">
+                      Horario
+                    </Link>
+                  </li>
+                  <li className="nav-item pe-3">
+                    <Link to="/reserve" className="dropdown-item">
+                      Reservar
+                    </Link>
+                  </li>
+                  <li className="dropdown-divider"></li>
                   <li>
                     <button className="dropdown-item" onClick={handleLogout}>
                       Cerrar Sesión

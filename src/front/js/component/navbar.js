@@ -6,6 +6,7 @@ import "../../styles/index.css";
 //components
 import { CartButton } from "./cartButton";
 
+
 export const Navbar = () => {
   const { store, actions } = useContext(Context);
   const userName = localStorage.getItem("userName");
@@ -60,7 +61,7 @@ export const Navbar = () => {
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {store.isAuthenticated ? (
             <>
-              <li>
+              <li className="nav-item pe-3">
                 <Link to="/menu" className="dropdown-item">
                   Carta
                 </Link>
@@ -74,6 +75,27 @@ export const Navbar = () => {
                 <Link to="/wip" className="dropdown-item">
                   {" "}
                   Mis Pedidos{" "}
+                </Link>
+              </li>
+              <li className="dropdown-divider"></li>
+              <li className="nav-item pe-3">
+                <Link to="/" className="dropdown-item">
+                  Inicio
+                </Link>
+              </li>
+              <li className="nav-item pe-3">
+                <Link to="/contact" className="dropdown-item">
+                  Contacto
+                </Link>
+              </li>
+              <li className="nav-item pe-3">
+                <Link to="/schedule" className="dropdown-item">
+                  Horario
+                </Link>
+              </li>
+              <li className="nav-item pe-3">
+                <Link to="/reserve" className="dropdown-item">
+                  Reservar
                 </Link>
               </li>
               <li className="dropdown-divider"></li>
@@ -92,7 +114,7 @@ export const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/registro" className="dropdown-item">
+                <Link to="/signup" className="dropdown-item">
                   {" "}
                   Regístrate{" "}
                 </Link>

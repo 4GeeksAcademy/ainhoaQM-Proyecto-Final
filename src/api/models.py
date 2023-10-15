@@ -13,8 +13,6 @@ class User(db.Model):
     password = db.Column(db.String(30), nullable=False)
     orders = db.relationship('Order', backref='user', lazy=True)
 
-    
-
     def set_password(self, password):
         if len(password) < 8:
             raise ValueError("La contraseña debe tener al menos 8 caracteres")
@@ -74,6 +72,7 @@ class Order(db.Model):
     products = db.relationship('OrderDetail', backref='order', lazy=True)
     total_price = db.Column(db.Float, nullable=False, default=0.00)
     order_comments = db.Column(db.String(255),nullable=True)
+    takeaway = db.Column(db.Boolean, nullable=False, default=False) 
     payment_method = db.Column(db.String(50), nullable=False)
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     discount_code_id = db.Column(db.Integer, db.ForeignKey('discount_code.id'), nullable=True)
@@ -109,6 +108,7 @@ class OrderDetail(db.Model):
     product = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float,nullable=False)
+    order_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
 class DiscountCode(db.Model):
     __tablename__ = 'discount_code'
@@ -122,6 +122,36 @@ class UsedDiscountCode(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     discount_code_id = db.Column(db.Integer, db.ForeignKey('discount_code.id'), nullable=False)
 
+class ContactMessage(db.Model):
+    __tablename__ = 'contact_messages'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    message = db.Column(db.String(1000), nullable=False)
+
+class Reservation(db.Model):
+    __tablename__ = 'reservation'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    time = db.Column(db.Time, nullable=False)
+    number_of_people = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f'<Reservation {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "location": self.location,
+            "date": self.date.isoformat(),
+            "time": self.time.isoformat(),
+            "number_of_people": self.number_of_people
+        }
 
 
 """  Mostrar la Fecha y Hora de una Orden

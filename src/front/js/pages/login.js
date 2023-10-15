@@ -77,21 +77,20 @@ export const Login = () => {
                     },
                     body: JSON.stringify(formData),
                 });
-
                 if (response.ok) {
                     const responseData = await response.json();
                     const userToken = responseData.token;
+                    const userEmail = responseData.email;
 
                     if (userToken) {
                         const decodedToken = JSON.parse(atob(userToken.split('.')[1]));
                         const user_name = decodedToken.user_name;
 
-                        console.log('Token:', userToken);
-                        console.log('User Name:', user_name);
-
                         actions.setIsAuthenticated(true);
                         console.log('Autenticado:', store.isAuthenticated);
-
+                        
+                        localStorage.setItem('token', userToken);
+                        localStorage.setItem('userEmail', userEmail);
                         localStorage.setItem('userName', user_name);
                     }
 
