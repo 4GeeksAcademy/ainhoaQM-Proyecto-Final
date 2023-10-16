@@ -51,8 +51,8 @@ export const FormReservation = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const dataToSend = {
-      name: formData.name === '' ? null : formData.name,
-      email: formData.email === '' ? null : formData.email,
+      name: formData.name === '' ?  '' : formData.name,
+      email: formData.email === '' ? '' : formData.email,
       location: formData.location,
       date: formData.date,
       time: formData.time,

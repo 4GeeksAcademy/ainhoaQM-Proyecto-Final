@@ -80,7 +80,7 @@ export const FormContact = () => {
       </p>
       <p>
         <strong>Teléfono:</strong>{" "}
-        93 123 123 <br/>
+        933 123 123 <br/>
         <strong>Correo Electrónico:</strong>{" "}
         <a href="mailto:info@tudominio.com">info@comercomida.com</a>
       </p>

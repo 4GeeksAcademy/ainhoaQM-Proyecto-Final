@@ -94,7 +94,7 @@ export const Login = () => {
                         localStorage.setItem('userName', user_name);
                     }
 
-                    navigate('/'); 
+                    navigate('/menu'); 
                 } else {
                     const responseData = await response.json();
                     console.error('Error de respuesta:', responseData);
