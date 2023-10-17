@@ -2,6 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+from sqlalchemy.exc import IntegrityError
 from flask import Flask, request, jsonify, redirect, url_for, Blueprint
 from api.models import db, User, Product, Category, Order, OrderDetail, DiscountCode, ContactMessage, Reservation
 from api.utils import generate_sitemap, APIException
@@ -63,95 +64,6 @@ def login():
     
     return jsonify(response_body), 200
 
-# Rutas para la autenticación con Google
-oauth = OAuth()
-google = oauth.register(
-    name='google',
-    client_id=os.getenv('GOOGLE_CLIENT_ID'),
-    client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    authorize_params=None,
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    access_token_params=None,
-    refresh_token_url=None,
-    redirect_url=None,
-    client_kwargs={'scope': 'openid profile email'},
-)
-
-@api.route('/login/google', methods=['POST'])
-def login_with_google():
-    google_provider_cfg = get_google_provider_cfg()
-    token_endpoint = google_provider_cfg["token_endpoint"]
-
-    authorization_endpoint = google_provider_cfg["autorizathion_endpoint"]
-    request_uri = client.prepare_request_uri(
-        authorization_endpoint,
-        redirect_uri=request.base_url + "/login/callback",
-        scope=["openid", "email", "profile"],
-    )
-    token_url, headers, body = client.prepare_token_request(
-    token_endpoint,
-    authorization_response=request.url,
-    redirect_url=request.base_url,
-    code=code
-    )
-    token_response = requests.post(
-        token_url,
-        headers=headers,
-        data=body,
-        auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
-    )
-
-    # Parse the tokens!
-    client.parse_request_body_response(json.dumps(token_response.json()))
-
-    userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
-    uri, headers, body = client.add_token(userinfo_endpoint)
-    userinfo_response = requests.get(uri, headers=headers, data=body)
-
-    if userinfo_response.json().get("email_verified"):
-        unique_id = userinfo_response.json()["sub"]
-        users_email = userinfo_response.json()["email"]
-        users_name = userinfo_response.json()["given_name"]
-    else:
-        return "User email not available or not verified by Google.", 400
-        user = User(
-        id_=unique_id, name=users_name, email=users_email, profile_pic=picture  
-    )
-
-    # Doesn't exist? Add it to the database.
-    if not User.get(unique_id):
-        User.create(unique_id, users_name, users_email, picture)
-
-    # Begin user session by logging the user in
-    login_user(user)
-
-    # Send user back to homepage
-    return redirect(url_for("index"))
-
-@api.route('login/callback', methods=['GET'])
-def callback():
-    code = request.args.get("code")
-    if not code:
-        return "Error: no se recibió el código de autorización.", 400
-
-# Ruta para cerrar sesion con Google
-@api.route('/logout/google', methods=['POST'])
-@jwt_required()
-def logout_google():
-    # Obtener el token de acceso de Google del usuario
-    token = google.authorize_access_token()
-
-    # Revocar el token de acceso de Google
-    google_token_revocation_url = 'https://accounts.google.com/o/oauth2/revoke?token=' + token['access_token']
-    response = requests.get(google_token_revocation_url)
-
-    if response.status_code == 200:
-        return jsonify({"msg": "Sesión de Google cerrada exitosamente"}), 200
-    else:
-        # Ocurrió un error al revocar el token
-        return jsonify({"msg": "Error al cerrar la sesión de Google"}), response.status_code
-
 # Ruta para crear un producto
 @api.route('/create-product', methods=['POST'])
 def create_product():
@@ -160,7 +72,7 @@ def create_product():
     name = body.get('name')
     price = body.get('price')
     image_url = body.get('image_url')
-    description = body.get('description')  # Asegúrate de incluir description
+    description = body.get('description') 
     category_id = body.get('category_id')
 
     if not name or not price or not image_url or not category_id:

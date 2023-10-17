@@ -7,7 +7,6 @@ import json
 import datetime
 import shutil
 from flask import Flask, redirect, request, jsonify, url_for, send_from_directory
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from authlib.integrations.flask_client import OAuth
 from oauthlib.oauth2 import WebApplicationClient
 import requests
@@ -36,8 +35,6 @@ app.url_map.strict_slashes = False
 oauth = OAuth(app)
 oauth.init_app(app)
 
-# Crea una instancia de LoginManager
-login_manager = LoginManager(app)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -95,14 +92,9 @@ def serve_any_other_file(path):
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 jwt = JWTManager(app)
 
-# User session management setup
-login_manager.init_app(app)
 
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

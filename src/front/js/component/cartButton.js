@@ -65,10 +65,10 @@ export const CartButton = () => {
         aria-labelledby="offcanvasRightLabel"
         ref={offcanvasRef}
       >
-        <div className="offcanvas-header">
-          <h5 className="offcanvas-title" id="offcanvasRightLabel">
+        <div className="offcanvas-header pb-0">
+          <h2 className="offcanvas-title" id="offcanvasRightLabel">
             Tu carrito
-          </h5>
+          </h2>
           <button
             type="button"
             className="btn-close"
@@ -92,7 +92,13 @@ export const CartButton = () => {
                 <span>
                   {item.name} <br />
                   Cantidad: {item.quantity} <br /> Precio:{" "}
-                  {(item.price * item.quantity).toFixed(2)} €
+                  {(item.price * item.quantity).toFixed(2)} € <br/>
+                  {item.description && (
+                      <span>
+                        Descripción: {item.description}
+                      </span>
+                    )
+                  }
                 </span>
                 <div className="btn-group p-2">
                   <button
@@ -127,7 +133,7 @@ export const CartButton = () => {
             </h4>
           </div>
           <div className="mt-3 d-flex justify-content-center">
-            <Link to="/cart" className="btn btn-secondary col-12 col-md-8">
+            <Link to="/cart" className="btn btn-secondary col-12 col-md-8" style={{ textDecoration: "none" }}>
               Ver artículos en tu cesta
             </Link>
           </div>

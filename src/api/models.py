@@ -64,12 +64,60 @@ class Category(db.Model):
             'id': self.id,
             'name': self.name
         }
+    
+class Menu(db.Model):
+    __tablename__ = 'menu'
+    id = db.Column(db.Integer, primary_key=True)
+    starter_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    dishes_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    drink_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    dessert_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    price = db.Column(Numeric(4, 2), nullable=False, default=12.00)
+
+    starter = db.relationship('Product', foreign_keys=[starter_id])
+    dishes = db.relationship('Product', foreign_keys=[dishes_id])
+    drink = db.relationship('Product', foreign_keys=[drink_id])
+    dessert = db.relationship('Product', foreign_keys=[dessert_id])
+
+    def __repr__(self):
+        return f'<Menu {self.id}>'
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'starter': self.starter.serialize(),
+            'dishes': self.dishes.serialize(),
+            'drink': self.drink.serialize(),
+            'dessert': self.dessert.serialize(),
+            'price': float(self.price)
+        }
+
+class OrderDetail(db.Model):
+    __tablename__  = 'order_detail'
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))  
+    menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))  
+    quantity = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)  
+    order_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+
+    def __repr__(self):
+        return f'<OrderDetail {self.id}>'
+
+    def calculate_price(self):
+        if self.product_id:
+            product = Product.query.get(self.product_id)
+            self.price = product.price * self.quantity
+        elif self.menu_id:
+            menu = Menu.query.get(self.menu_id)
+            self.price = menu.price * self.quantity
 
 class Order(db.Model):
     __tablename__ = 'order'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    products = db.relationship('OrderDetail', backref='order', lazy=True)
+    order_details = db.relationship('OrderDetail', backref='order', lazy=True)
     total_price = db.Column(db.Float, nullable=False, default=0.00)
     order_comments = db.Column(db.String(255),nullable=True)
     takeaway = db.Column(db.Boolean, nullable=False, default=False) 
@@ -78,10 +126,9 @@ class Order(db.Model):
     discount_code_id = db.Column(db.Integer, db.ForeignKey('discount_code.id'), nullable=True)
     discount_code = db.relationship('DiscountCode')
 
-
     def __init__(self, user_id,order_comments=None):
         self.user_id = user_id
-        self.products = []
+        self.order_details = []  
         self.calculate_total_price()
         self.order_comments = order_comments
         self.order_date = datetime.now()
@@ -97,18 +144,9 @@ class Order(db.Model):
                 db.session.commit()
 
     def calculate_total_price(self):
-        self.total_price = sum(detail.price for detail in self.products)
+        self.total_price = sum(detail.price for detail in self.order_details)
         if self.discount_code:
             self.total_price *= (1 - self.discount_code.percentage / 100)
-
-class OrderDetail(db.Model):
-    __tablename__  = 'order_detail'
-    id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
-    product = db.Column(db.String(100), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float,nullable=False)
-    order_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
 class DiscountCode(db.Model):
     __tablename__ = 'discount_code'

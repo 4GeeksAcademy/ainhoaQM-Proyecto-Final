@@ -50,7 +50,13 @@ export const Cart = () => {
             <span>
               {item.name} <br />
               Cantidad: {item.quantity} <br /> Precio:{" "}
-              {(item.price * item.quantity).toFixed(2)} €
+              {(item.price * item.quantity).toFixed(2)} € <br/>
+              {item.description && (
+                  <span>
+                    Descripción: {item.description}
+                  </span>
+                )
+              }
             </span>
             <div className="btn-group p-2">
               <button

@@ -9,6 +9,13 @@ const getState = ({ getStore, setStore }) => {
                     name: "Producto Default",
                     price: 10.25,
                     quantity: 1
+                },
+                {
+                    id: 2,
+                    name: "Menú Default",
+                    price: 12.00,
+                    description: "Starter: Default, Dish: Default, Drink: Default, Dessert: Default",
+                    quantity: 1
                 }
             ],
             discountPercentage: 0,
@@ -47,7 +54,16 @@ const getState = ({ getStore, setStore }) => {
                 const store = getStore();
                 const updatedCart = [...store.cart, { ...product, quantity }];
                 setStore({ cart: updatedCart });
+                console.log(store.cart)
             },
+
+            addMenuToCart: (selectedStarter, selectedDish, selectedDrink, selectedDessert) => {
+                const menuDescription = `Starter: ${selectedStarter}, Dish: ${selectedDish}, Drink: ${selectedDrink}, Dessert: ${selectedDessert}`;
+                const menuProduct = { name: 'menu', price: 12.00, description: menuDescription };
+                setStore(prevState => ({
+                    cart: [...prevState.cart, menuProduct]
+                }));
+            },            
             
             incrementQuantity: (productId) => {
                 const store = getStore();

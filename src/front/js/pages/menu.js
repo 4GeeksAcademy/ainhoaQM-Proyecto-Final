@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
-import { Context } from "../store/appContext";
-
+import React from "react";
 import { Link } from "react-router-dom";
 import "../../styles/index.css";
 
 //components
+import { FormMenu } from "../component/formMenu";
 import { FirstStarters } from "../component/firstStarters";
 import { FirstDishes } from "../component/firstDishes";
 import { FirstDrinks } from "../component/firstDrinks";
@@ -24,6 +23,11 @@ export const Menu = () => {
             </li>
           </ol>
         </nav>
+        <section className="offer-menu">
+          <h2 className="subtitle display-6"> Menu </h2>
+          <hr className="my-1" />
+          <FormMenu />
+        </section>
         <section className="first-products">
           <div className="starters mt-4">
             <div className="d-flex justify-content-between align-items-center">

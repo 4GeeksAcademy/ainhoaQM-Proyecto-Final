@@ -48,43 +48,42 @@ export const FirstDesserts = () => {
         </div>
       )}
       <div className="row">
-        {firstProductsDesserts.slice(0, 6).map((product) => (
-          <div
-            key={product.id}
-            className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4"
-          >
+        {firstProductsDesserts.slice(0, 4).map((product) => (
+          <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
             <div className="card">
               <img
                 src={product.image_url}
                 className="card-img-top"
                 alt={product.name}
               />
-              <div className="card-body">
+              <div className="card-body d-flex flex-column justify-content-between"> 
                 <h3 className="card-title text-center">{product.name}</h3>
-                <h4 className="card-text text-end p-1">
-                  {product.price.toFixed(2)} €
-                </h4>
-                <div className="card-footer quantity-selector d-flex align-items-center justify-content-center">
-                  <button
-                    onClick={decrementQuantity}
-                    className="btn btn-outline-secondary"
-                  >
-                    -
-                  </button>
-                  <span className="px-2">{quantity}</span>
-                  <button
-                    onClick={incrementQuantity}
-                    className="btn btn-outline-secondary me-3"
-                  >
-                    +
-                  </button>
-                  <button
-                    onClick={() => addToCart(product, quantity)}
-                    className="btn btn-secondary"
-                  >
-                    Añadir
-                  </button>
+                <div className="mt-auto"> 
+                  <h4 className="card-text text-end p-1 mb-0">
+                    {product.price.toFixed(2)} €
+                  </h4>
                 </div>
+              </div>
+              <div className="card-footer quantity-selector d-flex align-items-center justify-content-center">
+                <button
+                  onClick={decrementQuantity}
+                  className="btn btn-outline-secondary"
+                >
+                  -
+                </button>
+                <span className="px-2">{quantity}</span>
+                <button
+                  onClick={incrementQuantity}
+                  className="btn btn-outline-secondary me-3"
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => addToCart(product, quantity)}
+                  className="btn btn-secondary"
+                >
+                  Añadir
+                </button>
               </div>
             </div>
           </div>

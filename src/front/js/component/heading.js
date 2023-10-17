@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/index.css";
 
-// img
+//images
 import icoPlatos from "../../img/icoPlatos.png";
 
 export const Heading = () => {
