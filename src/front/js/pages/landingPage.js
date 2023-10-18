@@ -87,6 +87,7 @@ export const LandingPage = () => {
             <div className="parallax-content"></div>
           </div>
           <div className="col-sm-12 col-md-6 schedule p-5">
+            <h1 className="title-section display-4">Nuestro Horario</h1>
             <Schedule/>
             <h1 className="title-section display-4 pt-4 m-0"> Encuentranos en </h1>
             <p className="px-2">Calle Falsa, 123 CP: 00000 Barcelona</p>

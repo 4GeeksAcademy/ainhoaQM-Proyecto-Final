@@ -19,6 +19,7 @@ import { Ticket } from "./pages/ticket";
 import { Contact } from "./pages/contact";
 import { Reservation } from "./pages/reservation";
 import { WIP } from "./pages/WIP";
+import { NotFound } from "./pages/notFound";
 import { Single } from "./pages/single";
 
 //Components
@@ -63,7 +64,7 @@ const Layout = () => {
                                 <Route element={<Reservation />} path="/reserve" />
                                 <Route element={<Single />} path="/single/:theid" />
                                 <Route element={<WIP />} path="/wip" />
-                                <Route element={<h1>Not found!</h1>} />
+                                <Route path="*" element={<NotFound />} />
                             </Routes>
                             <Footer />
                         </>}/>

@@ -3,7 +3,6 @@ import React from "react";
 export const Schedule = () => {
   return (
     <div>
-        <h1 className="title-section display-4">Nuestro Horario</h1>
         <h1 className="subtitle p-1">Entre Semana</h1>
         <div className="d-flex justify-content-between">
         <div className="flex-grow-1 text-end px-1">
