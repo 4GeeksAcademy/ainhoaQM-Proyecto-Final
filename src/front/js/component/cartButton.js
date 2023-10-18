@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 import "../../styles/index.css";
@@ -13,23 +13,7 @@ export const CartButton = () => {
     (total, item) => total + item.quantity,
     0
   );
-  const [isOffcanvasActive, setIsOffcanvasActive] = useState(false);
   const offcanvasRef = useRef();
-
-  useEffect(() => {
-    const offcanvasElement = offcanvasRef.current;
-    offcanvasElement.addEventListener("hide.bs.offcanvas", (event) => {
-      if (!store.isAuthenticated) {
-        event.preventDefault();
-      }
-    });
-  }, [store.isAuthenticated]);
-
-  const toggleOffcanvas = () => {
-    if (store.isAuthenticated) {
-      setIsOffcanvasActive(!isOffcanvasActive);
-    }
-  };
 
   const handleAddMore = (productId) => {
     actions.incrementQuantity(productId);
@@ -43,23 +27,45 @@ export const CartButton = () => {
     actions.removeFromCart(productId);
   };
 
+  useEffect(() => {
+    const offcanvasElement = offcanvasRef.current;
+
+    const showHandler = () => {
+      if (!store.isAuthenticated) {
+        offcanvasElement.hide();
+      }
+    };
+
+    const hiddenHandler = () => {
+      offcanvasElement.hide();
+      document.querySelector(".cart-button").classList.remove("active");
+    };
+
+    offcanvasElement.addEventListener("show.bs.offcanvas", showHandler);
+    offcanvasElement.addEventListener("hidden.bs.offcanvas", hiddenHandler);
+
+    return () => {
+      offcanvasElement.removeEventListener("show.bs.offcanvas", showHandler);
+      offcanvasElement.removeEventListener("hidden.bs.offcanvas", hiddenHandler);
+    };
+  }, [store.isAuthenticated]);
+
   return (
     <>
       {store.isAuthenticated && (
         <button
-          className={`btn btn-secondary ${isOffcanvasActive ? "active" : ""}`}
+          className="btn btn-secondary cart-button"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasRight"
           aria-controls="offcanvasRight"
-          onClick={toggleOffcanvas}
         >
           {totalQuantity} <TiShoppingCart style={{ fontSize: "2rem" }} />
         </button>
       )}
 
       <div
-        className={`offcanvas offcanvas-end ${isOffcanvasActive ? "show" : ""}`}
+        className="offcanvas offcanvas-end"
         tabIndex="-1"
         id="offcanvasRight"
         aria-labelledby="offcanvasRightLabel"
@@ -74,7 +80,6 @@ export const CartButton = () => {
             className="btn-close"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
-            onClick={toggleOffcanvas}
           ></button>
         </div>
         <div className="offcanvas-body">
