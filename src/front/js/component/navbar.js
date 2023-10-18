@@ -20,7 +20,7 @@ export const Navbar = () => {
       <ul className="navbar-nav d-flex flex-row justify-content-center align-items-center text-decoration-none">
         <li className="nav-item px-3">
           <Link to="/shop" className="nav-link">
-            <span className="material-symbols-outlined pe-1">menu_book</span>
+            <span class="material-symbols-outlined pe-1">menu_book</span>
             Menú
           </Link>
         </li>
