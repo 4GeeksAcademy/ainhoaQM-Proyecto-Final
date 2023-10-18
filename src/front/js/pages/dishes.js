@@ -67,7 +67,7 @@ export const Dishes = () => {
             </div>
             <div>
               Por favor, <a href="/login">inicia sesión</a> o{" "}
-              <a href="/signup">regístrate</a> para poder añadir cosas al
+              <a href="/signup">regístrate</a> para poder añadir productos al
               carrito.
             </div>
           </div>
@@ -78,7 +78,7 @@ export const Dishes = () => {
               <a href="/">Inicio</a>
             </li>
             <li className="breadcrumb-item">
-              <a href="/menu">Carta</a>
+              <a href="/shop">Carta</a>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               Platos

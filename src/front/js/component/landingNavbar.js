@@ -31,7 +31,7 @@ export const LandingNavbar = () => {
                   aria-labelledby="dropdownMenuButton"
                 >
                   <li>
-                    <Link to="/menu" className="dropdown-item">
+                    <Link to="/shop" className="dropdown-item">
                       Carta
                     </Link>
                   </li>

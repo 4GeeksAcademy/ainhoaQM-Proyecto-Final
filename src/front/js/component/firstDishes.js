@@ -1,29 +1,19 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
-export const FirstDishes = () => {
-  const alertRef = useRef(null);
+export const FirstDishes = ({ setShowLoginMessage }) => {
   const { store, actions } = useContext(Context);
   const [firstProductsDesserts, setFirstProductsDesserts] = useState([]);
   const [quantity, setQuantity] = useState(1);
-  const [showLoginMessage, setShowLoginMessage] = useState(false);
 
   const addToCart = (product, quantity) => {
     if (store.isAuthenticated) {
-        actions.addToCart(product, quantity);
-        setQuantity(1);
-        console.log(`Se agregó ${quantity} ${product.name} al carrito.`);
+      actions.addToCart(product, quantity);
+      setQuantity(1);
+      console.log(`Se agregó ${quantity} ${product.name} al carrito.`);
     } else {
-        setShowLoginMessage(true);
-        if (alertRef.current) {
-          alertRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-            inline: "nearest",
-          });
-          window.scrollBy(0, -800);
-        }
+      setShowLoginMessage(true);
     }
   };
 
@@ -51,13 +41,6 @@ export const FirstDishes = () => {
 
   return (
     <div className="container">
-      {showLoginMessage && (
-        <div ref={alertRef} className="alert alert-warning" role="alert">
-          Por favor, <a href="/login">inicia sesión</a> o{" "}
-          <a href="/signup">regístrate</a> para poder añadir cosas al carrito.
-        </div>
-
-      )}
       <div className="row">
         {firstProductsDesserts.slice(0, 4).map((product) => (
           <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">

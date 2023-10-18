@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
+import { Link } from "react-router-dom";
 import "../../styles/index.css";
 //iconos
 import { BsTrash3 } from "react-icons/bs";
@@ -32,7 +32,7 @@ export const Cart = () => {
             <Link to="/">Inicio</Link>
           </li>
           <li className="breadcrumb-item">
-            <Link to="/menu">Carta</Link>
+            <Link to="/shop">Carta</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             Cesta

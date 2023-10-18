@@ -86,7 +86,7 @@ export const Login = () => {
                         const decodedToken = JSON.parse(atob(userToken.split('.')[1]));
                         const user_name = decodedToken.user_name;
 
-                        actions.setIsAuthenticated(true);
+                        actions.setIsAuthenticated(true, user_name);
                         console.log('Autenticado:', store.isAuthenticated);
                         
                         localStorage.setItem('token', userToken);
@@ -94,7 +94,7 @@ export const Login = () => {
                         localStorage.setItem('userName', user_name);
                     }
 
-                    navigate('/menu'); 
+                    navigate('/shop'); 
                 } else {
                     const responseData = await response.json();
                     console.error('Error de respuesta:', responseData);

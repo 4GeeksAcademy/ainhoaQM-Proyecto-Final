@@ -60,7 +60,7 @@ export const Ticket = () => {
 
   const handleCancelOrder = () => {
     actions.clearCart();
-    navigate('/menu');
+    navigate('/shop');
   };
   
 
@@ -76,7 +76,7 @@ export const Ticket = () => {
             <a href="/">Inicio</a>
           </li>
           <li className="breadcrumb-item">
-            <a href="/menu">Carta</a>
+            <a href="/shop">Carta</a>
           </li>
           <li className="breadcrumb-item">
             <a href="/cart">Cesta</a>

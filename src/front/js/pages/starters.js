@@ -59,7 +59,7 @@ export const Starters = () => {
       <div className="container body">
         {showLoginMessage && (
           <div
-            className="alert alert-warning d-flex align-items-center"
+            className="alert alert-warning d-flex justify-content-center align-items-center"
             role="alert"
           >
             <div className="icon-warning">
@@ -67,7 +67,7 @@ export const Starters = () => {
             </div>
             <div>
               Por favor, <a href="/login">inicia sesión</a> o{" "}
-              <a href="/signup">regístrate</a> para poder añadir cosas al
+              <a href="/signup">regístrate</a> para poder añadir productos al
               carrito.
             </div>
           </div>

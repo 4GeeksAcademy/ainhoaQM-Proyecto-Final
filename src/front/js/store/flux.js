@@ -34,9 +34,9 @@ const getState = ({ getStore, setStore }) => {
 				}
 			},
 
-            setIsAuthenticated: value => {
+            setIsAuthenticated: (value, userName) => {
                 const store = getStore();
-                setStore({ isAuthenticated: value });
+                setStore({ isAuthenticated: value, userName: userName });
             },
 
             logout: () => {
@@ -63,6 +63,7 @@ const getState = ({ getStore, setStore }) => {
                 setStore(prevState => ({
                     cart: [...prevState.cart, menuProduct]
                 }));
+                console.log('Menu added to cart:', menuProduct);
             },            
             
             incrementQuantity: (productId) => {

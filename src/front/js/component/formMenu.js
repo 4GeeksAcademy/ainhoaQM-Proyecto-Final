@@ -1,26 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Context } from "../store/appContext";
+import "../../styles/index.css";
 
-export const FormMenu = ({ actions }) => {
-  const [starterOptions, setStarterOptions] = useState([]);
-  const [dishesOptions, setDishesOptions] = useState([]);
-  const [drinkOptions, setDrinkOptions] = useState([]);
-  const [dessertOptions, setDessertOptions] = useState([]);
+//images
+import cucharas from "../../img/cucharas.jpg";
+
+export const FormMenu = ({ setShowLoginMessage }) => {
+  const { store, actions } = useContext(Context);
+
+  const areAllOptionsSelected = () => {
+    return selectedStarter !== '' && selectedDishes !== '' && selectedDrink !== '' && selectedDessert !== '';
+  };
+
   const [selectedStarter, setSelectedStarter] = useState('');
   const [selectedDishes, setSelectedDishes] = useState('');
   const [selectedDrink, setSelectedDrink] = useState('');
   const [selectedDessert, setSelectedDessert] = useState('');
+  
+  const [starterOptions, setStarterOptions] = useState([]);
+  const [dishesOptions, setDishesOptions] = useState([]);
+  const [drinkOptions, setDrinkOptions] = useState([]);
+  const [dessertOptions, setDessertOptions] = useState([]);
 
-    const handleAddToCart = () => {
-        const menuDescription = `Starter: ${selectedStarter}, Dishes: ${selectedDishes}, Drink: ${selectedDrink}, Dessert: ${selectedDessert}`;
-        const menuProduct = { name: 'menu', price: 12, description: menuDescription };
-        console.log('Product to add to cart:', menuProduct);
-        actions.addToCart(menuProduct, 1);
 
-        setSelectedStarter('');
-        setSelectedDishes('');
-        setSelectedDrink('');
-        setSelectedDessert('');
-    };
+  const addMenuToCart = () => {
+    if (store.isAuthenticated) {
+      const menuDescription = `Entrante: ${selectedStarter}, 1er Plato: ${selectedDishes}, Bebida: ${selectedDrink}, Postre: ${selectedDessert}`;
+      const menuProduct = { name: 'Menú', price: 12.00, description: menuDescription };
+      actions.addToCart(menuProduct, 1); 
+      setSelectedStarter('');
+      setSelectedDishes('');
+      setSelectedDrink('');
+      setSelectedDessert('');
+      console.log(`Se agregó 1 menú al carrito.`);
+    } else {
+      setShowLoginMessage(true);
+    }
+  };
 
   useEffect(() => {
     fetch(process.env.BACKEND_URL + "/api/category-1/products")
@@ -68,64 +84,67 @@ export const FormMenu = ({ actions }) => {
 
   return (
     <div className="container">
-      <h2>Selecciona tu Menú</h2>
       <div className="mb-3">
-        <label htmlFor="starter" className="form-label">Starter</label>
-        <select
-          className="form-select form-select-lg"
-          id="starter"
-          value={selectedStarter}
-          onChange={(e) => setSelectedStarter(e.target.value)}
-        >
-          <option value="">Selecciona una opción</option>
-          {starterOptions.map((option, index) => (
-            <option key={index} value={option}>{option}</option>
-          ))}
-        </select>
+        <div className="row">
+          <div className="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
+            <h2>Selecciona tu Menú</h2>
+            <label htmlFor="starter" className="form-label">Entrante</label>
+            <select
+              className="form-select form-select-lg"
+              id="starter"
+              value={selectedStarter}
+              onChange={(e) => setSelectedStarter(e.target.value)}
+            >
+              <option value="">Selecciona una opción</option>
+              {starterOptions.map((option, index) => (
+                <option key={index} value={option}>{option}</option>
+              ))}
+            </select>
+            <label htmlFor="dishes" className="form-label">Plato Principal</label>
+            <select
+              className="form-select form-select-lg"
+              id="dishes"
+              value={selectedDishes}
+              onChange={(e) => setSelectedDishes(e.target.value)}
+            >
+              <option value="">Selecciona una opción</option>
+              {dishesOptions.map((option, index) => (
+                <option key={index} value={option}>{option}</option>
+              ))}
+            </select>
+            <label htmlFor="drink" className="form-label">Bebida</label>
+            <select
+              className="form-select form-select-lg"
+              id="drink"
+              value={selectedDrink}
+              onChange={(e) => setSelectedDrink(e.target.value)}
+            >
+              <option value="">Selecciona una opción</option>
+              {drinkOptions.map((option, index) => (
+                <option key={index} value={option}>{option}</option>
+              ))}
+            </select>
+            <label htmlFor="dessert" className="form-label">Postre</label>
+            <select
+              className="form-select form-select-lg"
+              id="dessert"
+              value={selectedDessert}
+              onChange={(e) => setSelectedDessert(e.target.value)}
+            >
+              <option value="">Selecciona una opción</option>
+              {dessertOptions.map((option, index) => (
+                <option key={index} value={option}>{option}</option>
+              ))}
+            </select>
+          </div>
+          <div className="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
+            <div style={{ textAlign: 'center', marginTop: '10px',  marginBottom: '10px' }}>
+              <img src={cucharas} alt="Cucharas" style={{ width: '100%', height: 'auto' }} />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="mb-3">
-        <label htmlFor="dishes" className="form-label">Plato Principal</label>
-        <select
-          className="form-select form-select-lg"
-          id="dishes"
-          value={selectedDishes}
-          onChange={(e) => setSelectedDishes(e.target.value)}
-        >
-          <option value="">Selecciona una opción</option>
-          {dishesOptions.map((option, index) => (
-            <option key={index} value={option}>{option}</option>
-          ))}
-        </select>
-      </div>
-      <div className="mb-3">
-        <label htmlFor="drink" className="form-label">Bebida</label>
-        <select
-          className="form-select form-select-lg"
-          id="drink"
-          value={selectedDrink}
-          onChange={(e) => setSelectedDrink(e.target.value)}
-        >
-          <option value="">Selecciona una opción</option>
-          {drinkOptions.map((option, index) => (
-            <option key={index} value={option}>{option}</option>
-          ))}
-        </select>
-      </div>
-      <div className="mb-3">
-        <label htmlFor="dessert" className="form-label">Postre</label>
-        <select
-          className="form-select form-select-lg"
-          id="dessert"
-          value={selectedDessert}
-          onChange={(e) => setSelectedDessert(e.target.value)}
-        >
-          <option value="">Selecciona una opción</option>
-          {dessertOptions.map((option, index) => (
-            <option key={index} value={option}>{option}</option>
-          ))}
-        </select>
-      </div>
-      <button type="button" className="btn btn-secondary" onClick={handleAddToCart}>Agregar al Carrito</button>
+      <button type="button" className="btn btn-secondary" onClick={addMenuToCart} disabled={!areAllOptionsSelected()}>Agregar al Carrito</button>
     </div>
   );
 };
