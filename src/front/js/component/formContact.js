@@ -139,7 +139,7 @@ export const FormContact = () => {
         </div>
       )}
       {submitStatus === 'error' && (
-        <div className="alert alert-danger mt-3" role="alert">
+        <div className="alert alert-warning mt-3" role="alert">
           Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.
         </div>
       )}

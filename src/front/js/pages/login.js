@@ -4,6 +4,7 @@ import { useNavigate, Link  } from 'react-router-dom';
 import "../../styles/index.css";
 
 //firabase google
+import { firebaseConfig } from "../component/firebaseConfig";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
@@ -30,16 +31,9 @@ export const Login = () => {
 
     // Empieza Firebase Google
     const provider = new GoogleAuthProvider();
-    const firebaseConfig = {
-        apiKey: process.env.REACT_APP_API_KEY,
-        authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-        projectId: process.env.REACT_APP_PROJECT_ID,
-        storageBucket: process.env.REACT_APP_STOGRAGE_BUCKET,
-        messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-        appId: process.env.REACT_APP_APP_ID,
-        measurementId: process.env.REACT_APP_MEASUREMENT_ID
-    };
-    const initializeFirebase = initializeApp(firebaseConfig);
+
+    initializeApp(firebaseConfig);
+
     const auth = getAuth();
     function callLoginGoogle() {
         signInWithPopup(auth, provider)
@@ -197,13 +191,13 @@ export const Login = () => {
     return (
         <div className="body background-abstract" style={{backgroundImage: `url(${abstract})`}}>
             <div className="row m-5">
-                <div className="col-md-6 p-4 section rounded shadow bg-light">
+                <div className="col-md-6 p-4 section form-rounded form-shadow bg-light">
                     <form className="m-5" onSubmit={handleLogin}>
                         <div className="text-center mb-4">
                             <h1 className="h1">Iniciar Sesión</h1>
                         </div>
                         {errorMessage && (
-                            <div className="alert alert-danger" role="alert">
+                            <div className="alert alert-warning" role="alert">
                                 {errorMessage}
                             </div>
                         )}
@@ -247,7 +241,7 @@ export const Login = () => {
                         </p>
                         <p className="mb-3">
                             ¿Has olvidado tu contraseña?{' '}
-                            <Link to="/WIP" className="white-link">Recupérala aquí</Link>
+                            <Link to="/reset-password" className="white-link">Recupérala aquí</Link>
                         </p>
                         <div className="container-fluid">
                             <div className="row">

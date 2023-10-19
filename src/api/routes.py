@@ -68,6 +68,54 @@ def login():
     
     return jsonify(response_body), 200
 
+# Ruta para verificar si el correo ya está registrado en la recuperacion de contraseña
+@api.route('/check-email', methods=['POST'])
+def check_email():
+    try:
+        body = request.get_json()
+        email = body["email"]
+
+        # Verificar si el correo electrónico está en la base de datos
+        existing_user = User.query.filter_by(email=email).first()
+
+        if existing_user:
+            response_body = {"msg": "El correo electrónico está registrado"}
+            return jsonify(response_body), 200
+        else:
+            response_body = {"msg": "El correo electrónico no está registrado"}
+            return jsonify(response_body), 404
+
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 400
+
+# Ruta para cambiar la contraseña
+@api.route('/new-password', methods=['POST'])
+def change_password():
+    try:
+        body = request.get_json()
+        email = body["email"]
+        new_password = body["newPassword"]
+        repeat_password = body.get("repeatPassword") 
+
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            if len(new_password) < 8:
+                return jsonify({"msg": "La contraseña debe tener al menos 8 caracteres."}), 400
+
+            if new_password == repeat_password:
+                user.set_password(new_password)
+                db.session.commit()
+                return jsonify({"msg": "Contraseña cambiada exitosamente"}), 200
+            else:
+                return jsonify({"msg": "Las contraseñas no coinciden"}), 400
+        else:
+            return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 400
+
+
 # Ruta para ver todos los usuarios y sus pedidos
 @api.route('/users', methods=['GET'])
 def get_users():
