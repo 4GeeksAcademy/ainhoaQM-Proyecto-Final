@@ -31,15 +31,6 @@ import { Heading } from "./component/heading";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
-    const { actions } = useContext(Context);
-    const { store } = useContext(Context);
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const userName = localStorage.getItem('userName');
-        if  (token && userName) {
-          actions.setIsAuthenticated(true);
-        }
-    }, []);
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
