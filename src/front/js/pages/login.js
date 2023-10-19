@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Context } from '../store/appContext';
 import { useNavigate, Link  } from 'react-router-dom';
+import "../../styles/index.css";
 
 //firabase google
 import { initializeApp } from "firebase/app";
@@ -221,7 +222,7 @@ export const Login = () => {
                             <Link to="/WIP" className="white-link">Recupérala aquí</Link>
                         </p>
                         <button className="btn btn-secondary" type="button" onClick={callLoginGoogle}>
-                            Iniciar con Cuenta de Google
+                            Iniciar Sesión con Google
                         </button>
                     </div>
                 </div>

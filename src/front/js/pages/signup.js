@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import React, { useState, useContext } from 'react';
+import { Context } from '../store/appContext';
+import { useNavigate, Link  } from 'react-router-dom';
 import "../../styles/index.css";
 
 //firabase google
@@ -14,6 +14,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import abstract from "../../img/abstract.jpg";
 
 export const Signup = () => {
+  const { actions } = useContext(Context);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -80,6 +81,58 @@ export const Signup = () => {
       console.error("Error:", error);
     }
   };
+
+      // Empieza Firebase Google
+      const provider = new GoogleAuthProvider();
+      const firebaseConfig = {
+          apiKey: process.env.REACT_APP_API_KEY,
+          authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+          projectId: process.env.REACT_APP_PROJECT_ID,
+          storageBucket: process.env.REACT_APP_STOGRAGE_BUCKET,
+          messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+          appId: process.env.REACT_APP_APP_ID,
+          measurementId: process.env.REACT_APP_MEASUREMENT_ID
+      };
+      const initializeFirebase = initializeApp(firebaseConfig);
+      const auth = getAuth();
+      function callLoginGoogle() {
+          signInWithPopup(auth, provider)
+          .then((result) => {
+              const credential = GoogleAuthProvider.credentialFromResult(result);
+              const token = credential.accessToken;
+              const user = result.user;
+  
+              localStorage.setItem('token', token);
+              localStorage.setItem('userEmail', user.email);
+              localStorage.setItem('userName', user.displayName);
+  
+              actions.setIsAuthenticated(true, user.displayName);
+              navigate('/shop')
+          })
+          .catch((error) => {
+              console.error(error);
+          
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              const email = error.customData ? error.customData.email : null;
+              const credential = GoogleAuthProvider.credentialFromError(error);
+          
+              switch (errorCode) {
+                  case 'auth/cancelled-popup-request':
+                      alert('La solicitud de ventana emergente fue cancelada');
+                      break;
+                  case 'auth/user-not-found':
+                      alert('Usuario no encontrado');
+                      break;
+                  case 'auth/wrong-password':
+                      alert('Contraseña incorrecta');
+                      break;
+                  default:
+                      alert('Ocurrió un error inesperado, por favor inicia sesion con tu e-mail y contraseña o prueba el inicio de sesion con Google más tarde');
+              }
+          });            
+      }    
+      // Termina Firebase Google
 
   return (
     <div
@@ -198,6 +251,9 @@ export const Signup = () => {
                 Recupérala
               </Link>
             </p>
+            <button className="btn btn-secondary" type="button" onClick={callLoginGoogle}>
+              Iniciar Sesión con Google
+            </button>
           </div>
         </div>
       </div>
