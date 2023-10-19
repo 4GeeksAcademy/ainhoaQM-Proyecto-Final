@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "../../styles/index.css";
+
+//firabase google
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
 //icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+
 //img
 import abstract from "../../img/abstract.jpg";
 

@@ -1,8 +1,14 @@
 import React, { useState, useContext } from 'react';
 import { Context } from '../store/appContext';
 import { useNavigate, Link  } from 'react-router-dom';
+
+//firabase google
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+
 //iconos
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+
 //images
 import abstract from '../../img/abstract.jpg';
 
@@ -20,10 +26,57 @@ export const Login = () => {
         password: '',
     });
 
-    function handleGoogleLogin() {
-        // Redirect to the Flask backend route for Google login
-        window.location.href = '/login/google';
-    }
+    // Empieza Firebase Google
+    const provider = new GoogleAuthProvider();
+    const firebaseConfig = {
+        apiKey: process.env.REACT_APP_API_KEY,
+        authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+        projectId: process.env.REACT_APP_PROJECT_ID,
+        storageBucket: process.env.REACT_APP_STOGRAGE_BUCKET,
+        messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+        appId: process.env.REACT_APP_APP_ID,
+        measurementId: process.env.REACT_APP_MEASUREMENT_ID
+    };
+    const initializeFirebase = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    function callLoginGoogle() {
+        signInWithPopup(auth, provider)
+        .then((result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            const user = result.user;
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('userEmail', user.email);
+            localStorage.setItem('userName', user.displayName);
+
+            actions.setIsAuthenticated(true, user.displayName);
+            navigate('/shop')
+        })
+        .catch((error) => {
+            console.error(error);
+        
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            const email = error.customData ? error.customData.email : null;
+            const credential = GoogleAuthProvider.credentialFromError(error);
+        
+            switch (errorCode) {
+                case 'auth/cancelled-popup-request':
+                    alert('La solicitud de ventana emergente fue cancelada');
+                    break;
+                case 'auth/user-not-found':
+                    alert('Usuario no encontrado');
+                    break;
+                case 'auth/wrong-password':
+                    alert('Contraseña incorrecta');
+                    break;
+                default:
+                    alert('Ocurrió un error inesperado, por favor inicia sesion con tu e-mail y contraseña o prueba el inicio de sesion con Google más tarde');
+            }
+        });            
+    }    
+    // Termina Firebase Google
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -167,10 +220,9 @@ export const Login = () => {
                             ¿Has olvidado tu contraseña?{' '}
                             <Link to="/WIP" className="white-link">Recupérala aquí</Link>
                         </p>
-                        <button className="btn btn-secondary" type="button" onClick={handleGoogleLogin}>
-                            hola google
+                        <button className="btn btn-secondary" type="button" onClick={callLoginGoogle}>
+                            Iniciar con Cuenta de Google
                         </button>
-
                     </div>
                 </div>
             </div>
