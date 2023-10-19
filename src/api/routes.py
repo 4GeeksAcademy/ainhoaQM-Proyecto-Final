@@ -21,27 +21,31 @@ api = Blueprint('api', __name__)
 # Ruta para crear usuario
 @api.route('/signup', methods=['POST'])
 def create_user():
-    body = request.get_json()
-    email = body["email"]
-    password = body["password"]
-    user_name = body["user_name"]
+    try:
+        body = request.get_json()
+        email = body["email"]
+        password = body["password"]
+        user_name = body["user_name"]
 
-    # Verificar si el correo electrónico ya está en la base de datos
-    existing_user = User.query.filter_by(email=email).first()
+        # Verificar si el correo electrónico ya está en la base de datos
+        existing_user = User.query.filter_by(email=email).first()
 
-    if existing_user:
-        response_body = {"msg": "El correo electrónico ya está registrado"}
-        return jsonify(response_body), 400
+        if existing_user:
+            response_body = {"msg": "El correo electrónico ya está registrado"}
+            return jsonify(response_body), 400
 
-    # Utiliza el método set_password para validar y asignar la contraseña
-    new_user = User(email=email, user_name=user_name)
-    new_user.set_password(password)
+        # Utiliza el método set_password para validar y asignar la contraseña
+        new_user = User(email=email, user_name=user_name)
+        new_user.set_password(password)
 
-    db.session.add(new_user)
-    db.session.commit()
-    response_body = {"msg": "Usuario creado correctamente"}
+        db.session.add(new_user)
+        db.session.commit()
+        response_body = {"msg": "Usuario creado correctamente"}
 
-    return jsonify(response_body), 200
+        return jsonify(response_body), 200
+    except Exception as e:
+        print(str(e))
+        return jsonify({"msg": str(e)}), 400
 
 # Ruta para iniciar sesion
 @api.route('/login', methods=['POST'])
@@ -63,6 +67,74 @@ def login():
     }
     
     return jsonify(response_body), 200
+
+# Ruta para verificar si el correo ya está registrado en la recuperacion de contraseña
+@api.route('/check-email', methods=['POST'])
+def check_email():
+    try:
+        body = request.get_json()
+        email = body["email"]
+
+        # Verificar si el correo electrónico está en la base de datos
+        existing_user = User.query.filter_by(email=email).first()
+
+        if existing_user:
+            response_body = {"msg": "El correo electrónico está registrado"}
+            return jsonify(response_body), 200
+        else:
+            response_body = {"msg": "El correo electrónico no está registrado"}
+            return jsonify(response_body), 404
+
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 400
+
+# Ruta para cambiar la contraseña
+@api.route('/new-password', methods=['POST'])
+def change_password():
+    try:
+        body = request.get_json()
+        email = body["email"]
+        new_password = body["newPassword"]
+        repeat_password = body.get("repeatPassword") 
+
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            if len(new_password) < 8:
+                return jsonify({"msg": "La contraseña debe tener al menos 8 caracteres."}), 400
+
+            if new_password == repeat_password:
+                user.set_password(new_password)
+                db.session.commit()
+                return jsonify({"msg": "Contraseña cambiada exitosamente"}), 200
+            else:
+                return jsonify({"msg": "Las contraseñas no coinciden"}), 400
+        else:
+            return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 400
+
+
+# Ruta para ver todos los usuarios y sus pedidos
+@api.route('/users', methods=['GET'])
+def get_users():
+    try:
+        users = User.query.all()
+        user_list = []
+
+        for user in users:
+            user_data = {
+                "id": user.id,
+                "email": user.email,
+                "user_name": user.user_name,
+                "orders": [order.serialize() for order in user.orders]
+            }
+            user_list.append(user_data)
+
+        return jsonify(user_list), 200
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
 
 # Ruta para crear un producto
 @api.route('/create-product', methods=['POST'])

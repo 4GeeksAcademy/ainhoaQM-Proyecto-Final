@@ -1,5 +1,4 @@
-import React, { useContext, useEffect  } from "react";
-import { Context } from "./store/appContext";
+import React from "react";
 import { BrowserRouter, Route, Routes} from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
@@ -9,6 +8,8 @@ import injectContext from "./store/appContext";
 import { LandingPage } from "./pages/landingPage";
 import { Signup } from "./pages/signup";
 import { Login } from "./pages/login";
+import { ResetPassword } from "./pages/resetPassword";
+import { NewPassword } from "./pages/newPassword";
 import { Menu } from "./pages/menu";
 import { Starters } from "./pages/starters";
 import { Dishes } from "./pages/dishes";
@@ -29,15 +30,6 @@ import { Heading } from "./component/heading";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
-    const { actions } = useContext(Context);
-    const { store } = useContext(Context);
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const userName = localStorage.getItem('userName');
-        if  (token && userName) {
-          actions.setIsAuthenticated(true);
-        }
-    }, []);
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
@@ -53,6 +45,8 @@ const Layout = () => {
                             <Routes>
                                 <Route element={<Signup />} path="/signup" />
                                 <Route element={<Login />} path="/login" />
+                                <Route element={<ResetPassword />} path="/reset-password" />
+                                <Route element={<NewPassword />} path="/new-password" />
                                 <Route element={<Menu />} path="/shop" />
                                 <Route element={<Starters />} path="/starters" />
                                 <Route element={<Dishes />} path="/dishes" />

@@ -2,14 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-import psycopg2
-import json
-import datetime
-import shutil
-from flask import Flask, redirect, request, jsonify, url_for, send_from_directory
-from authlib.integrations.flask_client import OAuth
-from oauthlib.oauth2 import WebApplicationClient
-import requests
+from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
@@ -18,7 +11,6 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
-from db import init_db_command
 from api.utils import APIException, generate_sitemap
 from api.models import db
 from api.routes import api
@@ -31,29 +23,17 @@ static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-# Inicializa OAuth con tu aplicación Flask
-oauth = OAuth(app)
-oauth.init_app(app)
-
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type = True)
 db.init_app(app)
-
-# Configuración para Google OAuth
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
-GOOGLE_DISCOVERY_URL = "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"
-
-def get_google_provider_cfg():
-    return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 # Allow CORS requests to this API
 CORS(app)
@@ -92,13 +72,16 @@ def serve_any_other_file(path):
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 jwt = JWTManager(app)
 
-
-client = WebApplicationClient(GOOGLE_CLIENT_ID)
-
+# Setup Firebase Login google
+API_KEY= os.getenv("REACT_APP_API_KEY")
+AUTH_DOMAIN= os.getenv("REACT_APP_AUTH_DOMAIN")
+PROJECT_ID: os.getenv("REACT_APP_PROJECT_ID")
+STORAGE_BUCKET: os.getenv("REACT_APP_STORAGE_BUCKET")
+MESSAGING_SENDER_ID: os.getenv("REACT_APP_MESSAGING_SENDER_ID")
+APP_ID: os.getenv("REACT_APP_APP_ID")
+MEASUREMENT_ID: os.getenv("REACT_APP_MEASUREMENT_ID")
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
-
-
