@@ -9,6 +9,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 //icons
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
 
 //img
 import abstract from "../../img/abstract.jpg";
@@ -81,58 +82,84 @@ export const Signup = () => {
       console.error("Error:", error);
     }
   };
+    // Empieza Firebase Google
+    const provider = new GoogleAuthProvider();
+    const firebaseConfig = {
+      apiKey: process.env.REACT_APP_API_KEY,
+      authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+      projectId: process.env.REACT_APP_PROJECT_ID,
+      storageBucket: process.env.REACT_APP_STOGRAGE_BUCKET,
+      messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+      appId: process.env.REACT_APP_APP_ID,
+      measurementId: process.env.REACT_APP_MEASUREMENT_ID
+    };
+    const initializeFirebase = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    function callLoginGoogle() {
+      signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        const userName = user.displayName;
+        const email = user.email
+        const password = 'loginWithGoogle';
+        const repeatPassword = 'loginWithGoogle';
 
-      // Empieza Firebase Google
-      const provider = new GoogleAuthProvider();
-      const firebaseConfig = {
-          apiKey: process.env.REACT_APP_API_KEY,
-          authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-          projectId: process.env.REACT_APP_PROJECT_ID,
-          storageBucket: process.env.REACT_APP_STOGRAGE_BUCKET,
-          messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-          appId: process.env.REACT_APP_APP_ID,
-          measurementId: process.env.REACT_APP_MEASUREMENT_ID
-      };
-      const initializeFirebase = initializeApp(firebaseConfig);
-      const auth = getAuth();
-      function callLoginGoogle() {
-          signInWithPopup(auth, provider)
-          .then((result) => {
-              const credential = GoogleAuthProvider.credentialFromResult(result);
-              const token = credential.accessToken;
-              const user = result.user;
-  
-              localStorage.setItem('token', token);
-              localStorage.setItem('userEmail', user.email);
-              localStorage.setItem('userName', user.displayName);
-  
-              actions.setIsAuthenticated(true, user.displayName);
-              navigate('/shop')
-          })
-          .catch((error) => {
-              console.error(error);
-          
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              const email = error.customData ? error.customData.email : null;
-              const credential = GoogleAuthProvider.credentialFromError(error);
-          
-              switch (errorCode) {
-                  case 'auth/cancelled-popup-request':
-                      alert('La solicitud de ventana emergente fue cancelada');
-                      break;
-                  case 'auth/user-not-found':
-                      alert('Usuario no encontrado');
-                      break;
-                  case 'auth/wrong-password':
-                      alert('Contraseña incorrecta');
-                      break;
-                  default:
-                      alert('Ocurrió un error inesperado, por favor inicia sesion con tu e-mail y contraseña o prueba el inicio de sesion con Google más tarde');
-              }
-          });            
-      }    
-      // Termina Firebase Google
+        const data = {
+            user_name:userName, 
+            email:email, 
+            password:password, 
+            repeatPassword:repeatPassword,
+        };
+        console.log("Contenido de data:", data);
+
+        fetch(`${process.env.BACKEND_URL}/api/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Respuesta del backend:', data);
+        })
+        .catch(error => {
+            console.error('Error al enviar datos al backend:', error);
+        });
+
+        localStorage.setItem('token', token);
+        localStorage.setItem('userEmail', user.email);
+        localStorage.setItem('userName', user.displayName);
+
+        actions.setIsAuthenticated(true, user.displayName);
+        navigate('/shop')
+      })
+      .catch((error) => {
+        console.error(error);
+    
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData ? error.customData.email : null;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+    
+        switch (errorCode) {
+          case 'auth/cancelled-popup-request':
+            alert('La solicitud de ventana emergente fue cancelada');
+            break;
+          case 'auth/user-not-found':
+            alert('Usuario no encontrado');
+            break;
+          case 'auth/wrong-password':
+            alert('Contraseña incorrecta');
+            break;
+          default:
+            alert('Ocurrió un error inesperado, por favor inicia sesion con tu e-mail y contraseña o prueba el inicio de sesion con Google más tarde');
+        }
+      });            
+    }    
+    // Termina Firebase Google
 
   return (
     <div
@@ -239,21 +266,35 @@ export const Signup = () => {
         </div>
         <div className="col-md-6 align-self-center">
           <div className="section text-center">
-            <p>
+            <p className="mt-3">
               ¿Ya tienes cuenta con nosotros?{" "}
               <Link to="/login" className="white-link">
                 Inicia Sesión
               </Link>
             </p>
-            <p>
+            <p className="mb-3">
               ¿Has olvidado tu contraseña?{" "}
               <Link to="/WIP" className="white-link">
                 Recupérala
               </Link>
             </p>
-            <button className="btn btn-secondary" type="button" onClick={callLoginGoogle}>
-              Iniciar Sesión con Google
-            </button>
+            <div className="container-fluid">
+              <div className="row">
+                  <div className="col-5" id="divider">
+                    <hr/>
+                  </div>
+                  <div className="col-2" id="text-divider">
+                    O
+                  </div>
+                  <div className="col-5" id="divider">
+                    <hr/>
+                  </div>
+              </div>
+            </div>
+            <div className="btn-group btn-secondary my-3" role="group" aria-label="Basic example">
+              <button type="button" onClick={callLoginGoogle} className="btn btn-secondary btn-lg"><FcGoogle/></button>
+              <button type="button" onClick={callLoginGoogle} className="btn btn-secondary btn-lg">Iniciar Sesión con Google</button>
+            </div>
           </div>
         </div>
       </div>

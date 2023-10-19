@@ -9,6 +9,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 //iconos
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
 
 //images
 import abstract from '../../img/abstract.jpg';
@@ -46,6 +47,33 @@ export const Login = () => {
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             const user = result.user;
+            const userName = user.displayName;
+            const email = user.email
+            const password = 'loginWithGoogle';
+            const repeatPassword = 'loginWithGoogle';
+
+            const data = {
+                user_name:userName, 
+                email:email, 
+                password:password, 
+                repeatPassword:repeatPassword,
+            };
+            console.log("Contenido de data:", data);
+
+            fetch(`${process.env.BACKEND_URL}/api/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respuesta del backend:', data);
+            })
+            .catch(error => {
+                console.error('Error al enviar datos al backend:', error);
+            });
 
             localStorage.setItem('token', token);
             localStorage.setItem('userEmail', user.email);
@@ -213,17 +241,31 @@ export const Login = () => {
                 </div>
                 <div className="col-md-6 align-self-center">
                     <div className="section text-center">
-                        <p>
+                        <p className="mt-3">
                             ¿No tienes cuenta?{' '}
                             <Link to="/signup" className="white-link">Regístrate aquí</Link>
                         </p>
-                        <p>
+                        <p className="mb-3">
                             ¿Has olvidado tu contraseña?{' '}
                             <Link to="/WIP" className="white-link">Recupérala aquí</Link>
                         </p>
-                        <button className="btn btn-secondary" type="button" onClick={callLoginGoogle}>
-                            Iniciar Sesión con Google
-                        </button>
+                        <div className="container-fluid">
+                            <div className="row">
+                                <div className="col-5" id="divider">
+                                    <hr/>
+                                </div>
+                                <div className="col-2" id="text-divider">
+                                    O
+                                </div>
+                                <div className="col-5" id="divider">
+                                    <hr/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="btn-group btn-secondary my-3" role="group" aria-label="Basic example">
+                            <button type="button" onClick={callLoginGoogle} className="btn btn-secondary btn-lg"><FcGoogle/></button>
+                            <button type="button" onClick={callLoginGoogle} className="btn btn-secondary btn-lg">Iniciar Sesión con Google</button>
+                        </div>
                     </div>
                 </div>
             </div>
