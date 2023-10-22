@@ -29,78 +29,6 @@ export const Login = () => {
         password: '',
     });
 
-    // Empieza Firebase Google
-    const provider = new GoogleAuthProvider();
-
-    initializeApp(firebaseConfig);
-
-    const auth = getAuth();
-    function callLoginGoogle() {
-        signInWithPopup(auth, provider)
-        .then((result) => {
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            const user = result.user;
-            const userName = user.displayName;
-            const email = user.email
-            const password = 'loginWithGoogle';
-            const repeatPassword = 'loginWithGoogle';
-
-            const data = {
-                user_name:userName, 
-                email:email, 
-                password:password, 
-                repeatPassword:repeatPassword,
-            };
-            console.log("Contenido de data:", data);
-
-            fetch(`${process.env.BACKEND_URL}/api/signup`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Respuesta del backend:', data);
-            })
-            .catch(error => {
-                console.error('Error al enviar datos al backend:', error);
-            });
-
-            localStorage.setItem('token', token);
-            localStorage.setItem('userEmail', user.email);
-            localStorage.setItem('userName', user.displayName);
-
-            actions.setIsAuthenticated(true, user.displayName);
-            navigate('/shop')
-        })
-        .catch((error) => {
-            console.error(error);
-        
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            const email = error.customData ? error.customData.email : null;
-            const credential = GoogleAuthProvider.credentialFromError(error);
-        
-            switch (errorCode) {
-                case 'auth/cancelled-popup-request':
-                    alert('La solicitud de ventana emergente fue cancelada');
-                    break;
-                case 'auth/user-not-found':
-                    alert('Usuario no encontrado');
-                    break;
-                case 'auth/wrong-password':
-                    alert('Contraseña incorrecta');
-                    break;
-                default:
-                    alert('Ocurrió un error inesperado, por favor inicia sesion con tu e-mail y contraseña o prueba el inicio de sesion con Google más tarde');
-            }
-        });            
-    }    
-    // Termina Firebase Google
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -157,6 +85,7 @@ export const Login = () => {
                     const responseData = await response.json();
                     const userToken = responseData.token;
                     const userEmail = responseData.email;
+                    const userId = responseData.id;
 
                     if (userToken) {
                         const decodedToken = JSON.parse(atob(userToken.split('.')[1]));
@@ -168,8 +97,8 @@ export const Login = () => {
                         localStorage.setItem('token', userToken);
                         localStorage.setItem('userEmail', userEmail);
                         localStorage.setItem('userName', user_name);
+                        localStorage.setItem('userId', userId);
                     }
-
                     navigate('/shop'); 
                 } else {
                     const responseData = await response.json();
@@ -188,6 +117,75 @@ export const Login = () => {
         }
     };
 
+    // Empieza Firebase Google
+    const provider = new GoogleAuthProvider();
+    initializeApp(firebaseConfig);
+  
+    const auth = getAuth();
+    function callLoginGoogle() {
+        signInWithPopup(auth, provider)
+        .then((result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            const user = result.user;
+            const userName = user.displayName;
+            const email = user.email
+            const password = 'loginWithGoogle';
+            const repeatPassword = 'loginWithGoogle';
+  
+            const data = {
+                user_name:userName, 
+                email:email, 
+                password:password, 
+                repeatPassword:repeatPassword,
+            };
+            console.log("Contenido de data:", data);
+  
+            fetch(`${process.env.BACKEND_URL}/api/signup-firebase`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respuesta del backend:', data);
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userEmail', data.email);
+                localStorage.setItem('userName', data.user_name);
+                localStorage.setItem('userId', data.id);
+            })
+            .catch(error => {
+                console.error('Error al enviar datos al backend:', error);
+            });
+
+            actions.setIsAuthenticated(true, user.displayName);
+            navigate('/shop')
+        })
+        .catch((error) => {
+            console.error(error);
+
+            const errorCode = error.code;
+      
+            switch (errorCode) {
+                case 'auth/cancelled-popup-request':
+                    alert('La solicitud de ventana emergente fue cancelada');
+                    break;
+                case 'auth/user-not-found':
+                    alert('Usuario no encontrado');
+                    break;
+                case 'auth/wrong-password':
+                    alert('Contraseña incorrecta');
+                    break;
+                default:
+                    alert('Ocurrió un error inesperado, por favor inicia sesion con tu e-mail y contraseña o prueba el inicio de sesion con Google más tarde');
+            }
+        });            
+      }    
+    // Termina Firebase Google
+    
     return (
         <div className="body background-abstract" style={{backgroundImage: `url(${abstract})`}}>
             <div className="row m-5">
@@ -248,9 +246,7 @@ export const Login = () => {
                                 <div className="col-5" id="divider">
                                     <hr/>
                                 </div>
-                                <div className="col-2" id="text-divider">
-                                    O
-                                </div>
+                                <div className="col-2" id="text-divider"> O </div>
                                 <div className="col-5" id="divider">
                                     <hr/>
                                 </div>

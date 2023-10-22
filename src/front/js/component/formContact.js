@@ -86,62 +86,27 @@ export const FormContact = () => {
       </p>
       <form onSubmit={handleSubmit} className="p-3">
         <div className="mb-3">
-          <label htmlFor="name" className="form-label color-pink fs-4">
-            Nombre
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="name"
-            name="name"
-            required
-            autoComplete="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
+          <label htmlFor="name" className="form-label color-pink fs-4"> Nombre </label>
+          <input type="text" className="form-control" id="name" name="name" required autoComplete="name"  
+          value={formData.name} onChange={handleChange} />
         </div>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label color-pink fs-4">
-            Correo Electrónico
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            name="email"
-            required
-            autoComplete="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
+          <label htmlFor="email" className="form-label color-pink fs-4"> Correo Electrónico </label>
+          <input type="email" className="form-control" id="email" name="email" required autoComplete="email"
+          value={formData.email}  onChange={handleChange} />
         </div>
         <div className="mb-3">
-          <label htmlFor="message" className="form-label color-pink fs-4">
-            Mensaje
-          </label>
-          <textarea
-            className="form-control"
-            id="message"
-            name="message"
-            rows="5"
-            required
-            value={formData.message}
-            onChange={handleChange}
-          ></textarea>
+          <label htmlFor="message" className="form-label color-pink fs-4"> Mensaje </label>
+          <textarea className="form-control" id="message" name="message" rows="5" required
+            value={formData.message} onChange={handleChange}></textarea>
         </div>
-        <button type="submit" className="btn btn-primary">
-          Enviar Mensaje
-        </button>
+        <button type="submit" className="btn btn-primary"> Enviar Mensaje </button>
       </form>
       {submitStatus === 'success' && (
-        <div className="alert alert-success mt-3" role="alert">
-          ¡El mensaje se envió con éxito!
-        </div>
+        <div className="alert alert-success mt-3" role="alert"> ¡El mensaje se envió con éxito! </div>
       )}
       {submitStatus === 'error' && (
-        <div className="alert alert-warning mt-3" role="alert">
-          Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.
-        </div>
+        <div className="alert alert-warning mt-3" role="alert"> Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo. </div>
       )}
     </div>
   );

@@ -17,62 +17,36 @@ export const LandingNavbar = () => {
           <>
             <div className="ms-auto">
               <div className="dropdown">
-                <button
-                  className="btn dropdown-toggle align-items-end justify-content-end ms-auto"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
+                <button className="btn dropdown-toggle align-items-end justify-content-end ms-auto"
+                  type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                   {`¡Hola, ${userName}!`}
                 </button>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                >
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <li>
-                    <Link to="/shop" className="dropdown-item">
-                      Carta
-                    </Link>
+                    <Link to="/shop" className="dropdown-item"> Carta </Link>
                   </li>
                   <li>
-                    <Link to="/cart" className="dropdown-item">
-                      {" "}
-                      Mi Cesta
-                    </Link>
+                    <Link to="/cart" className="dropdown-item">Mi Cesta </Link>
                   </li>
                   <li>
-                    <Link to="/wip" className="dropdown-item">
-                      {" "}
-                      Mis Pedidos
-                    </Link>
+                    <Link to="/wip" className="dropdown-item"> Mis Pedidos </Link>
                   </li>
-                  <li className="dropdown-divider"></li>
+                  <li className="dropdown-divider"/>
                   <li className="nav-item pe-3">
-                    <Link to="/" className="dropdown-item">
-                      Inicio
-                    </Link>
+                    <Link to="/" className="dropdown-item"> Inicio </Link>
                   </li>
                   <li className="nav-item pe-3">
-                    <Link to="/contact" className="dropdown-item">
-                      Contacto
-                    </Link>
+                    <Link to="/contact" className="dropdown-item"> Contacto </Link>
                   </li>
                   <li className="nav-item pe-3">
-                    <Link to="/schedule" className="dropdown-item">
-                      Horario
-                    </Link>
+                    <Link to="/schedule" className="dropdown-item"> Horario </Link>
                   </li>
                   <li className="nav-item pe-3">
-                    <Link to="/reserve" className="dropdown-item">
-                      Reservar
-                    </Link>
+                    <Link to="/reserve" className="dropdown-item"> Reservar </Link>
                   </li>
-                  <li className="dropdown-divider"></li>
+                  <li className="dropdown-divider"/>
                   <li>
-                    <button className="dropdown-item" onClick={handleLogout}>
-                      Cerrar Sesión
-                    </button>
+                    <button className="dropdown-item" onClick={handleLogout}> Cerrar Sesión </button>
                   </li>
                 </ul>
               </div>
@@ -80,13 +54,8 @@ export const LandingNavbar = () => {
           </>
         ) : (
           <div className="navbar-text mx-auto justify-content-center align-items-center text-center">
-            <Link to="/signup" className="text-white">
-              Regístrate
-            </Link>{" "}
-            o{" "}
-            <Link to="/login" className="text-white">
-              Inicia sesión
-            </Link>{" "}
+            <Link to="/signup" className="text-white"> Regístrate </Link>{" "} o 
+            <Link to="/login" className="text-white"> Inicia sesión </Link>{" "}
             con nosotros para poder hacer tu pedido online
           </div>
         )}

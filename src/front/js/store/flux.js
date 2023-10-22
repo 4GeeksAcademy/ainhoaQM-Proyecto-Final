@@ -4,19 +4,6 @@ const getState = ({ getStore, setStore }) => {
             isAuthenticated: false,
             userName: '',
             cart: [
-                {
-                    id: 1,
-                    name: "Producto Default",
-                    price: 10.25,
-                    quantity: 1
-                },
-                {
-                    id: 2,
-                    name: "Menú Default",
-                    price: 12.00,
-                    description: "Starter: Default, Dish: Default, Drink: Default, Dessert: Default",
-                    quantity: 1
-                }
             ],
             discountPercentage: 0,
         },
@@ -117,4 +104,3 @@ const getState = ({ getStore, setStore }) => {
 };
 
 export default getState;
-
