@@ -28,7 +28,7 @@ export const FirstDishes = ({ setShowLoginMessage }) => {
   };
 
   useEffect(() => {
-    fetch("/api/category-2/products")
+    fetch(process.env.BACKEND_URL + "/api/category-2/products")
       .then((response) => response.json())
       .then((data) => {
         const sortedProducts = data.products.sort((a, b) => a.id - b.id);
