@@ -117,40 +117,28 @@ export const NewPassword = () => {
                             <div className="mb-3">
                                 <label htmlFor="inputPassword" className="form-label">Contraseña</label>
                                 <div className="input-group">
-                                    <input type={showPassword ? 'text' : 'password'} className="form-control" id="inputPassword" name="password"
-                                        autoComplete="current-password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} 
-                                    />
+                                    <input type={showPassword ? 'text' : 'password'} className="form-control" id="inputPassword" name="password" autoComplete="current-password" 
+                                    required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
                                     <button className="btn btn-secondary" type="button" onClick={toggleShowPassword}>
                                         {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                                     </button>
                                 </div>
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="inputRepeatPassword" className="form-label">
-                                    Repetir Contraseña
-                                </label>
+                                <label htmlFor="inputRepeatPassword" className="form-label"> Repetir Contraseña </label>
                                 <div className="input-group">
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        className="form-control"
-                                        id="inputRepeatPassword"
-                                        name="repeatPassword"
-                                        autoComplete="current-password"
-                                        required
+                                    <input type={showPassword ? 'text' : 'password'} className="form-control" id="inputRepeatPassword" name="repeatPassword" autoComplete="current-password" required
                                         value={repeatPassword}
                                         onChange={handleRepeatPasswordChange}
                                     />
-                                    <button
-                                        className="btn btn-secondary"
-                                        type="button"
-                                        onClick={toggleShowPassword}
-                                    >
+                                    <button type="button" className="btn btn-secondary"
+                                        onClick={toggleShowPassword}>
                                         {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                                     </button>
                                 </div>
                             </div>
                             <div className="d-flex justify-content-center align-items-center">
-                                <button type="submit" className="btn btn-secondary">Cambiar Contraseña</button>
+                                <button type="submit" className="btn btn-secondary"> Cambiar Contraseña </button>
                             </div>
                         </form>
                     </div>

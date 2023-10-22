@@ -53,7 +53,7 @@ export const ResetPassword = () => {
                     <div className="col-12 form-rounded form-shadow bg-light">
                         <form onSubmit={(e) => handleSubmit(e)} className="m-5">
                             <div className="text-center mb-4">
-                                <h1 className="h1">Resetea tu contraseña</h1>
+                                <h1 className="h1"> Resetea tu contraseña </h1>
                             </div>
                             {error && (
                                 <div className="alert alert-warning"> {error.message} </div>
@@ -69,7 +69,7 @@ export const ResetPassword = () => {
                                 autoComplete="current-email" required value={email} onChange={handleInputChange}/>
                             </div>
                             <div className="d-flex justify-content-center align-items-center">
-                                <button type="submit" className="btn btn-secondary">Restablecer Contraseña</button>
+                                <button type="submit" className="btn btn-secondary"> Restablecer Contraseña </button>
                             </div>
                         </form>
                     </div>
@@ -78,4 +78,3 @@ export const ResetPassword = () => {
         </div>
     );
 };
-

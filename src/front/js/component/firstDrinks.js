@@ -58,25 +58,10 @@ export const FirstDrinks = ({ setShowLoginMessage }) => {
                 </div>
               </div>
               <div className="card-footer quantity-selector d-flex align-items-center justify-content-center">
-                <button
-                  onClick={decrementQuantity}
-                  className="btn btn-outline-secondary"
-                >
-                  -
-                </button>
+                <button onClick={decrementQuantity} className="btn btn-outline-secondary" >   - </button>
                 <span className="px-2">{quantity}</span>
-                <button
-                  onClick={incrementQuantity}
-                  className="btn btn-outline-secondary me-3"
-                >
-                  +
-                </button>
-                <button
-                  onClick={() => addToCart(product, quantity)}
-                  className="btn btn-secondary"
-                >
-                  Añadir
-                </button>
+                <button onClick={incrementQuantity} className="btn btn-outline-secondary me-3"> + </button>
+                <button onClick={() => addToCart(product, quantity)} className="btn btn-secondary"> Añadir </button>
               </div>
             </div>
           </div>

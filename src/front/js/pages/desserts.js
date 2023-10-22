@@ -21,12 +21,6 @@ export const Desserts = () => {
     }
   };
 
-  const handleCartButtonClick = () => {
-    if (!store.isAuthenticated) {
-      setShowLoginMessage(true);
-    }
-  };
-
   const incrementQuantity = () => {
     setQuantity(quantity + 1);
   };
@@ -58,36 +52,28 @@ export const Desserts = () => {
     <>
       <div className="container body">
         {showLoginMessage && (
-          <div
-            className="alert alert-warning d-flex align-items-center"
-            role="alert"
-          >
-            <div className="icon-warning">
-              <PiWarningCircleDuotone />
-            </div>
+          <div className="alert alert-warning d-flex justify-content-center align-items-center" role="alert">
+            <div className="icon-warning"><PiWarningCircleDuotone /></div>
             <div>
               Por favor, <a href="/login">inicia sesión</a> o{" "}
-              <a href="/signup">regístrate</a> para poder añadir productos al
-              carrito.
+              <a href="/signup">regístrate</a> para poder añadir productos al carrito
             </div>
           </div>
         )}
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-              <a href="/">Inicio</a>
+              <a href="/"> Inicio </a>
             </li>
             <li className="breadcrumb-item">
-              <a href="/shop">Carta</a>
+              <a href="/shop"> Carta </a>
             </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              Postres
-            </li>
+            <li className="breadcrumb-item active" aria-current="page"> Postres </li>
           </ol>
         </nav>
         <div className="jumbotron-category p-2 mb-4 rounded-3">
           <div className="container-fluid py-5">
-            <h1 className="h1 display-3 text-center">Postres</h1>
+            <h1 className="h1 display-3 text-center"> Postres </h1>
           </div>
         </div>
         <h2 className="subtitle display-6"> Postres Caseros </h2>
@@ -96,55 +82,30 @@ export const Desserts = () => {
           {products.slice(0, 6).map((product) => (
             <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
               <div className="card">
-                <img
-                  src={product.image_url}
-                  className="card-img-top"
-                  alt={product.name}
-                />
+                <img src={product.image_url} className="card-img-top" alt={product.name} />
                 <div className="card-body d-flex flex-column justify-content-between"> 
                   <h3 className="card-title text-center">{product.name}</h3>
                   <div className="mt-auto"> 
-                    <h4 className="card-text text-end p-1 mb-0">
-                      {product.price.toFixed(2)} €
-                    </h4>
+                    <h4 className="card-text text-end p-1 mb-0"> {product.price.toFixed(2)} € </h4>
                   </div>
                 </div>
                 <div className="card-footer quantity-selector d-flex align-items-center justify-content-center">
-                  <button
-                    onClick={decrementQuantity}
-                    className="btn btn-outline-secondary"
-                  >
-                    -
-                  </button>
+                  <button onClick={decrementQuantity} className="btn btn-outline-secondary"> - </button>
                   <span className="px-2">{quantity}</span>
-                  <button
-                    onClick={incrementQuantity}
-                    className="btn btn-outline-secondary me-3"
-                  >
-                    +
-                  </button>
-                  <button
-                    onClick={() => addToCart(product, quantity)}
-                    className="btn btn-secondary"
-                  >
-                    Añadir
-                  </button>
+                  <button onClick={incrementQuantity}className="btn btn-outline-secondary me-3"> + </button>
+                  <button onClick={() => addToCart(product, quantity)} className="btn btn-secondary" > Añadir </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-        <h2 className="subtitle display-6"> Helados</h2>
+        <h2 className="subtitle display-6"> Helados </h2>
         <hr className="my-1" />
         <div className="row p-3">
           {products.slice(6).map((product) => (
             <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
               <div className="card">
-                <img
-                  src={product.image_url}
-                  className="card-img-top"
-                  alt={product.name}
-                />
+                <img src={product.image_url} className="card-img-top"  alt={product.name} />
                 <div className="card-body d-flex flex-column justify-content-between"> 
                   <h3 className="card-title text-center">{product.name}</h3>
                   <div className="mt-auto"> 
@@ -154,25 +115,10 @@ export const Desserts = () => {
                   </div>
                 </div>
                 <div className="card-footer quantity-selector d-flex align-items-center justify-content-center">
-                  <button
-                    onClick={decrementQuantity}
-                    className="btn btn-outline-secondary"
-                  >
-                    -
-                  </button>
+                  <button onClick={decrementQuantity} className="btn btn-outline-secondary"> - </button>
                   <span className="px-2">{quantity}</span>
-                  <button
-                    onClick={incrementQuantity}
-                    className="btn btn-outline-secondary me-3"
-                  >
-                    +
-                  </button>
-                  <button
-                    onClick={() => addToCart(product, quantity)}
-                    className="btn btn-secondary"
-                  >
-                    Añadir
-                  </button>
+                  <button onClick={incrementQuantity}className="btn btn-outline-secondary me-3"> + </button>
+                  <button onClick={() => addToCart(product, quantity)} className="btn btn-secondary" > Añadir </button>
                 </div>
               </div>
             </div>

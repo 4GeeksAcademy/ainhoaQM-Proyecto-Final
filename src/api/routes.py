@@ -1,22 +1,17 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import os
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, request, jsonify, redirect, url_for, Blueprint
 from api.models import db, User, Product, Category, Order, OrderDetail, DiscountCode, ContactMessage, Reservation
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token
-from flask_jwt_extended import unset_jwt_cookies
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
-from authlib.integrations.flask_client import OAuth
 
 
 api = Blueprint('api', __name__)
-
-
 
 # Ruta para crear usuario
 @api.route('/signup', methods=['POST'])
@@ -46,6 +41,43 @@ def create_user():
     except Exception as e:
         print(str(e))
         return jsonify({"msg": str(e)}), 400
+    
+# Ruta para registrar usuarios con Firebase
+@api.route('/signup-firebase', methods=['POST'])
+def create_user_firebase():
+    try:
+        body = request.get_json()
+        email = body["email"]
+        password = body["password"]
+        user_name = body["user_name"]
+
+        # Verificar si el correo electrónico ya está en la base de datos
+        existing_user = User.query.filter_by(email=email).first()
+
+        if existing_user:
+            response_body = {"msg": "El correo electrónico ya está registrado"}
+            return jsonify(response_body), 400
+
+        new_user = User(email=email, user_name=user_name)
+        new_user.set_password(password)
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        # Generar un token de acceso para el nuevo usuario
+        access_token = create_access_token(identity=new_user.serialize())
+
+        response_body = {
+            "msg": "Usuario creado correctamente",
+            "token": access_token,
+            "email": email,
+            "user_name": user_name
+        }
+
+        return jsonify(response_body), 200
+    except Exception as e:
+        print(str(e))
+        return jsonify({"msg": str(e)}), 400
 
 # Ruta para iniciar sesion
 @api.route('/login', methods=['POST'])
@@ -58,7 +90,7 @@ def login():
     if user == None:
         return jsonify({"msg": "El usario y/o la contraseña no son correctos"}), 401
 
-    access_token = create_access_token(identity=user.serialize(), additional_claims={"user_name": user.user_name})
+    access_token = create_access_token(identity=user.serialize(), additional_claims={"user_name": user.user_name, "user_id": user.id})
     response_body = {
         "msg": "Token creada correctamente",
         "token": access_token,
@@ -114,7 +146,6 @@ def change_password():
 
     except Exception as e:
         return jsonify({"msg": str(e)}), 400
-
 
 # Ruta para ver todos los usuarios y sus pedidos
 @api.route('/users', methods=['GET'])
@@ -177,7 +208,7 @@ def get_all_products():
     
     return jsonify(response_body), 200
 
-# Ruta para que el cliente pueda ver un producto en específico
+""" # Ruta para que el cliente pueda ver un producto en específico
 @api.route('/product/<int:product_id>', methods=['GET'])
 def product_detail(product_id):
     product = Product.query.filter_by(id=product_id).first()
@@ -190,7 +221,7 @@ def product_detail(product_id):
         "product": product.serialize()
     }
 
-    return jsonify(response_body), 200
+    return jsonify(response_body), 200 """
 
 # Ruta para editar un product
 @api.route('/edit-product/<int:product_id>', methods=['PUT'])
@@ -432,4 +463,52 @@ def delete_reservation(reservation_id):
     else:
         return jsonify({'message': 'Reserva no encontrada'}), 404
 
+# Ruta para registrar un pedido para usuarios autenticados con JWT)
+@api.route('/create-order', methods=['POST'])
+@jwt_required()
+def create_order():
+    try:
+        user = get_jwt_identity() 
+        data = request.get_json()
+        new_order = Order(
+            user_id=user['id'],  
+            order_comments=data.get('comments'),  
+            takeaway=data.get('takeaway'), 
+            payment_method=data.get('paymentOption'),  
+        )
 
+        for item in data['cart']:
+            if 'product_id' in item:
+                product_id = item['product_id']
+                quantity = item['quantity']
+                price = item['price']
+                new_order_detail = OrderDetail(
+                    product_id=product_id,
+                    quantity=quantity,
+                    price=price,
+                )
+            else:
+                menu_id = item['menu_id']
+                quantity = item['quantity']
+                price = item['price']
+                new_order_detail = OrderDetail(
+                    menu_id=menu_id,
+                    quantity=quantity,
+                    price=price,
+                )
+
+            new_order.order_details.append(new_order_detail)
+
+        db.session.add(new_order)
+        db.session.commit()
+
+        response_body = {
+            "success": True,
+            "msg": "Pedido creado correctamente",
+        }
+
+        return jsonify(response_body), 200
+
+    except Exception as e:
+        print(str(e))
+        return jsonify({"success": False, "msg": str(e)}), 400

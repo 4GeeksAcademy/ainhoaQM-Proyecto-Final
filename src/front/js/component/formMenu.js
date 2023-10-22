@@ -84,67 +84,48 @@ export const FormMenu = ({ setShowLoginMessage }) => {
 
   return (
     <div className="container">
-      <div className="mb-3">
-        <div className="row">
-          <div className="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
-            <h2>Selecciona tu Menú</h2>
-            <label htmlFor="starter" className="form-label">Entrante</label>
-            <select
-              className="form-select form-select-lg"
-              id="starter"
-              value={selectedStarter}
-              onChange={(e) => setSelectedStarter(e.target.value)}
-            >
-              <option value="">Selecciona una opción</option>
-              {starterOptions.map((option, index) => (
-                <option key={index} value={option}>{option}</option>
-              ))}
-            </select>
-            <label htmlFor="dishes" className="form-label">Plato Principal</label>
-            <select
-              className="form-select form-select-lg"
-              id="dishes"
-              value={selectedDishes}
-              onChange={(e) => setSelectedDishes(e.target.value)}
-            >
-              <option value="">Selecciona una opción</option>
-              {dishesOptions.map((option, index) => (
-                <option key={index} value={option}>{option}</option>
-              ))}
-            </select>
-            <label htmlFor="drink" className="form-label">Bebida</label>
-            <select
-              className="form-select form-select-lg"
-              id="drink"
-              value={selectedDrink}
-              onChange={(e) => setSelectedDrink(e.target.value)}
-            >
-              <option value="">Selecciona una opción</option>
-              {drinkOptions.map((option, index) => (
-                <option key={index} value={option}>{option}</option>
-              ))}
-            </select>
-            <label htmlFor="dessert" className="form-label">Postre</label>
-            <select
-              className="form-select form-select-lg"
-              id="dessert"
-              value={selectedDessert}
-              onChange={(e) => setSelectedDessert(e.target.value)}
-            >
-              <option value="">Selecciona una opción</option>
-              {dessertOptions.map((option, index) => (
-                <option key={index} value={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
-            <div style={{ textAlign: 'center', marginTop: '10px',  marginBottom: '10px' }}>
-              <img src={cucharas} alt="Cucharas" style={{ width: '100%', height: 'auto' }} />
-            </div>
-          </div>
+      <div className="row mb-3">
+        <div className="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 image-container">
+          <img src={cucharas} alt="Cucharas" className="image"/> 
+        </div>
+        <div className="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
+          <h2>Selecciona tu Menú</h2>
+          <label htmlFor="starter" className="form-label">Entrante</label>
+          <select className="form-select form-select-lg" id="starter" 
+            value={selectedStarter} onChange={(e) => setSelectedStarter(e.target.value)} >
+            <option>Selecciona una opción</option>
+            {starterOptions.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
+          </select>
+          <label htmlFor="dishes" className="form-label">Plato Principal</label>
+          <select className="form-select form-select-lg" id="dishes"
+            value={selectedDishes} onChange={(e) => setSelectedDishes(e.target.value)}>
+            <option>Selecciona una opción</option>
+            {dishesOptions.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
+          </select>
+          <label htmlFor="drink" className="form-label">Bebida</label>
+          <select className="form-select form-select-lg" id="drink"
+            value={selectedDrink} onChange={(e) => setSelectedDrink(e.target.value)}>
+            <option>Selecciona una opción</option>
+            {drinkOptions.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
+          </select>
+          <label htmlFor="dessert" className="form-label">Postre</label>
+          <select className="form-select form-select-lg" id="dessert"
+            value={selectedDessert} onChange={(e) => setSelectedDessert(e.target.value)}>
+            <option>Selecciona una opción</option>
+            {dessertOptions.map((option, index) => (
+              <option key={index} value={option}>{option}</option>
+            ))}
+          </select>
+            <button type="button" className="btn btn-secondary mt-3 float-end" 
+            onClick={addMenuToCart} disabled={!areAllOptionsSelected()}>Agregar al Carrito</button>
         </div>
       </div>
-      <button type="button" className="btn btn-secondary" onClick={addMenuToCart} disabled={!areAllOptionsSelected()}>Agregar al Carrito</button>
     </div>
   );
 };

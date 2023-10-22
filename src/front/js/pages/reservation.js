@@ -13,12 +13,11 @@ export const Reservation = () => {
     <div className="container-fluid landing-container text-center mt-5">
         <div className="row">
             <div className="col-sm-12 col-md-6 contact-us pt-0 p-5">
-                <FormReservation/>
+              <FormReservation/>
             </div>
-            
-            <div className="col-sm-12 col-md-6 contact-us pt-0  p-5">
-              <div style={{ textAlign: 'center', marginTop: '10px',  marginBottom: '10px' }}>
-                <img src={ComerComida} alt="Imagen Logo" style={{ width: '100%', height: 'auto' }} />
+            <div className="col-sm-12 col-md-6 pt-0 p-5">
+              <div className="mb-4 pb-4">
+                <img src={ComerComida} alt="Imagen Logo" className="image" />
               </div>
                 <Schedule/>
             </div>

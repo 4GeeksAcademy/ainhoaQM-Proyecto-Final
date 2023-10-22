@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useEffect, useContext} from "react";
+import { Context } from "./store/appContext";
 import { BrowserRouter, Route, Routes} from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
@@ -16,6 +17,7 @@ import { Dishes } from "./pages/dishes";
 import { Drinks } from "./pages/drinks";
 import { Desserts } from "./pages/desserts";
 import { Cart } from "./pages/cart";
+import { Order } from "./pages/order";
 import { Ticket } from "./pages/ticket";
 import { Contact } from "./pages/contact";
 import { Reservation } from "./pages/reservation";
@@ -30,6 +32,15 @@ import { Heading } from "./component/heading";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
+    const { actions } = useContext(Context);
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const userName = localStorage.getItem('userName');
+        const userEmail = localStorage.getItem('userEmail');
+        if  (token && userName && userEmail) {
+            actions.setIsAuthenticated(true);
+        }
+    }, []);
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
@@ -53,6 +64,7 @@ const Layout = () => {
                                 <Route element={<Drinks />} path="/drinks" />
                                 <Route element={<Desserts />} path="/desserts" />
                                 <Route element={<Cart />} path="/cart" />
+                                <Route element={<Order />} path="/order" />
                                 <Route element={<Ticket />} path="/ticket" />
                                 <Route element={<Contact />} path="/contact" />
                                 <Route element={<Reservation />} path="/reserve" />
