@@ -26,6 +26,7 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "user_name": self.user_name,
+            "orders": self.orders
         }
 
 class Product(db.Model):
@@ -126,9 +127,11 @@ class Order(db.Model):
     discount_code_id = db.Column(db.Integer, db.ForeignKey('discount_code.id'), nullable=True)
     discount_code = db.relationship('DiscountCode')
 
-    def __init__(self, user_id,order_comments=None):
+    def __init__(self, user_id,payment_method, takeaway=False, order_comments=None):
         self.user_id = user_id
         self.order_details = []  
+        self.takeaway = takeaway
+        self.payment_method = payment_method
         self.calculate_total_price()
         self.order_comments = order_comments
         self.order_date = datetime.now()

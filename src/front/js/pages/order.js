@@ -48,7 +48,7 @@ export const Order = () => {
     e.preventDefault();
   
     if (acceptTerms) {
-      const paymentOption = document.querySelector('input[name="paymentOption"]:checked').value;
+      const payment_method = document.querySelector('input[name="paymentOption"]:checked').value;
       const comments = document.getElementById('comments').value;
       const takeaway = document.getElementById('takeaway').checked;
       
@@ -66,7 +66,7 @@ export const Order = () => {
   
       const orderData = {
         cart: [...products, ...menus], 
-        paymentOption,
+        payment_method,
         takeaway,
         comments,
         discountCode,

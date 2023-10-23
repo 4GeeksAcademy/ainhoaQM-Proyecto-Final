@@ -55,29 +55,37 @@ def create_user_firebase():
         existing_user = User.query.filter_by(email=email).first()
 
         if existing_user:
-            response_body = {"msg": "El correo electrónico ya está registrado"}
-            return jsonify(response_body), 400
+            # El usuario ya está registrado, así que generamos un token y lo devolvemos
+            access_token = create_access_token(identity=existing_user.serialize())  
+            response_body = {
+                "token": access_token,
+                "email": existing_user.email,
+                "user_name": existing_user.user_name
+            }
+            return jsonify(response_body), 200
 
+        # El usuario no está registrado, lo registramos
         new_user = User(email=email, user_name=user_name)
         new_user.set_password(password)
 
         db.session.add(new_user)
         db.session.commit()
 
-        # Generar un token de acceso para el nuevo usuario
-        access_token = create_access_token(identity=new_user.serialize())
+        # Generamos un token para el nuevo usuario
+        access_token = create_access_token(new_user)
 
         response_body = {
-            "msg": "Usuario creado correctamente",
             "token": access_token,
-            "email": email,
-            "user_name": user_name
+            "email": new_user.email,
+            "user_name": new_user.user_name
         }
 
-        return jsonify(response_body), 200
+        return jsonify(response_body), 201
+
     except Exception as e:
-        print(str(e))
-        return jsonify({"msg": str(e)}), 400
+        print(e)  # Imprime el error en la consola del servidor
+        return jsonify({"msg": "Ocurrió un error al procesar la solicitud"}), 400
+
 
 # Ruta para iniciar sesion
 @api.route('/login', methods=['POST'])
@@ -474,7 +482,7 @@ def create_order():
             user_id=user['id'],  
             order_comments=data.get('comments'),  
             takeaway=data.get('takeaway'), 
-            payment_method=data.get('paymentOption'),  
+            payment_method=data.get('payment_method'),  
         )
 
         for item in data['cart']:

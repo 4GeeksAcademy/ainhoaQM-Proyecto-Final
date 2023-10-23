@@ -439,14 +439,6 @@ ALTER TABLE ONLY public.used_discount_code ALTER COLUMN id SET DEFAULT nextval('
 ALTER TABLE ONLY public."user" ALTER COLUMN id SET DEFAULT nextval('public.user_id_seq'::regclass);
 
 
---
--- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: gitpod
---
-
-COPY public.alembic_version (version_num) FROM stdin;
-a04423660955
-\.
-
 
 --
 -- Data for Name: category; Type: TABLE DATA; Schema: public; Owner: gitpod
@@ -489,25 +481,8 @@ COPY public.contact_messages (id, name, email, message) FROM stdin;
 --
 
 COPY public.discount_code (id, code, percentage) FROM stdin;
-1	1erCOMERCOMIDA	10
 5	1erComerComida	10
 6	XMiCaraBonita	50
-\.
-
-
---
--- Data for Name: order; Type: TABLE DATA; Schema: public; Owner: gitpod
---
-
-COPY public."order" (id, user_id, total_price, order_comments, payment_method, order_date, discount_code_id, takeaway) FROM stdin;
-\.
-
-
---
--- Data for Name: order_detail; Type: TABLE DATA; Schema: public; Owner: gitpod
---
-
-COPY public.order_detail (id, order_id, product, quantity, price, order_date) FROM stdin;
 \.
 
 
@@ -559,14 +534,6 @@ COPY public.reservation (id, name, email, location, date, "time", number_of_peop
 2	Ainhoa	qm.ainhoa99@gmail.com	Calle Falsa, 123 CP: 00000 Barcelona	2023-10-18	13:53:00	8
 3	Ainhoa	qm.ainhoa99@gmail.com	Calle Ficticia, 456 CP: 00000 Madrid	2023-10-25	20:55:00	5
 4	Ainhoa	joiqdjid@hotmail.com	Calle Falsa, 123 CP: 00000 Barcelona	2023-10-27	14:57:00	1
-\.
-
-
---
--- Data for Name: used_discount_code; Type: TABLE DATA; Schema: public; Owner: gitpod
---
-
-COPY public.used_discount_code (id, user_id, discount_code_id) FROM stdin;
 \.
 
 
