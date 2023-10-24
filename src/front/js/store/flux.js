@@ -50,7 +50,7 @@ const getState = ({ getStore, setStore }) => {
                     cart: [...prevState.cart, menuProduct]
                 }));
                 console.log('Menu añadido al carrito:', menuProduct);
-                localStorage.setItem('cart', JSON.stringify(updatedCart));
+                localStorage.setItem('cart', JSON.stringify([...getStore().cart, menuProduct]));
             },      
             
             setCart: cart => {
@@ -100,10 +100,12 @@ const getState = ({ getStore, setStore }) => {
                 const store = getStore();
                 const updatedCart = store.cart.filter(product => product.id !== productId);
                 setStore({ cart: updatedCart });
+                localStorage.setItem('cart', JSON.stringify(updatedCart));
             },
 
             clearCart: () => {
                 setStore({ cart: [] });
+                localStorage.removeItem('cart'); 
             }
         }
     };
