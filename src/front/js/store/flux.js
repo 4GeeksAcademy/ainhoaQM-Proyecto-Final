@@ -25,7 +25,7 @@ const getState = ({ getStore, setStore }) => {
             },
 
             logout: () => {
-                const store = getStore();
+                getStore();
                 localStorage.removeItem('token');
                 localStorage.removeItem('userEmail');
                 localStorage.removeItem('userName');
@@ -40,6 +40,7 @@ const getState = ({ getStore, setStore }) => {
                 const updatedCart = [...store.cart, { ...product, quantity }];
                 setStore({ cart: updatedCart });
                 console.log(store.cart)
+                localStorage.setItem('cart', JSON.stringify(updatedCart));
             },
 
             addMenuToCart: (menuData) => {
@@ -49,6 +50,12 @@ const getState = ({ getStore, setStore }) => {
                     cart: [...prevState.cart, menuProduct]
                 }));
                 console.log('Menu añadido al carrito:', menuProduct);
+                localStorage.setItem('cart', JSON.stringify(updatedCart));
+            },      
+            
+            setCart: cart => {
+                setStore({ cart });
+                localStorage.setItem('cart', JSON.stringify(cart));
             },            
             
             incrementQuantity: (productId) => {

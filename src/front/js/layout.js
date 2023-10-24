@@ -38,8 +38,12 @@ const Layout = () => {
         const token = localStorage.getItem('token');
         const userName = localStorage.getItem('userName');
         const userEmail = localStorage.getItem('userEmail');
+        const storedCart = localStorage.getItem('cart');
         if  (token && userName && userEmail) {
             actions.setIsAuthenticated(true);
+        }
+        if (storedCart) {
+            actions.setCart(JSON.parse(storedCart));
         }
     }, []);
 
