@@ -17,16 +17,22 @@ export const FormMenu = ({ setShowLoginMessage }) => {
     );
   };
   
+  const resetSelects = () => {
+    setSelectedStarter({ id: '', name: '' });
+    setSelectedDish({ id: '', name: '' });
+    setSelectedDrink({ id: '', name: '' });
+    setSelectedDessert({ id: '', name: '' });
+  };  
 
   const [starterOptions, setStarterOptions] = useState([]);
   const [dishOptions, setDishOptions] = useState([]);
   const [drinkOptions, setDrinkOptions] = useState([]);
   const [dessertOptions, setDessertOptions] = useState([]);
 
-  const [selectedStarter, setSelectedStarter] = useState({ id: null, name: '' });
-  const [selectedDish, setSelectedDish] = useState({ id: null, name: '' });
-  const [selectedDrink, setSelectedDrink] = useState({ id: null, name: '' });
-  const [selectedDessert, setSelectedDessert] = useState({ id: null, name: '' });
+  const [selectedStarter, setSelectedStarter] = useState({ id: '', name: '' });
+  const [selectedDish, setSelectedDish] = useState({ id: '', name: '' });
+  const [selectedDrink, setSelectedDrink] = useState({ id: '', name: '' });
+  const [selectedDessert, setSelectedDessert] = useState({ id: '', name: '' });
 
   const addMenuToCart = () => {
     if (store.isAuthenticated) {
@@ -74,11 +80,8 @@ export const FormMenu = ({ setShowLoginMessage }) => {
 
         actions.addToCart(menuProductWithId, 1);
         console.log(`Se agregó 1 menú al carrito.`);
-
-        setSelectedStarter({ id: null, name: '' });
-        setSelectedDish({ id: null, name: '' });
-        setSelectedDrink({ id: null, name: '' });
-        setSelectedDessert({ id: null, name: '' });
+        
+        resetSelects();
       })
       .catch((error) => {
         console.error('Error al crear el menú:', error);
@@ -157,7 +160,7 @@ export const FormMenu = ({ setShowLoginMessage }) => {
               const selectedName = e.target.options[e.target.selectedIndex].text;
               setSelectedStarter({ id: selectedId, name: selectedName });
             }}>
-            <option>Selecciona una opción</option>
+            <option value="">Selecciona una opción</option>
             {starterOptions.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.name}
@@ -172,7 +175,7 @@ export const FormMenu = ({ setShowLoginMessage }) => {
               const selectedName = e.target.options[e.target.selectedIndex].text;
               setSelectedDish({ id: selectedId, name: selectedName });
             }}>
-            <option>Selecciona una opción</option>
+            <option value="">Selecciona una opción</option>
             {dishOptions.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.name}
@@ -187,7 +190,7 @@ export const FormMenu = ({ setShowLoginMessage }) => {
               const selectedName = e.target.options[e.target.selectedIndex].text;
               setSelectedDrink({ id: selectedId, name: selectedName });
             }}>
-            <option>Selecciona una opción</option>
+            <option value="">Selecciona una opción</option>
             {drinkOptions.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.name}
@@ -202,7 +205,7 @@ export const FormMenu = ({ setShowLoginMessage }) => {
               const selectedName = e.target.options[e.target.selectedIndex].text;
               setSelectedDessert({ id: selectedId, name: selectedName });
             }}>
-            <option>Selecciona una opción</option>
+            <option value="">Selecciona una opción</option>
             {dessertOptions.map((option) => (
               <option key={option.id} value={option.id}>
                 {option.name}
