@@ -126,7 +126,9 @@ class OrderDetail(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))  
+    product_name = db.Column(db.String(100), nullable=True)
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))  
+    menu_description = db.Column(db.String(9999), nullable=True)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)  
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
@@ -145,7 +147,9 @@ class OrderDetail(db.Model):
     def serialize(self):
         return {
             "product_id": self.product_id,
+            "product_name": self.product_name,
             "menu_id": self.menu_id,
+            "menu_description": self.menu_description,
             "quantity": self.quantity,
             "price": self.price,
         }
@@ -167,28 +171,11 @@ class Order(db.Model):
         self.user_id = user_id
         self.discount_code_id = discount_code_id
         self.order_details = []  
-        self.calculate_total_price()
         self.takeaway = takeaway
         self.payment_method = payment_method
         self.order_comments = order_comments
         self.order_date = datetime.now()
 
-
-    def apply_discount(self, discount_code):
-        if discount_code:
-            used_code = UsedDiscountCode.query.filter_by(user_id=self.user_id, discount_code_id=discount_code.id).first()
-            if not used_code:
-                self.discount_code = discount_code
-                self.total_price *= (1 - discount_code.percentage / 100)
-                used_discount = UsedDiscountCode(user_id=self.user_id, discount_code_id=discount_code.id)
-                db.session.add(used_discount)
-                db.session.commit()
-
-    def calculate_total_price(self):
-        self.total_price = sum(detail.price for detail in self.order_details)
-        if self.discount_code:
-            self.total_price *= (1 - self.discount_code.percentage / 100)
-    
     def serialize(self):
         return {
             "id": self.id,

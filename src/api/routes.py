@@ -228,7 +228,7 @@ def create_menu():
         return jsonify({"error": str(e)}), 400
 
 # Ruta para crear un producto
-@api.route('/api/create-product', methods=['POST'])
+@api.route('/create-product', methods=['POST'])
 def create_product():
     body = request.get_json()
 
@@ -523,7 +523,7 @@ def create_order():
     try:
         user = get_jwt_identity()
         data = request.get_json() 
-        print("User reveived:", user)
+        print("User received:", user)
         print("Data received:", data)
 
         discount_code = DiscountCode.query.filter_by(code=data.get('discountCode')).first()
@@ -538,34 +538,45 @@ def create_order():
             payment_method=data.get('paymentMethod'),
             discount_code_id=discount_code_id
         )
-        new_order.calculate_total_price()
 
-        # Itera sobre los elementos del carrito (que pueden ser productos o menús)
+        order_details = []  
+
         for item in data.get('cart'):
-            if 'menu' in item:  # Si es un menú, crea una sola instancia de OrderDetail para el menú completo
-                menu = item['menu']
+            if item.get('name') == "Menú":
+                menu = item
                 order_detail = OrderDetail(
                     order=new_order,
                     menu_id=menu.get('id'),
-                    quantity=item.get('quantity'),  # Cantidad de menús en la orden
-                    price=menu.get('price') * item.get('quantity')  # Precio total del menú en la orden
-                    # Añade otros campos según sea necesario
+                    menu_description=menu.get('description'),
+                    quantity=item.get('quantity'), 
+                    price=menu.get('price') * item.get('quantity')
                 )
-            else:  # Si es un producto individual, crea una instancia de OrderDetail por cada uno
+            else:
                 order_detail = OrderDetail(
                     order=new_order,
                     product_id=item.get('id'),
+                    product_name=item.get('name'),
                     quantity=item.get('quantity'),
                     price=item.get('price')
-                    # Añade otros campos según sea necesario
                 )
-            db.session.add(order_detail)
 
-        # Guarda la orden y los detalles de la orden en la base de datos
+            order_details.append(order_detail)  
+
+        total_price = sum(order_detail.price for order_detail in order_details)
+
+        if discount_code:
+            total_price *= (1 - discount_code.percentage / 100)
+
+        new_order.total_price = total_price
+
+        db.session.add_all(order_details)
+
+        new_order.order_details = order_details
+
         db.session.add(new_order)
         db.session.commit()
 
-        return jsonify({'message': 'Orden creada exitosamente', 'id':new_order.id}), 200
+        return jsonify({'message': 'Orden creada exitosamente', 'id': new_order.id}), 200
 
     except Exception as e:
         return jsonify({'message': str(e)}), 400

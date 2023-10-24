@@ -35,6 +35,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type = True)
 db.init_app(app)
 
+# Correcion para los acentos
+app.config['JSON_AS_ASCII'] = False
+
 # Allow CORS requests to this API
 CORS(app)
 

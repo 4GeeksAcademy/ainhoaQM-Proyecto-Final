@@ -59,6 +59,12 @@ export const Order = () => {
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
 
+    if (calculateTotalPrice().discountInfo) {
+      const discountCode = calculateTotalPrice().discountInfo.code;
+      const discountPercentage = calculateTotalPrice().discountInfo.percentage;
+      // Aquí puedes utilizar discountCode y discountPercentage sin preocuparte de que sean null
+    }
+
     const orderData = {
       orderComments: document.getElementById('comments').value,  
       takeaway: document.querySelector('input[name="takeaway"]:checked').value === "takeaway", 
