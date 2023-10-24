@@ -101,16 +101,21 @@ class Menu(db.Model):
         dish_name = self.dish.name if self.dish else "N/A"
         drink_name = self.drink.name if self.drink else "N/A"
         dessert_name = self.dessert.name if self.dessert else "N/A"
-        
+
+        self.starter_name = starter_name
+        self.dish_name = dish_name
+        self.drink_name = drink_name
+        self.dessert_name = dessert_name
+
         self.menu_description = f'Starter: {starter_name}, Dish: {dish_name}, Drink: {drink_name}, Dessert: {dessert_name}'
 
     def save(self):
-        self.update_menu_description()
-
         self.starter_name = self.starter.name if self.starter else "N/A"
         self.dish_name = self.dish.name if self.dish else "N/A"
         self.drink_name = self.drink.name if self.drink else "N/A"
         self.dessert_name = self.dessert.name if self.dessert else "N/A"
+
+        self.update_menu_description()
 
         db.session.add(self)
         db.session.commit()

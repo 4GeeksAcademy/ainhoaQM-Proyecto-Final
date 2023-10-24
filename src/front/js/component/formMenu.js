@@ -10,43 +10,56 @@ export const FormMenu = ({ setShowLoginMessage }) => {
 
   const areAllOptionsSelected = () => {
     return (
-      selectedStarterId !== undefined &&
-      selectedDishId !== undefined &&
-      selectedDrinkId !== undefined &&
-      selectedDessertId !== undefined
+      selectedStarter.id !== null &&
+      selectedDish.id !== null &&
+      selectedDrink.id !== null &&
+      selectedDessert.id !== null
     );
   };
   
-
-  const [selectedStarter, setSelectedStarter] = useState('');
-  const [selectedDish, setSelectedDish] = useState('');
-  const [selectedDrink, setSelectedDrink] = useState('');
-  const [selectedDessert, setSelectedDessert] = useState('');
-
-  const [selectedStarterId, setSelectedStarterId] = useState();
-  const [selectedDishId, setSelectedDishId] = useState();
-  const [selectedDrinkId, setSelectedDrinkId] = useState();
-  const [selectedDessertId, setSelectedDessertId] = useState();
 
   const [starterOptions, setStarterOptions] = useState([]);
   const [dishOptions, setDishOptions] = useState([]);
   const [drinkOptions, setDrinkOptions] = useState([]);
   const [dessertOptions, setDessertOptions] = useState([]);
 
+  const [selectedStarter, setSelectedStarter] = useState({ id: null, name: '' });
+  const [selectedDish, setSelectedDish] = useState({ id: null, name: '' });
+  const [selectedDrink, setSelectedDrink] = useState({ id: null, name: '' });
+  const [selectedDessert, setSelectedDessert] = useState({ id: null, name: '' });
+
   const addMenuToCart = () => {
     if (store.isAuthenticated) {
-      const menuDescription = `Entrante: ${selectedStarter}, 1er Plato: ${selectedDish}, Bebida: ${selectedDrink}, Postre: ${selectedDessert}`;
+
+      const starterId = selectedStarter.id;
+      const starterName = selectedStarter.name;
+    
+      const dishId = selectedDish.id;
+      const dishName = selectedDish.name;
+    
+      const drinkId = selectedDrink.id;
+      const drinkName = selectedDrink.name;
+    
+      const dessertId = selectedDessert.id;
+      const dessertName = selectedDessert.name;
+
+      console.log("Starter Name:", starterName);
+      console.log("Dish Name:", dishName);
+      console.log("Drink Name:", drinkName);
+      console.log("Dessert Name:", dessertName);
+
+      const menuDescription = `Entrante: ${selectedStarter.name}, 1er Plato: ${selectedDish.name}, Bebida: ${selectedDrink.name}, Postre: ${selectedDessert.name}`;
       const menuProduct = { name: 'Menú', price: 12.00, description: menuDescription };
 
       const data = {
-        starter_id: selectedStarterId, 
-        dish_id: selectedDishId, 
-        drink_id: selectedDrinkId, 
-        dessert_id: selectedDessertId,
-        starter_name: selectedStarter,
-        dish_name: selectedDish,
-        drink_name: selectedDrink,
-        dessert_name: selectedDessert
+        starter_id: starterId, 
+        dish_id: dishId, 
+        drink_id: drinkId, 
+        dessert_id: dessertId,
+        starter_name: starterName,
+        dish_name: dishName,
+        drink_name: drinkName,
+        dessert_name: dessertName
       };
       console.log('Data a enviar:', data);
 
@@ -63,10 +76,10 @@ export const FormMenu = ({ setShowLoginMessage }) => {
         
         const menuProductWithId = { ...menuProduct, id: data.id }; 
         actions.addToCart(menuProductWithId, 1);
-        setSelectedStarter('');
-        setSelectedDish('');
-        setSelectedDrink('');
-        setSelectedDessert('');
+        setSelectedStarter({ id: null, name: '' });
+        setSelectedDish({ id: null, name: '' });
+        setSelectedDrink({ id: null, name: '' });
+        setSelectedDessert({ id: null, name: '' });
         console.log(`Se agregó 1 menú al carrito.`);
       })
       .catch((error) => {
@@ -139,7 +152,13 @@ export const FormMenu = ({ setShowLoginMessage }) => {
         <div className="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6">
           <h2>Selecciona tu Menú</h2>
           <label htmlFor="starter" className="form-label">Entrante</label>
-          <select className="form-select form-select-lg" id="starter" value={selectedStarterId} onChange={(e) => setSelectedStarterId(e.target.value)} >
+          <select className="form-select form-select-lg" id="starter" 
+            value={selectedStarter.id} 
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              const selectedName = e.target.options[e.target.selectedIndex].text;
+              setSelectedStarter({ id: selectedId, name: selectedName });
+            }}>
             <option>Selecciona una opción</option>
             {starterOptions.map((option) => (
               <option key={option.id} value={option.id}>
@@ -149,7 +168,12 @@ export const FormMenu = ({ setShowLoginMessage }) => {
           </select>
           <label htmlFor="dish" className="form-label">Plato Principal</label>
           <select className="form-select form-select-lg" id="dish"
-            value={selectedDishId} onChange={(e) => setSelectedDishId(e.target.value)}>
+            value={selectedDish.id} 
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              const selectedName = e.target.options[e.target.selectedIndex].text;
+              setSelectedDish({ id: selectedId, name: selectedName });
+            }}>
             <option>Selecciona una opción</option>
             {dishOptions.map((option) => (
               <option key={option.id} value={option.id}>
@@ -159,7 +183,12 @@ export const FormMenu = ({ setShowLoginMessage }) => {
           </select>
           <label htmlFor="drink" className="form-label">Bebida</label>
           <select className="form-select form-select-lg" id="drink"
-            value={selectedDrinkId} onChange={(e) => setSelectedDrinkId(e.target.value)}>
+            value={selectedDrink.id} 
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              const selectedName = e.target.options[e.target.selectedIndex].text;
+              setSelectedDrink({ id: selectedId, name: selectedName });
+            }}>
             <option>Selecciona una opción</option>
             {drinkOptions.map((option) => (
               <option key={option.id} value={option.id}>
@@ -169,7 +198,12 @@ export const FormMenu = ({ setShowLoginMessage }) => {
           </select>
           <label htmlFor="dessert" className="form-label">Postre</label>
           <select className="form-select form-select-lg" id="dessert"
-            value={selectedDessertId} onChange={(e) => setSelectedDessertId(e.target.value)}>
+            value={selectedDessert.id} 
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              const selectedName = e.target.options[e.target.selectedIndex].text;
+              setSelectedDessert({ id: selectedId, name: selectedName });
+            }}>
             <option>Selecciona una opción</option>
             {dessertOptions.map((option) => (
               <option key={option.id} value={option.id}>

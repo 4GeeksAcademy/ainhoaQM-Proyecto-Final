@@ -192,21 +192,37 @@ def create_menu():
         drink_name = data.get('drink_name')
         dessert_name = data.get('dessert_name')
 
+        # Crear una nueva instancia de Menu
         new_menu = Menu(
             starter_id=starter_id, 
             dish_id=dish_id, 
             drink_id=drink_id, 
             dessert_id=dessert_id)
-        
-        new_menu.starter_name = starter_name
-        new_menu.dish_name = dish_name
-        new_menu.drink_name = drink_name
-        new_menu.dessert_name = dessert_name
-        
+
+        # Asignar los productos relacionados al menú
+        new_menu.starter = Product.query.get(starter_id)
+        new_menu.dish = Product.query.get(dish_id)
+        new_menu.drink = Product.query.get(drink_id)
+        new_menu.dessert = Product.query.get(dessert_id)
+
+        # Actualizar los nombres de los productos y la descripción del menú
+        new_menu.update_menu_description()
+
+        # Guardar el menú
         new_menu.save()  
 
         serialized_menu = new_menu.serialize()
-        return jsonify({"message": "Menu created successfully", "menu": serialized_menu}), 200
+        response_data = {
+            "message": "Menu created successfully",
+            "menu": {
+                "id": serialized_menu["id"],
+                "price": serialized_menu["price"],
+                "menu_description": new_menu.menu_description
+            }
+        }
+        print("Response Data:", response_data)
+
+        return jsonify(response_data), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
