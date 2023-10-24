@@ -43,11 +43,6 @@ export const FormMenu = ({ setShowLoginMessage }) => {
       const dessertId = selectedDessert.id;
       const dessertName = selectedDessert.name;
 
-      console.log("Starter Name:", starterName);
-      console.log("Dish Name:", dishName);
-      console.log("Drink Name:", drinkName);
-      console.log("Dessert Name:", dessertName);
-
       const menuDescription = `Entrante: ${selectedStarter.name}, 1er Plato: ${selectedDish.name}, Bebida: ${selectedDrink.name}, Postre: ${selectedDessert.name}`;
       const menuProduct = { name: 'Menú', price: 12.00, description: menuDescription };
 
@@ -74,13 +69,16 @@ export const FormMenu = ({ setShowLoginMessage }) => {
       .then(data => {
         console.log('Nuevo menú creado:', data);
         
-        const menuProductWithId = { ...menuProduct, id: data.id }; 
+        const menuProductWithId = { ...menuProduct, id: data.menu.id }; 
+        console.log(data.menu.id);
+
         actions.addToCart(menuProductWithId, 1);
+        console.log(`Se agregó 1 menú al carrito.`);
+
         setSelectedStarter({ id: null, name: '' });
         setSelectedDish({ id: null, name: '' });
         setSelectedDrink({ id: null, name: '' });
         setSelectedDessert({ id: null, name: '' });
-        console.log(`Se agregó 1 menú al carrito.`);
       })
       .catch((error) => {
         console.error('Error al crear el menú:', error);

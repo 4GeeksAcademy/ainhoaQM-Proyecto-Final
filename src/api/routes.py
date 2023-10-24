@@ -187,10 +187,10 @@ def create_menu():
         drink_id = data.get('drink_id')
         dessert_id = data.get('dessert_id')
 
-        starter_name = data.get('starter_name')
-        dish_name = data.get('dish_name')
-        drink_name = data.get('drink_name')
-        dessert_name = data.get('dessert_name')
+        data.get('starter_name')
+        data.get('dish_name')
+        data.get('drink_name')
+        data.get('dessert_name')
 
         # Crear una nueva instancia de Menu
         new_menu = Menu(

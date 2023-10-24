@@ -42,13 +42,13 @@ const getState = ({ getStore, setStore }) => {
                 console.log(store.cart)
             },
 
-            addMenuToCart: (selectedStarter, selectedDish, selectedDrink, selectedDessert) => {
-                const menuDescription = `Starter: ${selectedStarter}, Dish: ${selectedDish}, Drink: ${selectedDrink}, Dessert: ${selectedDessert}`;
-                const menuProduct = {id: menuId, name: 'menu', price: 12.00, description: menuDescription };
+            addMenuToCart: (menuData) => {
+                const { id, menu_description, price } = menuData.menu;
+                const menuProduct = {id, name: 'menu', price, description: menu_description };
                 setStore(prevState => ({
                     cart: [...prevState.cart, menuProduct]
                 }));
-                console.log('Menu added to cart:', menuProduct);
+                console.log('Menu añadido al carrito:', menuProduct);
             },            
             
             incrementQuantity: (productId) => {
