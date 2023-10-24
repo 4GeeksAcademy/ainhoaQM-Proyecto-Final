@@ -26,7 +26,6 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "user_name": self.user_name,
-            "orders": self.orders
         }
 
 class Product(db.Model):
@@ -68,30 +67,54 @@ class Category(db.Model):
     
 class Menu(db.Model):
     __tablename__ = 'menu'
-    id = db.Column(db.Integer, primary_key=True)
-    starter_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    dishes_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    drink_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    dessert_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    menu_description = db.Column(db.String(9999), nullable=False)
     price = db.Column(Numeric(4, 2), nullable=False, default=12.00)
 
+    starter_name = db.Column(db.String(30), nullable=False, default="N/A")
+    dish_name = db.Column(db.String(30), nullable=False, default="N/A")
+    drink_name = db.Column(db.String(30), nullable=False, default="N/A")
+    dessert_name = db.Column(db.String(30), nullable=False, default="N/A")
+
+    starter_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    dish_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    drink_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    dessert_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+
     starter = db.relationship('Product', foreign_keys=[starter_id])
-    dishes = db.relationship('Product', foreign_keys=[dishes_id])
+    dish = db.relationship('Product', foreign_keys=[dish_id])
     drink = db.relationship('Product', foreign_keys=[drink_id])
     dessert = db.relationship('Product', foreign_keys=[dessert_id])
 
     def __repr__(self):
         return f'<Menu {self.id}>'
-    
+
     def serialize(self):
         return {
             'id': self.id,
-            'starter': self.starter.serialize(),
-            'dishes': self.dishes.serialize(),
-            'drink': self.drink.serialize(),
-            'dessert': self.dessert.serialize(),
+            'menu_description': self.menu_description,
             'price': float(self.price)
         }
+
+    def update_menu_description(self):
+        starter_name = self.starter.name if self.starter else "N/A"
+        dish_name = self.dish.name if self.dish else "N/A"
+        drink_name = self.drink.name if self.drink else "N/A"
+        dessert_name = self.dessert.name if self.dessert else "N/A"
+        
+        self.menu_description = f'Starter: {starter_name}, Dish: {dish_name}, Drink: {drink_name}, Dessert: {dessert_name}'
+
+    def save(self):
+        self.update_menu_description()
+
+        self.starter_name = self.starter.name if self.starter else "N/A"
+        self.dish_name = self.dish.name if self.dish else "N/A"
+        self.drink_name = self.drink.name if self.drink else "N/A"
+        self.dessert_name = self.dessert.name if self.dessert else "N/A"
+
+        db.session.add(self)
+        db.session.commit()
+
 
 class OrderDetail(db.Model):
     __tablename__  = 'order_detail'
@@ -114,6 +137,14 @@ class OrderDetail(db.Model):
             menu = Menu.query.get(self.menu_id)
             self.price = menu.price * self.quantity
 
+    def serialize(self):
+        return {
+            "product_id": self.product_id,
+            "menu_id": self.menu_id,
+            "quantity": self.quantity,
+            "price": self.price,
+        }
+
 class Order(db.Model):
     __tablename__ = 'order'
     id = db.Column(db.Integer, primary_key=True)
@@ -127,14 +158,16 @@ class Order(db.Model):
     discount_code_id = db.Column(db.Integer, db.ForeignKey('discount_code.id'), nullable=True)
     discount_code = db.relationship('DiscountCode')
 
-    def __init__(self, user_id,payment_method, takeaway=False, order_comments=None):
+    def __init__(self, user_id, takeaway=False, order_comments=None, payment_method=None, discount_code_id=None):
         self.user_id = user_id
+        self.discount_code_id = discount_code_id
         self.order_details = []  
+        self.calculate_total_price()
         self.takeaway = takeaway
         self.payment_method = payment_method
-        self.calculate_total_price()
         self.order_comments = order_comments
         self.order_date = datetime.now()
+
 
     def apply_discount(self, discount_code):
         if discount_code:
@@ -150,18 +183,45 @@ class Order(db.Model):
         self.total_price = sum(detail.price for detail in self.order_details)
         if self.discount_code:
             self.total_price *= (1 - self.discount_code.percentage / 100)
-
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "order_details": [detail.serialize() for detail in self.order_details],
+            "total_price": self.total_price,
+            "order_comments": self.order_comments,
+            "takeaway": self.takeaway,
+            "payment_method": self.payment_method,
+            "order_date": self.order_date.strftime('%Y-%m-%d %H:%M:%S') if self.order_date else None,
+            "discount_code": self.discount_code.serialize() if self.discount_code else None
+        }
+    
 class DiscountCode(db.Model):
     __tablename__ = 'discount_code'
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(20), unique=True, nullable=False)
     percentage = db.Column(db.Float, nullable=False)
     
+    def serialize(self):
+        return {
+            'id': self.id,
+            'code': self.code,
+            'percentage': float(self.percentage)
+        }
+    
 class UsedDiscountCode(db.Model):
     __tablename__ = 'used_discount_code'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     discount_code_id = db.Column(db.Integer, db.ForeignKey('discount_code.id'), nullable=False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'code': self.code,
+            'percentage': self.percentage
+        }
 
 class ContactMessage(db.Model):
     __tablename__ = 'contact_messages'
@@ -194,24 +254,3 @@ class Reservation(db.Model):
             "number_of_people": self.number_of_people
         }
 
-
-"""  Mostrar la Fecha y Hora de una Orden
-
-from datetime import datetime
-
-# Supongamos que order es una instancia de la clase Order
-order_date = order.order_date
-
-# Obtener el año, mes y día
-year = order_date.year
-month = order_date.month
-day = order_date.day
-
-# Obtener la hora, minutos y segundos
-hour = order_date.hour
-minute = order_date.minute
-second = order_date.second
-
-# Formatear la fecha y hora en una cadena específica
-formatted_date = order_date.strftime("%Y-%m-%d %H:%M:%S")
- """

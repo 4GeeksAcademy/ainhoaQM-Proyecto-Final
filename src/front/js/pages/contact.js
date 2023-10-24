@@ -9,7 +9,7 @@ import ComerComida from '../../img/ComerComida.jpg';
 
 export const Contact = () => {
   return (
-    <div className="container-fluid landing-container text-center mt-5">
+    <div className="container-fluid body text-center mt-5">
         <div className="row">
           <div className="col-sm-12 col-md-6 contact-us pt-0 p-5">
             <FormContact />

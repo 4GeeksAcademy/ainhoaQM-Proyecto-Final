@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 
 //include your index.scss file into the bundle
 import "../styles/landingPage.css";
+import "../styles/tickets.css";
 import "../styles/index.css";
 
 

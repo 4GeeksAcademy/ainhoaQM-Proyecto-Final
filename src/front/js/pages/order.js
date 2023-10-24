@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from 'react-router-dom';
 import { Context } from "../store/appContext";
+import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import "../../styles/index.css";
 
@@ -14,8 +14,11 @@ export const Order = () => {
   const handleDiscountSubmit = async (e) => {
     e.preventDefault();
     const discountCode = document.getElementById('inputDiscountCode').value;
-    const percentage = await actions.validateDiscount(discountCode);
-
+    console.log('Valor de discountCode:', discountCode);
+    console.log("Tipo de discountCode:", typeof discountCode);
+    const response = await actions.validateDiscount(discountCode);
+    const percentage = response.percentage;
+    console.log("Tipo de porcentaje:", typeof percentage);
     if (percentage > 0) {
         setDiscountCode(discountCode); 
     } else {
@@ -44,80 +47,60 @@ export const Order = () => {
     return { totalPrice: totalPrice.toFixed(2), discountInfo };
   };
 
-  const handlePayment = async (e) => {
-    e.preventDefault();
-  
-    if (acceptTerms) {
-      const payment_method = document.querySelector('input[name="paymentOption"]:checked').value;
-      const comments = document.getElementById('comments').value;
-      const takeaway = document.getElementById('takeaway').checked;
-      
-      const cart = store.cart;
-      const products = [];
-      const menus = [];
-  
-      cart.forEach(item => {
-        if ('product_id' in item) {
-          products.push(item);
-        } else if ('menu_id' in item) {
-          menus.push(item);
-        }
-      });
-  
-      const orderData = {
-        cart: [...products, ...menus], 
-        payment_method,
-        takeaway,
-        comments,
-        discountCode,
-      };
-      console.log('orderData:', orderData);
-
-      try {
-        const authToken = localStorage.getItem('token');
-        const response = await fetch(process.env.BACKEND_URL + "/api/create-order", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
-          },
-          body: JSON.stringify(orderData),
-        });
-  
-        if (response.ok) {
-          const responseData = await response.json();
-          if (responseData.success) {
-            alert('Pedido creado exitosamente');
-            actions.clearCart();
-
-            if (paymentOption === 'card') {
-              navigate('/payment');
-            } else {
-              navigate('/ticket');
-            }
-          } else {
-            alert('Error al crear el pedido');
-          }
-        } else {
-          alert('Error al enviar la solicitud al servidor');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Error al conectarse con el servidor');
-      }
-    } else {
-    }
-  };
-  
-
   const handleCancelOrder = () => {
     actions.clearCart();
     navigate('/shop');
   };
-  
 
   const handleAcceptTerms = () => {
     setAcceptTerms(!acceptTerms);
+  };
+
+  const handleOrderSubmit = async (e) => {
+    e.preventDefault();
+
+    const orderData = {
+      orderComments: document.getElementById('comments').value,  
+      takeaway: document.querySelector('input[name="takeaway"]:checked').value === "takeaway", 
+      discountCode: discountCode,
+      paymentMethod: document.querySelector('input[name="paymentOption"]:checked').value, 
+      cart: cart  
+    };
+    console.log("Order Data:", orderData);
+    try {
+      const authToken = localStorage.getItem('token');
+      const response = await fetch(process.env.BACKEND_URL + "/api/create-order", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Orden registrada con éxito:', data);
+        console.log('Order ID:', data.id);
+        if (data.id !== undefined) {
+          console.log('Order ID:', data.id);
+    
+          if (orderData.paymentMethod === "card") {
+            navigate(`/ticket/${data.id}`);
+          } else {
+            navigate(`/ticket/${data.id}`);
+          }
+          actions.clearCart();
+        } else {
+          console.error('Error al obtener el ID de la orden');
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('Error al registrar la orden:', errorData);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -157,149 +140,64 @@ export const Order = () => {
           )}
         </div>
       </div>
-      <form onSubmit={handlePayment}>
+      <form>
         <div>
           <h1>¿Dónde quieres disfrutar de tu comida?</h1>
           <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="eatInRestaurant"
-              name="takeaway"
-              value="restaurant"
-            />
-            <label className="form-check-label" htmlFor="eatInRestaurant">
-              En el restaurante
-            </label>
+            <input type="radio" className="form-check-input" id="eatInRestaurant" name="takeaway" value="restaurant" />
+            <label className="form-check-label" htmlFor="eatInRestaurant">  En el restaurante </label>
           </div>
           <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="takeaway"
-              name="takeaway"
-              value="takeaway"
-            />
-            <label className="form-check-label" htmlFor="takeaway">
-              Prefiero la comida para llevar
-            </label>
+            <input type="radio" className="form-check-input" id="takeaway" name="takeaway" value="takeaway" />
+            <label className="form-check-label" htmlFor="takeaway"> Prefiero la comida para llevar </label>
           </div>
         </div>
         <div>
           <label htmlFor="inputDiscountCode" className="form-label">
             <h1>¿Tienes un cupón de descuento?</h1>
           </label>
-          <p>Si tienes un cupón de descuento, ingrésalo a continuación:</p>
+          <p>Si tienes un cupón de descuento, ingrésalo a continuación</p>
           <div className="col-4">
             <div className="input-group">
-              <input
-                type="text"
-                className="form-control"
-                id="inputDiscountCode"
-                name="inputDiscountCode"
-                placeholder="Código de descuento"
-                aria-label="Código de descuento"
-                aria-describedby="button-addon2"
-              />
+              <input type="text" className="form-control" id="inputDiscountCode" name="inputDiscountCode" placeholder="Código de descuento" aria-label="Código de descuento" aria-describedby="button-addon2" />
               <button
-                className="btn btn-secondary"
-                type="button"
-                id="button-addon2"
-                onClick={handleDiscountSubmit}
-              >
-                Enviar
-              </button>
+                className="btn btn-secondary" type="button" id="button-addon2" onClick={handleDiscountSubmit} > Enviar </button>
             </div>
           </div>
         </div>
         <div>
           <h1>¿Cómo quieres pagar?</h1>
           <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="payWithCard"
-              name="paymentOption"
-              value="card"
-            />
-            <label className="form-check-label" htmlFor="payWithCard">
-              Pagar online con Tarjeta
-            </label>
+            <input type="radio" className="form-check-input" id="payWithCard" name="paymentOption" value="card" />
+            <label className="form-check-label" htmlFor="payWithCard">  Pagar online con Tarjeta </label>
           </div>
           <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="payWithPaypal"
-              name="paymentOption"
-              value="paypal"
-            />
-            <label className="form-check-label" htmlFor="payWithPaypal">
-              Datáfono en tienda
-            </label>
+            <input type="radio" className="form-check-input" id="payWithPaypal" name="paymentOption" value="datafono" />
+            <label className="form-check-label" htmlFor="payWithPaypal"> Datáfono en tienda </label>
           </div>
           <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="payWithCash"
-              name="paymentOption"
-              value="cash"
-            />
-            <label className="form-check-label" htmlFor="payWithCash">
-              Pagar en Efectivo
-            </label>
+            <input type="radio" className="form-check-input" id="payWithCash" name="paymentOption" value="cash" />
+            <label className="form-check-label" htmlFor="payWithCash"> Pagar en Efectivo  </label>
           </div>
         </div>
         <div>
           <h1>Comentarios del Pedido</h1>
-          <p>Observaciones:</p>
-          <textarea
-            className="form-control"
-            id="comments" 
-            name="comments"
-            rows="4"
-            maxLength="2000"
-            placeholder="Escribe tus comentarios aquí..."
-          />
+          <p>Observaciones</p>
+          <textarea className="form-control" id="comments" name="comments" rows="4" maxLength="2000" placeholder="Escribe tus comentarios aquí..."/>
         </div>
         <div>
-          <h1>Política de privacidad</h1>
-          <p>
-            Debes aceptar el aviso legal y las condiciones de uso antes de
-            continuar
-          </p>
+          <h1> Política de privacidad </h1>
+          <p> Debes aceptar el aviso legal y las condiciones de uso antes de continuar </p>
           <div className="form-check">
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id="acceptTerms"
-              name="acceptTerms"
-              checked={acceptTerms}
-              onChange={handleAcceptTerms}
-            />
+            <input type="checkbox" className="form-check-input" id="acceptTerms" name="acceptTerms" checked={acceptTerms} onChange={handleAcceptTerms} />
             <label className="form-check-label" htmlFor="acceptTerms">
               He leído y acepto la <Link to="/wip">Política de Privacidad</Link>{" "}
               y las <Link to="/wip">Condiciones generales de compra</Link>.
             </label>
           </div>
         </div>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={handleCancelOrder}
-        >
-          Cancelar Pedido
-        </button>
-        <button
-          type="submit"
-          className={`btn btn-secondary ${
-            !acceptTerms ? "disabled-button" : ""
-          }`}
-          disabled={!acceptTerms}
-        >
-          Finalizar Pedido
-        </button>
+        <button type="button" className="btn btn-secondary" onClick={handleCancelOrder}> Cancelar Pedido </button>
+        <button type="submit" className={`btn btn-secondary ${  !acceptTerms ? "disabled-button" : "" }`} disabled={!acceptTerms} onClick={handleOrderSubmit} >  Finalizar Pedido </button>
       </form>
     </div>
   );

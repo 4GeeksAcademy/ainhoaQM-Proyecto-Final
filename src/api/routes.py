@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, request, jsonify, redirect, url_for, Blueprint
-from api.models import db, User, Product, Category, Order, OrderDetail, DiscountCode, ContactMessage, Reservation
+from api.models import db, User, Product, Menu, Category, Order, OrderDetail, DiscountCode, ContactMessage, Reservation
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
@@ -78,6 +78,7 @@ def create_user_firebase():
             "token": access_token,
             "email": new_user.email,
             "user_name": new_user.user_name
+            
         }
 
         return jsonify(response_body), 201
@@ -174,9 +175,44 @@ def get_users():
         return jsonify(user_list), 200
     except Exception as e:
         return jsonify({"msg": str(e)}), 500
+    
+# Ruta para crear un menu
+@api.route('/create-menu', methods=['POST'])
+def create_menu():
+    try:
+        data = request.get_json()
+
+        starter_id = data.get('starter_id')
+        dish_id = data.get('dish_id')
+        drink_id = data.get('drink_id')
+        dessert_id = data.get('dessert_id')
+
+        starter_name = data.get('starter_name')
+        dish_name = data.get('dish_name')
+        drink_name = data.get('drink_name')
+        dessert_name = data.get('dessert_name')
+
+        new_menu = Menu(
+            starter_id=starter_id, 
+            dish_id=dish_id, 
+            drink_id=drink_id, 
+            dessert_id=dessert_id)
+        
+        new_menu.starter_name = starter_name
+        new_menu.dish_name = dish_name
+        new_menu.drink_name = drink_name
+        new_menu.dessert_name = dessert_name
+        
+        new_menu.save()  
+
+        serialized_menu = new_menu.serialize()
+        return jsonify({"message": "Menu created successfully", "menu": serialized_menu}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 # Ruta para crear un producto
-@api.route('/create-product', methods=['POST'])
+@api.route('/api/create-product', methods=['POST'])
 def create_product():
     body = request.get_json()
 
@@ -200,7 +236,6 @@ def create_product():
     }
 
     return jsonify(response_body), 200
-
 
 # Ruta para ver todos los productos
 @api.route('/products', methods=['GET'])
@@ -381,7 +416,12 @@ def validate_discount():
     discount = DiscountCode.query.filter_by(code=code).first()
     
     if discount:
-        return jsonify({'The discount is': True, 'percentage_discount': discount.percentage})
+        return jsonify({
+            'The discount is': True,
+            'id': discount.id,
+            'code': discount.code,
+            'percentage': discount.percentage
+        })
     else:
         return jsonify({'The discount is': False, 'percentage_discount': 0})
 
@@ -460,63 +500,69 @@ def view_reservations():
     
     return jsonify(response_body), 200
 
-# Ruta para eliminar una reserva por su ID
-@api.route('/delete-reservation/<int:reservation_id>', methods=['DELETE'])
-def delete_reservation(reservation_id):
-    reservation = Reservation.query.get(reservation_id)
-    if reservation:
-        db.session.delete(reservation)
-        db.session.commit()
-        return jsonify({'message': 'Reserva eliminada correctamente'}), 200
-    else:
-        return jsonify({'message': 'Reserva no encontrada'}), 404
-
-# Ruta para registrar un pedido para usuarios autenticados con JWT)
+# Ruta para registrar un pedido 
 @api.route('/create-order', methods=['POST'])
 @jwt_required()
 def create_order():
     try:
-        user = get_jwt_identity() 
-        data = request.get_json()
+        user = get_jwt_identity()
+        data = request.get_json() 
+        print("User reveived:", user)
+        print("Data received:", data)
+
+        discount_code = DiscountCode.query.filter_by(code=data.get('discountCode')).first()
+        discount_code_id = discount_code.id if discount_code else None
+        print("Discount Code:", discount_code)
+        print("Discount Code ID:", discount_code_id)
+
         new_order = Order(
-            user_id=user['id'],  
-            order_comments=data.get('comments'),  
-            takeaway=data.get('takeaway'), 
-            payment_method=data.get('payment_method'),  
+            user_id=user.get('id'),
+            order_comments=data.get('orderComments'),
+            takeaway=data.get('takeaway'),
+            payment_method=data.get('paymentMethod'),
+            discount_code_id=discount_code_id
         )
+        new_order.calculate_total_price()
 
-        for item in data['cart']:
-            if 'product_id' in item:
-                product_id = item['product_id']
-                quantity = item['quantity']
-                price = item['price']
-                new_order_detail = OrderDetail(
-                    product_id=product_id,
-                    quantity=quantity,
-                    price=price,
+        # Itera sobre los elementos del carrito (que pueden ser productos o menús)
+        for item in data.get('cart'):
+            if 'menu' in item:  # Si es un menú, crea una sola instancia de OrderDetail para el menú completo
+                menu = item['menu']
+                order_detail = OrderDetail(
+                    order=new_order,
+                    menu_id=menu.get('id'),
+                    quantity=item.get('quantity'),  # Cantidad de menús en la orden
+                    price=menu.get('price') * item.get('quantity')  # Precio total del menú en la orden
+                    # Añade otros campos según sea necesario
                 )
-            else:
-                menu_id = item['menu_id']
-                quantity = item['quantity']
-                price = item['price']
-                new_order_detail = OrderDetail(
-                    menu_id=menu_id,
-                    quantity=quantity,
-                    price=price,
+            else:  # Si es un producto individual, crea una instancia de OrderDetail por cada uno
+                order_detail = OrderDetail(
+                    order=new_order,
+                    product_id=item.get('id'),
+                    quantity=item.get('quantity'),
+                    price=item.get('price')
+                    # Añade otros campos según sea necesario
                 )
+            db.session.add(order_detail)
 
-            new_order.order_details.append(new_order_detail)
-
+        # Guarda la orden y los detalles de la orden en la base de datos
         db.session.add(new_order)
         db.session.commit()
 
-        response_body = {
-            "success": True,
-            "msg": "Pedido creado correctamente",
-        }
-
-        return jsonify(response_body), 200
+        return jsonify({'message': 'Orden creada exitosamente', 'id':new_order.id}), 200
 
     except Exception as e:
-        print(str(e))
-        return jsonify({"success": False, "msg": str(e)}), 400
+        return jsonify({'message': str(e)}), 400
+
+@api.route('/delete-all-orders', methods=['DELETE'])
+def delete_all_orders():
+    try:
+        OrderDetail.query.delete()
+        Order.query.delete()
+
+        db.session.commit()
+
+        return jsonify({'message': 'Se eliminaron todos los pedidos y detalles de pedido'}), 200
+
+    except Exception as e:
+        return jsonify({'message': str(e)}), 400

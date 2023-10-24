@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 297faa8e4701
+Revision ID: 1ec7e60f09db
 Revises: 
-Create Date: 2023-10-23 00:32:22.152941
+Create Date: 2023-10-23 22:45:26.466432
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '297faa8e4701'
+revision = '1ec7e60f09db'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -89,16 +89,22 @@ def upgrade():
     )
     op.create_table('menu',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('menu_description', sa.String(length=9999), nullable=False),
+    sa.Column('price', sa.Numeric(precision=4, scale=2), nullable=False),
+    sa.Column('starter_name', sa.String(length=30), nullable=False),
+    sa.Column('dish_name', sa.String(length=30), nullable=False),
+    sa.Column('drink_name', sa.String(length=30), nullable=False),
+    sa.Column('dessert_name', sa.String(length=30), nullable=False),
     sa.Column('starter_id', sa.Integer(), nullable=False),
-    sa.Column('dishes_id', sa.Integer(), nullable=False),
+    sa.Column('dish_id', sa.Integer(), nullable=False),
     sa.Column('drink_id', sa.Integer(), nullable=False),
     sa.Column('dessert_id', sa.Integer(), nullable=False),
-    sa.Column('price', sa.Numeric(precision=4, scale=2), nullable=False),
     sa.ForeignKeyConstraint(['dessert_id'], ['product.id'], ),
-    sa.ForeignKeyConstraint(['dishes_id'], ['product.id'], ),
+    sa.ForeignKeyConstraint(['dish_id'], ['product.id'], ),
     sa.ForeignKeyConstraint(['drink_id'], ['product.id'], ),
     sa.ForeignKeyConstraint(['starter_id'], ['product.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
     )
     op.create_table('order_detail',
     sa.Column('id', sa.Integer(), nullable=False),

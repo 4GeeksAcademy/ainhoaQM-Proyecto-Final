@@ -56,7 +56,7 @@ export const Menu = () => {
         <section className="offer-menu">
           <h2 className="subtitle display-6"> Menu </h2>
           <hr className="my-1" />
-          <FormMenu setShowLoginMessage={setShowLoginMessage} />
+          <FormMenu setShowLoginMessage={setShowLoginMessage}/>
         </section>
         <section className="first-products">
           <div className="starters mt-4">

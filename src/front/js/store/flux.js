@@ -46,7 +46,7 @@ const getState = ({ getStore, setStore }) => {
 
             addMenuToCart: (selectedStarter, selectedDish, selectedDrink, selectedDessert) => {
                 const menuDescription = `Starter: ${selectedStarter}, Dish: ${selectedDish}, Drink: ${selectedDrink}, Dessert: ${selectedDessert}`;
-                const menuProduct = { name: 'menu', price: 12.00, description: menuDescription };
+                const menuProduct = {id: menuId, name: 'menu', price: 12.00, description: menuDescription };
                 setStore(prevState => ({
                     cart: [...prevState.cart, menuProduct]
                 }));
@@ -83,10 +83,11 @@ const getState = ({ getStore, setStore }) => {
                         body: JSON.stringify({ code: discountCode })
                     });
                     const data = await response.json();
-                    return data.percentage_discount;
+                    console.log("codigo de descuento", data)
+                    return data;
                 } catch (error) {
                     console.error('Error al validar el código de descuento:', error);
-                    return 0;
+                    return null;
                 }
             },
 

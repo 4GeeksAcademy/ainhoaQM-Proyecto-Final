@@ -96,7 +96,7 @@ export const NewPassword = () => {
         <div className="body background-abstract" style={{ backgroundImage: `url(${abstract})` }}>
             <div className="container">
                 <div className="row m-5 justify-content-center">
-                    <div className="col-12 form-rounded form-shadow bg-light">
+                    <div className="col-12 rounded shadow bg-light">
                         <form onSubmit={(e) => handleSubmit(e)} className="m-5">                            
                             <div className="text-center mb-4">
                                 <h1 className="h1">Cambia tu contraseña</h1>

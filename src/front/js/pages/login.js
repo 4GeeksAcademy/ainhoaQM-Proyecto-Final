@@ -85,7 +85,6 @@ export const Login = () => {
                     const responseData = await response.json();
                     const userToken = responseData.token;
                     const userEmail = responseData.email;
-                    const userId = responseData.id;
 
                     if (userToken) {
                         const decodedToken = JSON.parse(atob(userToken.split('.')[1]));
@@ -97,7 +96,6 @@ export const Login = () => {
                         localStorage.setItem('token', userToken);
                         localStorage.setItem('userEmail', userEmail);
                         localStorage.setItem('userName', user_name);
-                        localStorage.setItem('userId', userId);
                     }
                     navigate('/shop'); 
                 } else {
@@ -150,12 +148,10 @@ export const Login = () => {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Respuesta del backend:', data);
 
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userEmail', data.email);
                 localStorage.setItem('userName', data.user_name);
-                localStorage.setItem('userId', data.id);
             })
             .catch(error => {
                 console.error('Error al enviar datos al backend:', error);
@@ -189,7 +185,7 @@ export const Login = () => {
     return (
         <div className="body background-abstract" style={{backgroundImage: `url(${abstract})`}}>
             <div className="row m-5">
-                <div className="col-md-6 p-4 section form-rounded form-shadow bg-light">
+                <div className="col-md-6 p-4 section rounded shadow bg-light">
                     <form className="m-5" onSubmit={handleLogin}>
                         <div className="text-center mb-4">
                             <h1 className="h1">Iniciar Sesión</h1>

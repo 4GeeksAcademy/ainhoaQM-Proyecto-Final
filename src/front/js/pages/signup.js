@@ -159,7 +159,7 @@ export const Signup = () => {
     <div
       className="body background-abstract" style={{ backgroundImage: `url(${abstract})` }}>
       <div className="row m-5">
-        <div className="col-md-6 p-4 section form-rounded form-shadow bg-light">
+        <div className="col-md-6 p-4 section rounded shadow bg-light">
           <form className="m-5" onSubmit={handleSignup}>
             <div className="text-center mb-4">
               <h1 className="h1">Registro</h1>
