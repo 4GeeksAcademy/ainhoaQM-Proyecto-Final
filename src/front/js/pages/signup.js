@@ -83,78 +83,74 @@ export const Signup = () => {
       console.error("Error:", error);
     }
   };
-    // Empieza Firebase Google
-    const provider = new GoogleAuthProvider();
-    
-    initializeApp(firebaseConfig);
 
-    const auth = getAuth();
-    function callLoginGoogle() {
+  // Empieza Firebase Google
+  const provider = new GoogleAuthProvider();
+  initializeApp(firebaseConfig);
+
+  const auth = getAuth();
+  function callLoginGoogle() {
       signInWithPopup(auth, provider)
       .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        const user = result.user;
-        const userName = user.displayName;
-        const email = user.email
-        const password = 'loginWithGoogle';
-        const repeatPassword = 'loginWithGoogle';
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          const user = result.user;
+          const userName = user.displayName;
+          const email = user.email
+          const password = 'loginWithGoogle';
+          const repeatPassword = 'loginWithGoogle';
 
-        const data = {
-            user_name:userName, 
-            email:email, 
-            password:password, 
-            repeatPassword:repeatPassword,
-        };
-        console.log("Contenido de data:", data);
+          const data = {
+              user_name:userName, 
+              email:email, 
+              password:password, 
+              repeatPassword:repeatPassword,
+          };
+          console.log("Contenido de data:", data);
 
-        fetch(`${process.env.BACKEND_URL}/api/signup`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Respuesta del backend:', data);
-        })
-        .catch(error => {
-            console.error('Error al enviar datos al backend:', error);
-        });
+          fetch(`${process.env.BACKEND_URL}/api/signup-firebase`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+          })
+          .then(response => response.json())
+          .then(data => {
 
-        localStorage.setItem('token', token);
-        localStorage.setItem('userEmail', user.email);
-        localStorage.setItem('userName', user.displayName);
+              localStorage.setItem('token', data.token);
+              localStorage.setItem('userEmail', data.email);
+              localStorage.setItem('userName', data.user_name);
+          })
+          .catch(error => {
+              console.error('Error al enviar datos al backend:', error);
+          });
 
-        actions.setIsAuthenticated(true, user.displayName);
-        navigate('/shop')
+          actions.setIsAuthenticated(true, user.displayName);
+          navigate('/shop')
       })
       .catch((error) => {
-        console.error(error);
+          console.error(error);
+
+          const errorCode = error.code;
     
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.customData ? error.customData.email : null;
-        const credential = GoogleAuthProvider.credentialFromError(error);
-    
-        switch (errorCode) {
-          case 'auth/cancelled-popup-request':
-            alert('La solicitud de ventana emergente fue cancelada');
-            break;
-          case 'auth/user-not-found':
-            alert('Usuario no encontrado');
-            break;
-          case 'auth/wrong-password':
-            alert('Contraseña incorrecta');
-            break;
-          default:
-            alert('Ocurrió un error inesperado, por favor inicia sesion con tu e-mail y contraseña o prueba el inicio de sesion con Google más tarde');
-        }
+          switch (errorCode) {
+              case 'auth/cancelled-popup-request':
+                  alert('La solicitud de ventana emergente fue cancelada');
+                  break;
+              case 'auth/user-not-found':
+                  alert('Usuario no encontrado');
+                  break;
+              case 'auth/wrong-password':
+                  alert('Contraseña incorrecta');
+                  break;
+              default:
+                  alert('Ocurrió un error inesperado, por favor inicia sesion con tu e-mail y contraseña o prueba el inicio de sesion con Google más tarde');
+          }
       });            
     }    
-    // Termina Firebase Google
-
+  // Termina Firebase Google
+    
   return (
     <div
       className="body background-abstract" style={{ backgroundImage: `url(${abstract})` }}>
