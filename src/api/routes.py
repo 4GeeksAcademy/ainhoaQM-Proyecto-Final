@@ -581,6 +581,23 @@ def create_order():
     except Exception as e:
         return jsonify({'message': str(e)}), 400
 
+# Ruta para obtener un pedido por id 
+@api.route('/order/<int:order_id>', methods=['GET'])
+@jwt_required()
+def get_order(order_id):
+    try:
+        user = get_jwt_identity()
+        order = Order.query.filter_by(id=order_id, user_id=user.get('id')).first()
+
+        if not order:
+            return jsonify({'message': 'Pedido no encontrado'}), 404
+
+        return jsonify(order.serialize()), 200
+
+    except Exception as e:
+        return jsonify({'message': str(e)}), 400
+
+# Ruta para eliminar todos los pedidos
 @api.route('/delete-all-orders', methods=['DELETE'])
 def delete_all_orders():
     try:

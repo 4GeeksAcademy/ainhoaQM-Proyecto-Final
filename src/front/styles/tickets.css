@@ -1,10 +1,5 @@
 /* Estilos generales */
-    .ticket {
-        padding-top: 12%;
-    }
     .ticket-body {
-        padding-top: 40px; 
-        padding-bottom: 40px; 
         font-family: 'Oxygen', sans-serif;
     }
   
@@ -14,8 +9,6 @@
   
     .ticket-subtitle{
         color: #ff7e67;
-        padding-top: 40px; 
-        padding-bottom: 40px; 
     }
     
     .ticket-color-pink{
@@ -27,7 +20,8 @@
         background-position: center;
         background-repeat: no-repeat;
     }
-    
+
+/* Estilos de las imagenes */
     .ticket-image-container {
         padding-top: 0%;
         padding-bottom: 0%;

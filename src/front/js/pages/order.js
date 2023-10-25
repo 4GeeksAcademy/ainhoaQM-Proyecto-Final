@@ -92,7 +92,7 @@ export const Order = () => {
           console.log('Order ID:', data.id);
     
           if (orderData.paymentMethod === "card") {
-            navigate(`/ticket/${data.id}`);
+            navigate(`/payment/${data.id}`);
           } else {
             navigate(`/ticket/${data.id}`);
           }
