@@ -74,6 +74,8 @@
 	},
 	"dependencies": {
 		"firebase": "^10.5.0",
+		"jspdf": "^2.5.1",
+		"jspdf-autotable": "^3.7.0",
 		"prop-types": "^15.6.1",
 		"react": "^16.8.4",
 		"react-dom": "^16.8.4",
