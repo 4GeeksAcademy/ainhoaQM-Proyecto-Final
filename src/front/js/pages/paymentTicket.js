@@ -183,7 +183,7 @@ export const PaymentTicket = () => {
                   )}
                   {order.discount_code && (
                     <>
-                      <p className="text-end">Subtotal: {order.order_details.reduce((acc, detail) => acc + detail.price, 0).toFixed(2)} €</p>
+                      <p className="pt-1 text-end">Subtotal: {order.order_details.reduce((acc, detail) => acc + detail.price, 0).toFixed(2)} €</p>
                       <p className="text-end">Código de Descuento</p>
                       <p className="text-end">{order.discount_code.code}:{" "}{order.discount_code.percentage}%</p>
                     </>

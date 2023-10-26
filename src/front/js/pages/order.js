@@ -4,12 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import "../../styles/index.css";
 
+//icons
+import { PiWarningCircleDuotone } from "react-icons/pi";
+
 export const Order = () => {
   const { store, actions } = useContext(Context);
   const cart = store.cart;
   const navigate = useNavigate();
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
+  const [price0, setPrice0] = useState(false);
 
   const handleDiscountSubmit = async (e) => {
     e.preventDefault();
@@ -62,7 +66,15 @@ export const Order = () => {
     if (calculateTotalPrice().discountInfo) {
       const discountCode = calculateTotalPrice().discountInfo.code;
       const discountPercentage = calculateTotalPrice().discountInfo.percentage;
-      // Aquí puedes utilizar discountCode y discountPercentage sin preocuparte de que sean null
+    }
+
+    const totalPrice = calculateTotalPrice().totalPrice; 
+    if (parseFloat(totalPrice) <= 0) {
+      setPrice0(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Hace scroll hacia arriba
+      return; 
+    } else {
+      setPrice0(false);
     }
 
     const orderData = {
@@ -125,6 +137,14 @@ export const Order = () => {
           <li className="breadcrumb-item active" aria-current="page"> Confirmar Pedido </li>
         </ol>
       </nav>
+      {price0 && (
+          <div className="alert alert-warning d-flex justify-content-center align-items-center" role="alert">
+            <div className="icon-warning"><PiWarningCircleDuotone /></div>
+            <div>
+              Por favor, no hagas pedidos vacíos, nuestra política de empresa nos prohíbe que nuestros clientes pasen hambre.
+            </div>
+          </div>
+        )}
       <div className="purchase-overview">
         <h1> Resumen de la Compra </h1>
         <ul>
