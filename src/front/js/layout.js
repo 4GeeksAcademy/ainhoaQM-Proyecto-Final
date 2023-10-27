@@ -23,6 +23,7 @@ import { Ticket } from "./pages/ticket";
 import { Payment } from "./pages/payment";
 import { PaymentTicket } from "./pages/paymentTicket";
 import { Contact } from "./pages/contact";
+import { Horary } from "./pages/horary";
 import { Reservation } from "./pages/reservation";
 import { WIP } from "./pages/WIP";
 import { NotFound } from "./pages/notFound";
@@ -77,6 +78,7 @@ const Layout = () => {
                                 <Route element={<Payment />} path="/payment/:orderId" />
                                 <Route element={<PaymentTicket />} path="/payment-ticket/:orderId" />
                                 <Route element={<Contact />} path="/contact" />
+                                <Route element={<Horary />} path="/schedule" />
                                 <Route element={<Reservation />} path="/reserve" />
                                 <Route element={<Single />} path="/single/:theid" />
                                 <Route element={<WIP />} path="/wip" />

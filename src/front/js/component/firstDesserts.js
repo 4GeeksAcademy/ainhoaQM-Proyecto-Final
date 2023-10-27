@@ -5,26 +5,19 @@ import "../../styles/index.css";
 export const FirstDesserts = ({ setShowLoginMessage }) => {
   const { store, actions } = useContext(Context);
   const [firstProductsDesserts, setFirstProductsDesserts] = useState([]);
-  const [quantity, setQuantity] = useState(1);
 
   const addToCart = (product, quantity) => {
     if (store.isAuthenticated) {
       actions.addToCart(product, quantity);
-      setQuantity(1);
       console.log(`Se agregó ${quantity} ${product.name} al carrito.`);
+      setQuantity(1);    
     } else {
       setShowLoginMessage(true);
     }
   };
 
-  const incrementQuantity = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
+  const setQuantity = (newQuantity) => {
+    setFirstProductsDesserts(firstProductsDesserts.map((p) => ({ ...p, quantity: newQuantity })));
   };
 
   useEffect(() => {
@@ -32,7 +25,12 @@ export const FirstDesserts = ({ setShowLoginMessage }) => {
       .then((response) => response.json())
       .then((data) => {
         const sortedProducts = data.products.sort((a, b) => a.id - b.id);
-        setFirstProductsDesserts(sortedProducts);
+        setFirstProductsDesserts(
+          sortedProducts.map((product) => ({
+            ...product,
+            quantity: 1,
+          }))
+        );
         console.log(sortedProducts);
       })
       .catch((error) => console.error("Error:", error));
@@ -54,10 +52,24 @@ export const FirstDesserts = ({ setShowLoginMessage }) => {
                 </div>
               </div>
               <div className="card-footer quantity-selector d-flex align-items-center justify-content-center">
-                <button onClick={decrementQuantity} className="btn btn-outline-secondary" > - </button>
-                <span className="px-2">{quantity}</span>
-                <button onClick={incrementQuantity} className="btn btn-outline-secondary me-3"> + </button>
-                <button onClick={() => addToCart(product, quantity)} className="btn btn-secondary"> Añadir </button>
+                <button className="btn btn-outline-secondary"
+                  onClick={() => {
+                    const updatedProducts = firstProductsDesserts.map((p) =>
+                      p.id === product.id && p.quantity > 1 ? { ...p, quantity: p.quantity - 1 } : p
+                    );
+                    setFirstProductsDesserts(updatedProducts);
+                  }}> -
+                </button>
+                <span className="px-2">{product.quantity}</span>
+                <button className="btn btn-outline-secondary me-3"
+                  onClick={() => {
+                    const updatedProducts = firstProductsDesserts.map((p) =>
+                      p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+                    );
+                    setFirstProductsDesserts(updatedProducts);
+                  }}> +
+                </button>
+                <button onClick={() => addToCart(product, product.quantity)} className="btn btn-secondary"> Añadir </button>
               </div>
             </div>
           </div>
