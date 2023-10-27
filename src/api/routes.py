@@ -1,14 +1,16 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+import os
+import stripe
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, request, jsonify, redirect, url_for, Blueprint
 from api.models import db, User, Product, Menu, Category, Order, OrderDetail, DiscountCode, ContactMessage, Reservation
 from api.utils import generate_sitemap, APIException
+from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-from flask_jwt_extended import JWTManager
 
 
 api = Blueprint('api', __name__)
@@ -51,12 +53,10 @@ def create_user_firebase():
         password = body["password"]
         user_name = body["user_name"]
 
-        # Verificar si el correo electrónico ya está en la base de datos
         existing_user = User.query.filter_by(email=email).first()
 
         if existing_user:
-            # El usuario ya está registrado, así que generamos un token y lo devolvemos
-            access_token = create_access_token(identity=existing_user.serialize())  
+            access_token = create_access_token(identity=existing_user.serialize(), additional_claims={"user_name": existing_user.user_name, "user_id": existing_user.id, "email": existing_user.email})  
             response_body = {
                 "token": access_token,
                 "email": existing_user.email,
@@ -64,29 +64,25 @@ def create_user_firebase():
             }
             return jsonify(response_body), 200
 
-        # El usuario no está registrado, lo registramos
         new_user = User(email=email, user_name=user_name)
         new_user.set_password(password)
 
         db.session.add(new_user)
         db.session.commit()
 
-        # Generamos un token para el nuevo usuario
-        access_token = create_access_token(new_user)
+        access_token = create_access_token(new_user, additional_claims={"user_name": new_user.user_name, "user_id": new_user.id, "email": new_user.email})
 
         response_body = {
             "token": access_token,
             "email": new_user.email,
-            "user_name": new_user.user_name
-            
+            "user_name": new_user.user_name   
         }
 
         return jsonify(response_body), 201
 
     except Exception as e:
-        print(e)  # Imprime el error en la consola del servidor
+        print(e) 
         return jsonify({"msg": "Ocurrió un error al procesar la solicitud"}), 400
-
 
 # Ruta para iniciar sesion
 @api.route('/login', methods=['POST'])
@@ -99,7 +95,7 @@ def login():
     if user == None:
         return jsonify({"msg": "El usario y/o la contraseña no son correctos"}), 401
 
-    access_token = create_access_token(identity=user.serialize(), additional_claims={"user_name": user.user_name, "user_id": user.id})
+    access_token = create_access_token(identity=user.serialize(), additional_claims={"user_name": user.user_name, "user_id": user.id, "email": user.email})
     response_body = {
         "msg": "Token creada correctamente",
         "token": access_token,
@@ -157,8 +153,8 @@ def change_password():
         return jsonify({"msg": str(e)}), 400
 
 # Ruta para ver todos los usuarios y sus pedidos
-@api.route('/users', methods=['GET'])
-def get_users():
+@api.route('/users-orders', methods=['GET'])
+def get_users_orders():
     try:
         users = User.query.all()
         user_list = []
@@ -174,7 +170,28 @@ def get_users():
 
         return jsonify(user_list), 200
     except Exception as e:
+        return jsonify({"msg": str(e)}), 400
+
+@api.route('/user-orders/<int:user_id>', methods=['GET'])
+@jwt_required()
+def get_user_orders_(user_id):
+    try:
+        user = get_jwt_identity()
+        if user.get('id') != user_id:
+            return jsonify({"msg": "Acceso no autorizado"}), 403
+
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({"msg": "Usuario no encontrado"}), 404
+
+        orders = [order.serialize() for order in user.orders]
+
+        return jsonify(orders), 200
+
+    except Exception as e:
         return jsonify({"msg": str(e)}), 500
+
     
 # Ruta para crear un menu
 @api.route('/create-menu', methods=['POST'])
@@ -584,7 +601,7 @@ def create_order():
 # Ruta para obtener un pedido por id 
 @api.route('/order/<int:order_id>', methods=['GET'])
 @jwt_required()
-def get_order(order_id):
+def get_order_(order_id):
     try:
         user = get_jwt_identity()
         order = Order.query.filter_by(id=order_id, user_id=user.get('id')).first()
@@ -610,3 +627,28 @@ def delete_all_orders():
 
     except Exception as e:
         return jsonify({'message': str(e)}), 400
+
+# Ruta para procesar pago con Stripe
+@api.route('/process-payment', methods=['POST'])
+@jwt_required()
+def process_payment():
+    try:
+        stripe_keys = {
+            "secret_key": os.environ["STRIPE_SECRET_KEY"],
+            "publishable_key": os.environ["REACT_APP_STRIPE_PUBLIC_KEY"],
+        }
+        stripe.api_key = stripe_keys["secret_key"]
+        user = get_jwt_identity()
+        data = request.get_json()
+        intent = stripe.PaymentIntent.create(
+            amount= data.get('total_price'),
+            currency='eur',
+            automatic_payment_methods={
+                'enabled': True,
+            },
+        )
+        return ({
+            'clientSecret': intent['client_secret']
+        })
+    except Exception as e:
+        return jsonify(error=str(e)), 403

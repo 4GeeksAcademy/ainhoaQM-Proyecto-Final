@@ -137,7 +137,6 @@ export const Login = () => {
                 password:password, 
                 repeatPassword:repeatPassword,
             };
-            console.log("Contenido de data:", data);
   
             fetch(`${process.env.BACKEND_URL}/api/signup-firebase`, {
                 method: 'POST',

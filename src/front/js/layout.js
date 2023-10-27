@@ -18,6 +18,7 @@ import { Drinks } from "./pages/drinks";
 import { Desserts } from "./pages/desserts";
 import { Cart } from "./pages/cart";
 import { Order } from "./pages/order";
+import { OrdersHistory } from "./pages/ordersHistory";
 import { Ticket } from "./pages/ticket";
 import { Payment } from "./pages/payment";
 import { PaymentTicket } from "./pages/paymentTicket";
@@ -71,6 +72,7 @@ const Layout = () => {
                                 <Route element={<Desserts />} path="/desserts" />
                                 <Route element={<Cart />} path="/cart" />
                                 <Route element={<Order />} path="/order" />
+                                <Route element={<OrdersHistory />} path="/orders-history" />
                                 <Route element={<Ticket />} path="/ticket/:orderId" /> 
                                 <Route element={<Payment />} path="/payment/:orderId" />
                                 <Route element={<PaymentTicket />} path="/payment-ticket/:orderId" />

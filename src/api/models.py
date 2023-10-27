@@ -160,7 +160,7 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     order_details = db.relationship('OrderDetail', backref='order', lazy=True)
     total_price = db.Column(db.Float, nullable=False, default=0.00)
-    order_comments = db.Column(db.String(255),nullable=True)
+    order_comments = db.Column(db.String(2000),nullable=True)
     takeaway = db.Column(db.Boolean, nullable=False, default=False) 
     payment_method = db.Column(db.String(50), nullable=False)
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.now)

@@ -29,7 +29,7 @@ export const LandingNavbar = () => {
                     <Link to="/cart" className="dropdown-item">Mi Cesta </Link>
                   </li>
                   <li>
-                    <Link to="/wip" className="dropdown-item"> Mis Pedidos </Link>
+                    <Link to="/orders-history" className="dropdown-item"> Mis Pedidos </Link>
                   </li>
                   <li className="dropdown-divider"/>
                   <li className="nav-item pe-3">
