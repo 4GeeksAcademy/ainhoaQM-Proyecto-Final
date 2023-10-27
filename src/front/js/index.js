@@ -6,8 +6,6 @@ import ReactDOM from "react-dom";
 import "../styles/landingPage.css";
 import "../styles/tickets.css";
 import "../styles/index.css";
-import "../styles/stripe.css";
-
 
 //import your own components
 import Layout from "./layout";

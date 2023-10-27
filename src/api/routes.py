@@ -2,7 +2,6 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-import stripe
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, request, jsonify, redirect, url_for, Blueprint
 from api.models import db, User, Product, Menu, Category, Order, OrderDetail, DiscountCode, ContactMessage, Reservation
@@ -627,28 +626,3 @@ def delete_all_orders():
 
     except Exception as e:
         return jsonify({'message': str(e)}), 400
-
-# Ruta para procesar pago con Stripe
-@api.route('/process-payment', methods=['POST'])
-@jwt_required()
-def process_payment():
-    try:
-        stripe_keys = {
-            "secret_key": os.environ["STRIPE_SECRET_KEY"],
-            "publishable_key": os.environ["REACT_APP_STRIPE_PUBLIC_KEY"],
-        }
-        stripe.api_key = stripe_keys["secret_key"]
-        user = get_jwt_identity()
-        data = request.get_json()
-        intent = stripe.PaymentIntent.create(
-            amount= data.get('total_price'),
-            currency='eur',
-            automatic_payment_methods={
-                'enabled': True,
-            },
-        )
-        return ({
-            'clientSecret': intent['client_secret']
-        })
-    except Exception as e:
-        return jsonify(error=str(e)), 403

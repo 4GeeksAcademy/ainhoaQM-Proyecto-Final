@@ -2,8 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-import stripe
-from flask import Flask, render_template, request, jsonify, url_for, send_from_directory
+from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
@@ -75,9 +74,6 @@ def serve_any_other_file(path):
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 jwt = JWTManager(app)
-
-# Setup Stripe Login google
-stripe.api_key = 'sk_test_51NznMbLyi0VUqY7INt2lKGi99wy9L6E6LcyKCCtt5Nv0nm4YERPU3mI217BzXAimsmrOYP3pPfQxA0KPxHD6S2S500v3wjzLjb'
 
 # Setup Firebase Login google
 API_KEY= os.getenv("REACT_APP_API_KEY")
