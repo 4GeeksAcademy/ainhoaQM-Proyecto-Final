@@ -7,8 +7,7 @@ import injectContext from "./store/appContext";
 
 //Pages
 import { LandingPage } from "./pages/landingPage";
-import { Signup } from "./pages/signup";
-import { Login } from "./pages/login";
+import { AuthPage } from "./pages/authPage";
 import { ResetPassword } from "./pages/resetPassword";
 import { NewPassword } from "./pages/newPassword";
 import { Menu } from "./pages/menu";
@@ -21,13 +20,12 @@ import { Order } from "./pages/order";
 import { OrdersHistory } from "./pages/ordersHistory";
 import { Ticket } from "./pages/ticket";
 import { Payment } from "./pages/payment";
-import { PaymentTicket } from "./pages/paymentTicket";
 import { Contact } from "./pages/contact";
-import { Horary } from "./pages/horary";
+import { Centers } from "./pages/centers";
 import { Reservation } from "./pages/reservation";
 import { WIP } from "./pages/WIP";
 import { NotFound } from "./pages/notFound";
-import { Single } from "./pages/single";
+
 
 //Components
 import { Navbar } from "./component/navbar";
@@ -57,15 +55,15 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Routes>
-                        <Route path="/" element={<> <LandingPage /> </>}/>
+                        <Route element={<LandingPage />}  path="/" />
+                        <Route element={<AuthPage />} path="/auth-page" />
+                        <Route element={<ResetPassword />} path="/reset-password" />
+                        <Route element={<NewPassword />} path="/new-password" />
+                        
                         <Route path="/*" element={ <>
                             <Heading />
                             <Navbar />
                             <Routes>
-                                <Route element={<Signup />} path="/signup" />
-                                <Route element={<Login />} path="/login" />
-                                <Route element={<ResetPassword />} path="/reset-password" />
-                                <Route element={<NewPassword />} path="/new-password" />
                                 <Route element={<Menu />} path="/shop" />
                                 <Route element={<Starters />} path="/starters" />
                                 <Route element={<Dishes />} path="/dishes" />
@@ -74,18 +72,16 @@ const Layout = () => {
                                 <Route element={<Cart />} path="/cart" />
                                 <Route element={<Order />} path="/order" />
                                 <Route element={<OrdersHistory />} path="/orders-history" />
-                                <Route element={<Ticket />} path="/ticket/:orderId" /> 
+                                <Route element={<Ticket/>} path="/ticket/:orderId" /> 
                                 <Route element={<Payment />} path="/payment/:orderId" />
-                                <Route element={<PaymentTicket />} path="/payment-ticket/:orderId" />
                                 <Route element={<Contact />} path="/contact" />
-                                <Route element={<Horary />} path="/schedule" />
+                                <Route element={<Centers />} path="/our-centers" />
                                 <Route element={<Reservation />} path="/reserve" />
-                                <Route element={<Single />} path="/single/:theid" />
-                                <Route element={<WIP />} path="/wip" />
-                                <Route path="*" element={<NotFound />} />
+                                <Route element={<NotFound />} path="*" />
                             </Routes>
                             <Footer />
                         </>}/>
+                        <Route element={<WIP />} path="/wip" />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

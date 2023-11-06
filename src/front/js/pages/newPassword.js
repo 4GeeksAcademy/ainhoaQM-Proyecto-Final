@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "../../styles/index.css";
+
+//components
+import { Heading } from "../component/heading";
 
 //iconos
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -75,7 +79,7 @@ export const NewPassword = () => {
     
             if (response.ok) {
                 alert("Tu contraseña ha sido cambiada exitosamente");
-                navigate("/login");
+                navigate("/auth-page");
             } else {
                 const responseData = await response.json();
                 console.error("Error de respuesta:", responseData);
@@ -93,6 +97,7 @@ export const NewPassword = () => {
     };    
 
     return (
+        <><Heading />
         <div className="body background-abstract" style={{ backgroundImage: `url(${abstract})` }}>
             <div className="container">
                 <div className="row m-5 justify-content-center">
@@ -143,7 +148,11 @@ export const NewPassword = () => {
                         </form>
                     </div>
                 </div>
+                <div className="d-flex justify-content-center align-items-center mt-4 mb-4">
+                    <p>¿Necesitas ayuda? <Link to="/contact" className="black-link"> Contacta con nosotros </Link></p>
+                </div>
             </div>
         </div>
+        </>
     );
 };

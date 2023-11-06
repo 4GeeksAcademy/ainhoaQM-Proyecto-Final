@@ -1,15 +1,18 @@
-import React, { useRef} from "react";
+import React, { useContext, useRef } from "react";
+import { Context } from "../store/appContext";
+import { Link } from "react-router-dom";
 import "../../styles/landingPage.css";
 
 //components
+import { Footer } from "../component/footer";
 import { LandingNavbar } from "../component/landingNavbar";
 import { LandingHeader } from "../component/landingHeader";
-import { LandingFooter } from "../component/landingFooter";
 import { FormReservation } from "../component/formReservation";
 import { FormContact } from "../component/formContact";
 import { Schedule } from "../component/schedule";
 
 export const LandingPage = () => {
+  const { store } = useContext(Context);
   const inputRef = useRef(null);
 
   const copyText = () => {
@@ -24,7 +27,6 @@ export const LandingPage = () => {
         <div className="row">
           <LandingHeader />
           <div className="col-sm-12 col-md-6 parallax-bg">
-            <div className="parallax-content"></div>
           </div>
           <div className="col-sm-12 col-md-6 about-us p-5">
             <h1 className="title-section display-4"> ¡Conócenos! </h1>
@@ -48,7 +50,9 @@ export const LandingPage = () => {
             </p>
           </div>
           <div className="col-sm-12 col-md-6 shop p-5">
-            <h1 className="title-section display-4"> Descubre <br/> Nuestra Carta </h1>
+            <Link to={store.isAuthenticated ? "/shop" : "/auth-page"} className="title-section pointer display-4">
+              Descubre <br/> Nuestra Carta
+            </Link>
             <p className="pb-3">
               Explora nuestro menú y deleita tu paladar con una selección
               exquisita de platos preparados con ingredientes frescos y de la
@@ -68,15 +72,13 @@ export const LandingPage = () => {
             </div>
           </div>
           <div className="col-sm-12 col-md-6 parallax-bg">
-            <div className="parallax-content"></div>
           </div>
           <div className="col-sm-12 col-md-6 parallax-bg">
-            <div className="parallax-content"></div>
           </div>
           <div className="col-sm-12 col-md-6 schedule p-5">
             <h1 className="title-section display-4">Nuestro Horario</h1>
             <Schedule/>
-            <h1 className="title-section display-4 pt-4 m-0"> Encuentranos en </h1>
+            <Link to="/our-centers" className="title-section display-4 pt-4 m-0"> Encuentranos en </Link>
             <p className="px-2">Calle Falsa, 123 CP: 00000 Barcelona</p>
             <p className="px-2">Calle Ficticia, 456 CP: 00000 Madrid</p>
           </div>
@@ -84,17 +86,15 @@ export const LandingPage = () => {
             <FormReservation />
           </div>
           <div className="col-sm-12 col-md-6 parallax-bg">
-            <div className="parallax-content"></div>
           </div>
           <div className="col-sm-12 col-md-6 parallax-bg">
-            <div className="parallax-content"></div>
           </div>
           <div className="col-sm-12 col-md-6 contact-us p-5">
             <FormContact />
           </div>
-          <div className="col-sm-12 parallax-bg align-items-center justify-content-center">
-            <div className="parallax-footer p-5">
-              <LandingFooter />
+          <div className="col-sm-12 parallax-bg align-items-center justify-content-center p-0">
+            <div className="parallax pt-5">
+              <Footer />
             </div>
           </div>
         </div>

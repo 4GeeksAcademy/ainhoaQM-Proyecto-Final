@@ -44,54 +44,43 @@ export const Navbar = () => {
           </Link>
         </li>
       </ul>
-      <div className="dropdown">
-        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" >
-          {store.isAuthenticated
-            ? `¡Hola, ${userName || store.userName}!`
-            : "¡Hola! Aún no has iniciado sesión"}
-        </button>
-        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          {store.isAuthenticated ? (
-            <>
-              <li>
-                <Link to="/cart" className="dropdown-item"> Mi Cesta </Link>
-              </li>
-              <li>
-                <Link to="/orders-history" className="dropdown-item"> Mis Pedidos </Link>
-              </li>
-              <li className="dropdown-divider"/>
-              <li className="nav-item pe-3">
-                <Link to="/" className="dropdown-item"> Inicio </Link>
-              </li>
-              <li className="nav-item pe-3">
-                <Link to="/contact" className="dropdown-item"> Contacto </Link>
-              </li>
-              <li className="nav-item pe-3">
-                <Link to="/schedule" className="dropdown-item"> Horario </Link>
-              </li>
-              <li className="nav-item pe-3">
-                <Link to="/reserve" className="dropdown-item"> Reservar </Link>
-              </li>
-              <li className="dropdown-divider"/>
-              <li>
-                <button className="dropdown-item" onClick={handleLogout}> Cerrar Sesión </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link to="/login" className="dropdown-item"> Inicia Sesión </Link>
-              </li>
-              <li>
-                <Link to="/signup" className="dropdown-item"> Regístrate </Link>
-              </li>
-            </>
-          )}
-        </ul>
+      {store.isAuthenticated ? (
+        <div className="dropdown p-1">
+          <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            {`¡Hola, ${userName || store.userName}!`}
+          </button>
+          <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li>
+              <Link to="/cart" className="dropdown-item"> Mi Cesta </Link>
+            </li>
+            <li>
+              <Link to="/orders-history" className="dropdown-item"> Mis Pedidos </Link>
+            </li>
+            <li className="dropdown-divider"/>
+            <li className="nav-item pe-3">
+              <Link to="/" className="dropdown-item"> Inicio </Link>
+            </li>
+            <li className="nav-item pe-3">
+              <Link to="/contact" className="dropdown-item"> Contacto </Link>
+            </li>
+            <li className="nav-item pe-3">
+              <Link to="/our-centers" className="dropdown-item"> Nuestros Centros</Link>
+            </li>
+            <li className="nav-item pe-3">
+              <Link to="/reserve" className="dropdown-item"> Reservar </Link>
+            </li>
+            <li className="dropdown-divider"/>
+            <li>
+              <button className="dropdown-item" onClick={handleLogout}> Cerrar Sesión </button>
+            </li>
+          </ul>
+        </div>
+      ) : (
+        <Link to="/auth-page" className="btn" id="dropdownMenuButton"> {`¡Hola! Aún no has iniciado sesión`} </Link>
+      )}
+      <div className="pe-3">
+        <CartButton/>
       </div>
-      <CartButton />
     </nav>
   );
 };
-
-

@@ -24,7 +24,7 @@ export const Menu = () => {
 
   return (
     <>
-      <div className="container body">
+      <div className="body container">
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
@@ -48,7 +48,7 @@ export const Menu = () => {
           <div className="alert alert-warning d-flex justify-content-center align-items-center" role="alert">
             <div className="icon-warning"><PiWarningCircleDuotone /></div>
             <div>
-              Por favor, <a href="/login">inicia sesión</a> o{" "}
+              Por favor, <a href="/auth-page">inicia sesión</a> o{" "}
               <a href="/signup">regístrate</a> para poder añadir productos al carrito
             </div>
           </div>

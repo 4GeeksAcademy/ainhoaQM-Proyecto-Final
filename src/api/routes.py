@@ -4,7 +4,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 import os
 from sqlalchemy.exc import IntegrityError
 from flask import Flask, request, jsonify, redirect, url_for, Blueprint
-from api.models import db, User, Product, Menu, Category, Order, OrderDetail, DiscountCode, ContactMessage, Reservation
+from api.models import db, User, Product, Menu, Category, Order, OrderDetail, DiscountCode, UsedDiscountCode, ContactMessage, Reservation
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token
@@ -442,20 +442,30 @@ def create_discount():
 
 # Ruta para validar el código de descuento
 @api.route('/validate-discount', methods=['POST'])
+@jwt_required()
 def validate_discount():
-    code = request.json.get('code') 
-    print(f'Código de descuento recibido: {code}')
-    discount = DiscountCode.query.filter_by(code=code).first()
-    
-    if discount:
-        return jsonify({
-            'The discount is': True,
-            'id': discount.id,
-            'code': discount.code,
-            'percentage': discount.percentage
-        })
-    else:
-        return jsonify({'The discount is': False, 'percentage_discount': 0})
+    try:
+        code = request.json.get('code')
+        print(f'Código de descuento recibido: {code}')
+        discount = DiscountCode.query.filter_by(code=code).first()
+
+        if discount:
+            user_id = get_jwt_identity().get('id')
+            used_discount = UsedDiscountCode.query.filter_by(user_id=user_id, discount_code_id=discount.id).first()
+
+            if used_discount:
+                return jsonify({'The discount is': False, 'percentage_discount': 0, 'message': 'El código de descuento ya ha sido utilizado'})
+            else:
+                return jsonify({
+                    'The discount is': True,
+                    'id': discount.id,
+                    'code': discount.code,
+                    'percentage': discount.percentage
+                })
+        else:
+            return jsonify({'The discount is': False, 'percentage_discount': 0, 'message': 'Código de descuento inválido'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Ruta para guardar "Contacta con Nosotros"
 @api.route('/contact', methods=['POST'])
@@ -584,13 +594,16 @@ def create_order():
             total_price *= (1 - discount_code.percentage / 100)
 
         new_order.total_price = total_price
-
         db.session.add_all(order_details)
 
         new_order.order_details = order_details
-
         db.session.add(new_order)
         db.session.commit()
+
+        if discount_code_id:
+            used_discount = UsedDiscountCode(user_id=user.get('id'), discount_code_id=discount_code_id)
+            db.session.add(used_discount)
+            db.session.commit()
 
         return jsonify({'message': 'Orden creada exitosamente', 'id': new_order.id}), 200
 

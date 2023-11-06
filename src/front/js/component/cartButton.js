@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
@@ -14,6 +14,7 @@ export const CartButton = () => {
     0
   );
   const offcanvasRef = useRef();
+  const navigate = useNavigate();
 
   const handleAddMore = (productId) => {
     actions.incrementQuantity(productId);
@@ -39,9 +40,10 @@ export const CartButton = () => {
   
     const hiddenHandler = () => {
       offcanvas.hide();
+      offcanvasElement.classList.remove("show");
       document.querySelector(".cart-button").classList.remove("active");
     };
-  
+    
     offcanvasElement.addEventListener("show.bs.offcanvas", showHandler);
     offcanvasElement.addEventListener("hidden.bs.offcanvas", hiddenHandler);
   
@@ -50,8 +52,6 @@ export const CartButton = () => {
       offcanvasElement.removeEventListener("hidden.bs.offcanvas", hiddenHandler);
     };
   }, [store.isAuthenticated]);
-  
-  
 
   return (
     <>
@@ -61,7 +61,7 @@ export const CartButton = () => {
         </button>
       )}
 
-      <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" ref={offcanvasRef}>
+      <div className="offcanvas offcanvas-end bg-transparent" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" ref={offcanvasRef}>
         <div className="offcanvas-header pb-0">
           <h2 className="offcanvas-title" id="offcanvasRightLabel"> Tu carrito </h2>
           <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -95,12 +95,10 @@ export const CartButton = () => {
             </h4>
           </div>
           <div className="mt-3 d-flex justify-content-center">
-            <Link to="/cart" className="btn btn-secondary col-12 col-md-8" style={{ textDecoration: "none" }}> Ver artículos en tu cesta </Link>
+            <button onClick={() => { document.querySelector(".offcanvas").classList.remove("show");  navigate("/cart"); }} className="btn btn-secondary col-12 col-md-8"> Ver artículos en tu cesta </button>
           </div>
           <div className="mt-3 d-flex justify-content-center">
-            <button className="btn btn-secondary mb-2 mb-md-0 col-12 col-md-8">
-              <Link to="/order" style={{ color: "white", textDecoration: "none" }} > Confirmar Pedido</Link>
-            </button>
+            <button onClick={() => { document.querySelector(".offcanvas").classList.remove("show"); navigate("/order");  }}className="btn btn-secondary mb-2 mb-md-0 col-12 col-md-8"> Confirmar Pedido </button>
           </div>
         </div>
       </div>

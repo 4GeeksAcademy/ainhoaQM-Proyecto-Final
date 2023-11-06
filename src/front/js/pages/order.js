@@ -15,18 +15,27 @@ export const Order = () => {
   const [discountCode, setDiscountCode] = useState("");
   const [price0, setPrice0] = useState(false);
 
+  const [showPurchaseOverview, setShowPurchaseOverview] = useState(true);
+
+  const togglePurchaseOverview = () => {
+    setShowPurchaseOverview(!showPurchaseOverview);
+  };
+
   const handleDiscountSubmit = async (e) => {
     e.preventDefault();
+
     const discountCode = document.getElementById('inputDiscountCode').value;
-    console.log('Valor de discountCode:', discountCode);
-    console.log("Tipo de discountCode:", typeof discountCode);
     const response = await actions.validateDiscount(discountCode);
     const percentage = response.percentage;
-    console.log("Tipo de porcentaje:", typeof percentage);
+
     if (percentage > 0) {
-        setDiscountCode(discountCode); 
+      setDiscountCode(discountCode); 
     } else {
-        alert("Código de descuento inválido");
+      if (!response.discount) {
+        alert(response.message); 
+      } else {
+        alert("Código de descuento inválido"); 
+      }
     }
     actions.setDiscountPercentage(percentage); 
   };
@@ -63,15 +72,18 @@ export const Order = () => {
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
 
+    let discountCode = "";
+    let discountPercentage = 0;
+
     if (calculateTotalPrice().discountInfo) {
-      const discountCode = calculateTotalPrice().discountInfo.code;
-      const discountPercentage = calculateTotalPrice().discountInfo.percentage;
+      discountCode = calculateTotalPrice().discountInfo.code;
+      discountPercentage = calculateTotalPrice().discountInfo.percentage;
     }
 
     const totalPrice = calculateTotalPrice().totalPrice; 
     if (parseFloat(totalPrice) <= 0) {
       setPrice0(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Hace scroll hacia arriba
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return; 
     } else {
       setPrice0(false);
@@ -95,7 +107,6 @@ export const Order = () => {
         },
         body: JSON.stringify(orderData),
       });
-
       if (response.ok) {
         const data = await response.json();
         console.log('Orden registrada con éxito:', data);
@@ -103,7 +114,7 @@ export const Order = () => {
         if (data.id !== undefined) {
           console.log('Order ID:', data.id);
     
-          if (orderData.paymentMethod === "card") {
+          if (orderData.paymentMethod === "tarjeta") {
             navigate(`/payment/${data.id}`);
           } else {
             navigate(`/ticket/${data.id}`);
@@ -138,13 +149,11 @@ export const Order = () => {
         </ol>
       </nav>
       {price0 && (
-          <div className="alert alert-warning d-flex justify-content-center align-items-center" role="alert">
-            <div className="icon-warning"><PiWarningCircleDuotone /></div>
-            <div>
-              Por favor, no hagas pedidos vacíos, nuestra política de empresa nos prohíbe que nuestros clientes pasen hambre.
-            </div>
-          </div>
-        )}
+        <div className="alert alert-warning d-flex justify-content-center align-items-center" role="alert">
+          <div className="icon-warning"><PiWarningCircleDuotone /></div>
+          <div> Por favor, no hagas pedidos vacíos, nuestra política de empresa nos prohíbe que nuestros clientes pasen hambre.</div>
+        </div>
+      )}
       <div className="purchase-overview">
         <h1> Resumen de la Compra </h1>
         <ul>
@@ -168,7 +177,20 @@ export const Order = () => {
       </div>
       <form>
         <div>
-          <h1>¿Dónde quieres disfrutar de tu comida?</h1>
+          <label htmlFor="inputDiscountCode" className="form-label">
+            <h1>¿Tienes un cupón de descuento?</h1>
+          </label>
+          <p> Si tienes un cupón de descuento, ingrésalo a continuación </p>
+          <div className="col-4">
+            <div className="input-group">
+              <input type="text" className="form-control" id="inputDiscountCode" name="inputDiscountCode" placeholder="Código de descuento" aria-label="Código de descuento" aria-describedby="button-addon2" />
+              <button className="btn btn-secondary" type="button" id="button-addon2" 
+                onClick={handleDiscountSubmit} > Enviar </button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h1> ¿Dónde quieres disfrutar de tu comida? </h1>
           <div className="form-check">
             <input type="radio" className="form-check-input" id="eatInRestaurant" name="takeaway" value="restaurant" />
             <label className="form-check-label" htmlFor="eatInRestaurant">  En el restaurante </label>
@@ -179,22 +201,9 @@ export const Order = () => {
           </div>
         </div>
         <div>
-          <label htmlFor="inputDiscountCode" className="form-label">
-            <h1>¿Tienes un cupón de descuento?</h1>
-          </label>
-          <p>Si tienes un cupón de descuento, ingrésalo a continuación</p>
-          <div className="col-4">
-            <div className="input-group">
-              <input type="text" className="form-control" id="inputDiscountCode" name="inputDiscountCode" placeholder="Código de descuento" aria-label="Código de descuento" aria-describedby="button-addon2" />
-              <button
-                className="btn btn-secondary" type="button" id="button-addon2" onClick={handleDiscountSubmit} > Enviar </button>
-            </div>
-          </div>
-        </div>
-        <div>
           <h1>¿Cómo quieres pagar?</h1>
           <div className="form-check">
-            <input type="radio" className="form-check-input" id="payWithCard" name="paymentOption" value="card" />
+            <input type="radio" className="form-check-input" id="payWithCard" name="paymentOption" value="tarjeta" />
             <label className="form-check-label" htmlFor="payWithCard">  Pagar online con Tarjeta </label>
           </div>
           <div className="form-check">
@@ -202,8 +211,8 @@ export const Order = () => {
             <label className="form-check-label" htmlFor="payWithPaypal"> Datáfono en tienda </label>
           </div>
           <div className="form-check">
-            <input type="radio" className="form-check-input" id="payWithCash" name="paymentOption" value="cash" />
-            <label className="form-check-label" htmlFor="payWithCash"> Pagar en Efectivo  </label>
+            <input type="radio" className="form-check-input" id="payWithCash" name="paymentOption" value="efectivo" />
+            <label className="form-check-label" htmlFor="payWithCash"> Pagar en Efectivo </label>
           </div>
         </div>
         <div>
@@ -222,8 +231,14 @@ export const Order = () => {
             </label>
           </div>
         </div>
-        <button type="button" className="btn btn-secondary" onClick={handleCancelOrder}> Cancelar Pedido </button>
-        <button type="submit" className={`btn btn-secondary ${  !acceptTerms ? "disabled-button" : "" }`} disabled={!acceptTerms} onClick={handleOrderSubmit} >  Finalizar Pedido </button>
+        <div className="row pt-3">
+          <div className="col-6">
+            <button type="submit" className={`btn btn-secondary w-100 ${ !acceptTerms ? "disabled-button" : "" }`} disabled={!acceptTerms} onClick={handleOrderSubmit}>  Finalizar Pedido </button>
+          </div>
+          <div className="col-6">
+            <button type="button" className="btn btn-secondary w-100" onClick={handleCancelOrder}> Cancelar Pedido </button>
+          </div>
+        </div>
       </form>
     </div>
   );

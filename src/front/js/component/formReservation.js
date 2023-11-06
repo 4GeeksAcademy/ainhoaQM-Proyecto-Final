@@ -13,8 +13,8 @@ export const FormReservation = () => {
   const isMonday = new Date().getDay() === 1;
   const [showMessageMonday, setShowMessageMonday] = useState(false);
   const [formData, setFormData] = useState({
-    name: store.isAuthenticated ? store.user_name : localStorage.getItem('userName') || '',
-    email: store.isAuthenticated ? store.userEmail : localStorage.getItem('userEmail') || '',
+    name: store.isAuthenticated ? store.user_name || '' : localStorage.getItem('userName') || '',
+    email: store.isAuthenticated ? store.userEmail || '' : localStorage.getItem('userEmail') || '',
     location: '',
     date: '',
     time: '',
@@ -154,7 +154,7 @@ export const FormReservation = () => {
             </div>
           )}
         </div>
-        <button type="submit" className="btn btn-primary" disabled={disableButton}> Reservar Mesa </button>
+        <button type="submit" className="btn btn-secondary col-6" disabled={disableButton}> Reservar Mesa </button>
       </form>
       {submitStatus === 'success' && (
         <div className="alert alert-success mt-3" role="alert">

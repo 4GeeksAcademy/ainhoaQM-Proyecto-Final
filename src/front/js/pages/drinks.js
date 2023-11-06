@@ -52,7 +52,7 @@ export const Drinks = () => {
         <div className="alert alert-warning d-flex justify-content-center align-items-center" role="alert">
           <div className="icon-warning"><PiWarningCircleDuotone /></div>
           <div>
-            Por favor, <a href="/login">inicia sesión</a> o{" "}
+            Por favor, <a href="/auth-page">inicia sesión</a> o{" "}
             <a href="/signup">regístrate</a> para poder añadir productos al carrito
           </div>
         </div>
@@ -79,7 +79,7 @@ export const Drinks = () => {
         {products.map((product) => (
           <div key={product.id} className="col-sm-6 col-md-4 col-lg-4 col-xl-3 col-xxl-3 mb-4">
             <div className="card">
-              <img src={product.image_url} className="card-img-top" alt={product.name} />
+              <img src={product.image_url} className="card-img-top card-img" alt={product.name} />
               <div className="card-body d-flex flex-column justify-content-between"> 
                 <h3 className="card-title text-center">{product.name}</h3>
                 <div className="mt-auto"> 

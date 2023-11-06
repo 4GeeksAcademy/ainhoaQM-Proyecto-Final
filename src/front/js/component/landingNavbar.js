@@ -39,7 +39,7 @@ export const LandingNavbar = () => {
                     <Link to="/contact" className="dropdown-item"> Contacto </Link>
                   </li>
                   <li className="nav-item pe-3">
-                    <Link to="/schedule" className="dropdown-item"> Horario </Link>
+                    <Link to="/our-centers" className="dropdown-item"> Nuestros Centros </Link>
                   </li>
                   <li className="nav-item pe-3">
                     <Link to="/reserve" className="dropdown-item"> Reservar </Link>
@@ -54,8 +54,8 @@ export const LandingNavbar = () => {
           </>
         ) : (
           <div className="navbar-text mx-auto justify-content-center align-items-center text-center">
-            <Link to="/signup" className="text-white"> Regístrate </Link>{" "} o 
-            <Link to="/login" className="text-white"> Inicia sesión </Link>{" "}
+            <Link to="/auth-page" className="text-white">Regístrate</Link>{" "} o {" "}
+            <Link to="/auth-page" className="text-white">Inicia sesión</Link>{" "}
             con nosotros para poder hacer tu pedido online
           </div>
         )}

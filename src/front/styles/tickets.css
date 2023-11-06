@@ -25,6 +25,10 @@
         background-repeat: no-repeat;
     }
 
+    .ticket-comment {
+        max-width: 550px; 
+      }
+
 /* Estilos de las imagenes */
     .ticket-image-container {
         padding-top: 0%;

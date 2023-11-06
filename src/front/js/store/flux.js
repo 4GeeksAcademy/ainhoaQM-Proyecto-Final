@@ -80,10 +80,12 @@ const getState = ({ getStore, setStore }) => {
             
             validateDiscount: async (discountCode) => {
                 try { 
+                    const token = localStorage.getItem('token');
                     const response = await fetch(process.env.BACKEND_URL + "/api/validate-discount", {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` 
                         },
                         body: JSON.stringify({ code: discountCode })
                     });
